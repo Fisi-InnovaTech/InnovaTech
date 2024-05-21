@@ -1,0 +1,61 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml { // Para generar el diagrama de la db
+  provider = "prisma-dbml-generator" // npx prisma generate
+} // https://dbdiagram.io/d
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model usuario {
+  id        Int @id @default(autoincrement())
+  nombre    String 
+  apellidos String
+  correo    String @unique
+  dni       Int 
+  password  String
+  fecha_nac DateTime @default(now())
+  estado    String
+  reporte   reporte[]
+  insignia  String
+}
+
+model reporte {
+  id                 Int @id @default(autoincrement())
+  user_id            Int
+  evidencia_imagen   String?
+  animal_nombre      String
+  descripcion        String
+  latitud            Float
+  longitud           Float
+  nombre_reportante  String?
+  fecha_creacion     DateTime
+  estado             String
+  usuario            usuario @relation(fields: [user_id], references: [id])
+}
+
+model moderador {
+  id        Int @id @default(autoincrement())
+  nombre    String 
+  apellidos String
+  correo    String @unique
+  password  String
+  evento evento[]
+}
+
+model evento {
+  id          Int @id @default(autoincrement())
+  mod_id      Int
+  moderador   moderador @relation(fields: [mod_id], references: [id])
+  nombre      String
+  descripcion String
+  imagen      Bytes
+  fecha       DateTime
+  ubicacion   String
+  categoria   String
+}

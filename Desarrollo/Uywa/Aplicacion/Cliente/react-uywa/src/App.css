@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: '#212429';
+}
+
+.dark-theme {
+  color: #212429;
+}
+
+.slider-containers{
+  min-height: 50vh;
+  min-width: 90vw;
+}
+
+.images-carousel{
+  min-width: auto;
+  min-height: auto;
+}

@@ -1,0 +1,13 @@
+.images-carousel{
+    width: 100vw;
+    max-height: 95vh;
+    border: none;
+  }
+
+.slider-container{
+  width: 100%;
+  height: 90%;
+  overflow: hidden;
+  border: none;
+}
+  

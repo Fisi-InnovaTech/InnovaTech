@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
+import { Link } from "react-router-dom";
 
 const pages = ['Sobre Nosotros', 'Contactanos', 'Reportar', 'Alertas', 'Eventos'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -87,6 +88,7 @@ function ResponsiveAppBar() {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, mr: 3   , color: '#212429', display: 'block', fontWeight: 'bold'}}
               >
+                <Link to="realizar-alerta"></Link>
                 {page}
               </Button>
             ))}

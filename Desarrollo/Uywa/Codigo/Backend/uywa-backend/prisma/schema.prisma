@@ -34,7 +34,7 @@ model reporte {
   latitud            Float
   longitud           Float
   nombre_reportante  String?
-  fecha_creacion     DateTime
+  fecha_creacion     DateTime @default(now())
   estado             String
   usuario            usuario @relation(fields: [user_id], references: [id])
 }

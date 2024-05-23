@@ -34,7 +34,7 @@ export default function Card2() {
             ¿QUÉ HACEMOS? 
             </Typography>
             <Typography variant="body2" component="h2" sx={{ color: 'black' }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis ultrices diam, at vulputate dolor. Mauris vitae eros ac enim bibendum fringilla. Nullam nec bibendum justo. Morbi congue nisi non justo dapibus, sed gravida metus viverra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+              Nos enfocamos en proporcionar a la comunidad una herramienta efectiva para hacer frente al tráfico ilegal de animales. Nuestra plataforma permite a los usuarios reportar de manera anónima y segura cualquier actividad sospechosa, lo que contribuye a la identificación y prevención de casos de tráfico de fauna silvestre. Trabajamos en estrecha colaboración con las autoridades pertinentes para asegurar que cada alerta sea atendida adecuadamente y que se tomen las medidas necesarias para combatir este grave problema ambiental.
             </Typography>
           </div>
           

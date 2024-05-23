@@ -31,7 +31,7 @@ export default function Card1() {
             ¿QUIÉNES SOMOS?
             </Typography>
             <Typography variant="body2" component="h2" sx={{ color: 'black' }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis ultrices diam, at vulputate dolor. Mauris vitae eros ac enim bibendum fringilla. Nullam nec bibendum justo. Morbi congue nisi non justo dapibus, sed gravida metus viverra. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+              Somos una organización comprometida con la protección y bienestar de los animales silvestres en el Perú. Nuestra misión es defender los derechos de estas especies vulnerables, enfrentando el tráfico ilegal y promoviendo su respeto y cuidado en todos los niveles de la sociedad. Trabajamos incansablemente para crear conciencia sobre la importancia de conservar la biodiversidad y asegurar un futuro sostenible para todas las formas de vida en nuestro país.
             </Typography>
           </div>
           <div style={{ flex: '1', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>

@@ -19,14 +19,14 @@ export class AuthUserService {
         user = {...user, password: hashedPassword}; // Add semicolon at the end
         try {       
         return await this.prisma.usuario.create({
-            data: {
+            data: { 
                 nombre: user.nombre,
                 apellidos: user.apellidos, // Make sure 'apellidos' property exists in 'user' object
                 correo: user.correo, // Make sure 'correo' property exists in 'user' object
                 dni: user.dni, // Make sure 'dni' property exists in 'user' object
                 password: user.password, // Make sure 'password' property exists in 'user' object
                 estado: user.estado as string, // Make sure 'estado' property exists in 'user' object
-                insignias: user.insignias // Make sure 'insignias' property exists in 'user' object
+                insignia: user.insignias // Make sure 'insignias' property exists in 'user' object
             }
         });
         } catch (error) {

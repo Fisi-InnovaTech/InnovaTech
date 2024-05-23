@@ -5,8 +5,8 @@ import Home from "./pages/Home";
 import RealizarAlerta from "./pages/RealizarAlerta";
 import VerAlerta from "./pages/VerAlerta";
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
-import SignInSide from './components/Login/login';
-import SignUp from './components/Login/register';
+import InicioSesion from './components/Login/InicioSesion';
+import Registrar from './components/Login/Registrar'
 
 function App() {
   return (
@@ -17,8 +17,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/realizar-alerta" element={<RealizarAlerta />} />
           <Route path='/ver-alerta' element={<VerAlerta/>} />
-          <Route path='/iniciar-sesion' element={<SignInSide/>}/>
-          
+          <Route path='/iniciar-sesion' element={<InicioSesion/>}/>
+          <Route path='/registrar' element={<Registrar/>}/>
         </Routes>
       </div>
     </Router>

@@ -10,6 +10,7 @@ generator dbml { // Para generar el diagrama de la db
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("SECRET")
 }
 
 model usuario {

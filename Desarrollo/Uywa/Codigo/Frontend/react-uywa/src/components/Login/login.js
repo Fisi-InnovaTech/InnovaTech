@@ -75,8 +75,8 @@ export default function SignInSide() {
 
               <Grid container justifyContent="flex-end">
                 <Grid>
-                  <Link href="#" variant="body2" sx={{ color: 'black', textDecoration: 'none' }}>
-                    Registrarse
+                  <Link to ="/registrar" style={{ textDecoration: 'none' }}>
+                    <Button>Registrar</Button>
                   </Link>
                 </Grid>
               </Grid>

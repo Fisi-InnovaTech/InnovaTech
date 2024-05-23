@@ -12,8 +12,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
+import { Link } from "react-router-dom";
 
-const pages = ['Sobre Nosotros', 'Contactanos', 'Reportar', 'Alertas', 'Eventos'];
+const pages = [
+  { path: '/', name: 'Inicio' },
+  { path: '/realizar-alerta', name: 'Reportar' },
+  { path: '/ver-alerta', name: 'Ver Alertas' },
+  { path: '/realizar-alerta', name: 'Eventos' },
+  { path: '/realizar-alerta', name: 'Sobre Nosotros' },
+  { path: '/realizar-alerta', name: 'Contactanos' },
+];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
@@ -70,10 +78,13 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu} >
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+              {pages.map((page, index) => (
+                //Corregir enrutamiento(No funciona)
+                <Link key={index} to={page.path} style={{ textDecoration: 'none' }}>
+                  <MenuItem>
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
@@ -81,46 +92,23 @@ function ResponsiveAppBar() {
           <Box sx={{flexGrow: 1, display: { xs: 'flex', md: 'none' }}}><Logo/></Box>
   
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, mr: 3   , color: '#212429', display: 'block', fontWeight: 'bold'}}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-            
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+            {pages.map((page, index) => (
+                <Link key={index} to={page.path} style={{ textDecoration: 'none' }}>
+                  <Button
+                    sx={{ my: 2, mr: 3, color: '#212429', display: 'block', fontWeight: 'bold' }}
+                  >
+                    {page.name}
+                  </Button>
+                </Link>
               ))}
-            </Menu>
           </Box>
+          <Box sx={{ flexGrow: 0, backgroundColor: '#3AB795', borderRadius: '10px' }}>
+            <Link to="/iniciar-sesion" style={{ textDecoration: 'none' }}>
+            <Button variant="outlined" sx={{ color: '#FFFFFF', border: 'none' }}>
+              Iniciar Sesión
+            </Button>
+          </Link>
+          </Box>  
         </Toolbar>
       </Container>
     </AppBar>

@@ -18,6 +18,34 @@ import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 
+
+const animales = [
+  {"value": 1, "animal": "Anaconda"},
+  {"value": 2, "animal": "Boa"},
+  {"value": 3, "animal": "Cotorra"},
+  {"value": 4, "animal": "Escarabajo"},
+  {"value": 5, "animal": "Escarabajo arlequín"},
+  {"value": 6, "animal": "Gallinazo de cabeza negra"},
+  {"value": 7, "animal": "Garza huaco"},
+  {"value": 8, "animal": "Gavilán acanelado"},
+  {"value": 9, "animal": "Golondrina de mar acollarada"},
+  {"value": 10, "animal": "Golondrina de mar de Markham"},
+  {"value": 11, "animal": "Guanay"},
+  {"value": 12, "animal": "Lagartija"},
+  {"value": 13, "animal": "Lobo marino chusco"},
+  {"value": 14, "animal": "Mantona"},
+  {"value": 15, "animal": "Mono machín negro"},
+  {"value": 16, "animal": "Pihuicho ala amarilla"},
+  {"value": 17, "animal": "Rana acuática"},
+  {"value": 18, "animal": "Rana del Titicaca"},
+  {"value": 19, "animal": "Sapo"},
+  {"value": 20, "animal": "Sapo"},
+  {"value": 21, "animal": "Sapo marino"},
+  {"value": 22, "animal": "Taricaya"},
+  {"value": 23, "animal": "Tortuga motelo"},
+  {"value": 24, "animal": "Venado cola blanca"},
+  {"value": 25, "animal": "Zorro costeño"},
+];
 const style = {
   p: 0,
   width: '100%',
@@ -46,7 +74,7 @@ export default function ListDividers() {
     setCat(event.target.value); }
     
   const [sel, setSel] = React.useState('');
-  const handleChange1 = (event) => {
+  const handleChangeSel = (event) => {
     setSel(event.target.value);
   } 
   ;
@@ -58,7 +86,7 @@ export default function ListDividers() {
             <ListItemText primary="SUBIR ARCHIVO" />
         </ListItem>
         <Divider component="li"/> 
-          <Box sx={{py: 5}}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:7}}>
             <p>Solo formato JPG,PNG</p>
 
             <Button
@@ -66,6 +94,7 @@ export default function ListDividers() {
               role={undefined}
               variant="outlined"
               size="large"
+              
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
             >
@@ -79,22 +108,24 @@ export default function ListDividers() {
         </ListItem>
         
         <Divider component="li" />
-        <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', overflow:'hidden'}}>
-            <Box>
-            <p>Categoria</p>
+        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'row', alignItems:'center', marginY:4}}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:4}}>
+            <p>Seleccionar animal</p>
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label"></InputLabel>
-                    <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                  <InputLabel id="category-select-label"></InputLabel>
+                  <Select
+                    labelId="category-select-label"
+                    id="category-select"
                     value={cat}
                     label=""
                     onChange={handleChange}
-                    >
-                    <MenuItem value={10}>Item1</MenuItem>
-                    <MenuItem value={20}>Item2</MenuItem>
-                    <MenuItem value={30}>Item3</MenuItem>
-                    </Select>
+                  >
+                    {animales.map((tipo, index) => (
+                      <MenuItem key={index} value={tipo.value}>
+                        {tipo.animal}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </FormControl>
                 <div>
                     <p>Describir al animal afectado</p>
@@ -106,31 +137,34 @@ export default function ListDividers() {
                     /> 
                 </div>
             </Box>
-            <Box>
-                <p>Seleccionar</p>
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:4}}>
+            <p>Seleccionar</p>
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label"></InputLabel>
-                    <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={cat}
+                  <InputLabel id="category-select-label"></InputLabel>
+                  <Select
+                    labelId="category-select-label"
+                    id="category-select"
+                    value={sel}
                     label=""
-                    onChange={handleChange1}
-                    >
-                    <MenuItem value={10}>wasa1</MenuItem>
-                    <MenuItem value={20}>wasa2</MenuItem>
-                    <MenuItem value={30}>wasa3</MenuItem>
-                    </Select>
+                    onChange={handleChangeSel}
+                  >
+                    <MenuItem value={10}>Item1</MenuItem>
+                    <MenuItem value={20}>Item2</MenuItem>
+                    <MenuItem value={30}>Item3</MenuItem>
+                  </Select>
                 </FormControl>
                 <div>
-                    <p>Describir los hechos </p>
+                    <p>Descripción de los hechos</p>
                     <TextField
                     id="outlined-multiline-flexible"
                     label=""
                     multiline
-                    maxRows={10}
+                    maxRows={4}
                     /> 
                 </div>
+            </Box>
+            <Box>
+              <p>sad uu</p>
             </Box>
         </Box>
             
@@ -141,7 +175,7 @@ export default function ListDividers() {
         </ListItem>
         <Divider component="li" />
         <ListItem>
-            <ListItemText primary="WASAVACIO3" />
+            <ListItemText primary="" />
         </ListItem>
     </List>
     <FormGroup>

@@ -60,7 +60,7 @@ export default function SignInSide() {
                 id="email"
                 name="email"
                 autoComplete="email"
-                placeholder="Usuario"
+                placeholder="Correo"
                 autoFocus
               />
               <TextField

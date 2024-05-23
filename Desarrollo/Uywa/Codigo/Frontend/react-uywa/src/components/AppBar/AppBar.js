@@ -7,9 +7,8 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
+//import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import { Link } from "react-router-dom";
@@ -22,7 +21,6 @@ const pages = [
   { path: '/realizar-alerta', name: 'Sobre Nosotros' },
   { path: '/realizar-alerta', name: 'Contactanos' },
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -44,7 +42,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{background:'#FFFFFF'}}>
+    <AppBar position="fixed" sx={{background:'#FFFFFF'}}>
       <Container maxWidth="x1">
         <Toolbar disableGutters>
           <Box sx={{display: { xs: 'none', md: 'flex' }, ml:10}}><Logo/></Box>

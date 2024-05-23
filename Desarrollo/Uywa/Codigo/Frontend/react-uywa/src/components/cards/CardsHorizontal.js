@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Box, Typography } from '@mui/material';
-import './App.css';
 import imagen1 from './Imagen1.png';
 import imagen2 from './Tortuguita.png';
 import imagen3 from './region.png';
@@ -9,6 +8,7 @@ import imagen4 from './Ranita.png';
 export default function BoxSx() {
   return (
     <React.Fragment>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
       <Box
         sx={{
           width: 150,
@@ -18,10 +18,10 @@ export default function BoxSx() {
           '&:hover': {
             bgcolor: '#f0f0f0',
           },
-          position: 'absolute',
-          top: '50%',
+          
+          top: '70%',
           left: '25%',
-          transform: 'translate(-50%, -50%)',
+          transform: 'translate(-50%,-50%)',
           border: '1px solid #ccc',
           textAlign: 'center',
           display: 'flex',
@@ -50,7 +50,7 @@ export default function BoxSx() {
           '&:hover': {
             bgcolor: '#f0f0f0',
           },
-          position: 'absolute',
+          
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -82,7 +82,7 @@ export default function BoxSx() {
           '&:hover': {
             bgcolor: '#f0f0f0',
           },
-          position: 'absolute',
+         
           top: '50%',
           left: '75%',
           transform: 'translate(-50%, -50%)',
@@ -104,6 +104,7 @@ export default function BoxSx() {
             Ranas acuaticas <br></br> intervenidas en <br></br> todo el año
           </Typography>
         </div>
+      </Box>
       </Box>
     </React.Fragment>
   );

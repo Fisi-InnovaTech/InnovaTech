@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 
+
 const defaultTheme = createTheme();
 
 export default function SignUp() {

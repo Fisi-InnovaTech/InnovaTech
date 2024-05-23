@@ -39,12 +39,11 @@ const animales = [
   {"value": 17, "animal": "Rana acuática"},
   {"value": 18, "animal": "Rana del Titicaca"},
   {"value": 19, "animal": "Sapo"},
-  {"value": 20, "animal": "Sapo"},
-  {"value": 21, "animal": "Sapo marino"},
-  {"value": 22, "animal": "Taricaya"},
-  {"value": 23, "animal": "Tortuga motelo"},
-  {"value": 24, "animal": "Venado cola blanca"},
-  {"value": 25, "animal": "Zorro costeño"},
+  {"value": 20, "animal": "Sapo marino"},
+  {"value": 21, "animal": "Taricaya"},
+  {"value": 22, "animal": "Tortuga motelo"},
+  {"value": 23, "animal": "Venado cola blanca"},
+  {"value": 24, "animal": "Zorro costeño"},
 ];
 const style = {
   p: 0,
@@ -129,11 +128,13 @@ export default function ListDividers() {
                 </FormControl>
                 <div>
                     <p>Describir al animal afectado</p>
-                    <TextField
-                    id="outlined-multiline-flexible"
-                    label=""
-                    multiline
-                    maxRows={4}
+                    <TextField 
+                      id="outlined-multiline-static"
+                      label="Multiline"
+                      multiline
+                      rows={4}
+                      defaultValue=""
+                      sx={{ width: '300px' }}
                     /> 
                 </div>
             </Box>
@@ -160,11 +161,12 @@ export default function ListDividers() {
                     label=""
                     multiline
                     maxRows={4}
+                    maxLength={10000000000000000000000000}
                     /> 
                 </div>
             </Box>
             <Box>
-              <p>sad uu</p>
+             
             </Box>
         </Box>
             

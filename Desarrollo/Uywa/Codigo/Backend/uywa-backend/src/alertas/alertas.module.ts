@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { AlertasController } from './alertas.controller';
 import { AlertasService } from './alertas.service';
 import { JwtStrategy } from 'src/auth-user/jwt.strategy';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
+
+//No tocar
 
 @Module({
   controllers: [AlertasController],
-  providers: [AlertasService, JwtStrategy]
+  providers: [AlertasService, JwtStrategy, PrismaService]
 })
 
 

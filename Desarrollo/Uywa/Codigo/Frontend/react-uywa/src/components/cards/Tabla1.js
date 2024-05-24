@@ -15,7 +15,7 @@ export default function Card1() {
               bgcolor: '#f0f0f0',
             },
             position: 'relative',
-            top: '50%',
+            top: '0',
             left: '50%',
             transform: 'translate(-50%, 40%)',
             border: '1px solid #ccc',

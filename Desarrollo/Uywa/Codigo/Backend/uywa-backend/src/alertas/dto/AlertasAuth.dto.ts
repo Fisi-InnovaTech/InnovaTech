@@ -2,8 +2,6 @@ import { IsNotEmpty, IsNumber, IsString, IsDate } from "class-validator";
 import { usuario } from ".prisma/client";
 
 export class AlertasAuthDto {
-    @IsNumber()
-    userId: number;
     @IsNotEmpty()
     @IsString()
     evidencia_imagen: string;
@@ -22,5 +20,8 @@ export class AlertasAuthDto {
     @IsString()
     nombre_reportante: string;
     @IsString()
+    fecha_creacion: string;
+    @IsString()
     estado: string;
+    usuario: usuario;
 }

@@ -55,7 +55,7 @@ export default function BoxSx() {
       </Box>
       <Box display="flex" justifyContent="center" mt={2}>
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" className='button'>MAS SOBRE UYWA</Button>
+          <Button variant="contained" className="button">MAS SOBRE UYWA</Button>
         </Stack>
       </Box>
     </React.Fragment>

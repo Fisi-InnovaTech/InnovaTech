@@ -66,15 +66,16 @@
     color: black;
   }
 
-  .button{
-    border-radius: 7px;
-    background-color: rgb(224, 34, 34);
+  .boton{
+    background-color: rgb(224, 34, 34) !important;
+    border-radius: 7px !important;
+    color: white;
     width: 270px;
     height: 45px;
   }
 
-  .button:hover {
-    background-color: rgb(194, 40, 40);
+  .boton:hover {
+    background-color: rgb(194, 40, 40) !important;
     cursor: pointer;
   }
 
@@ -89,7 +90,7 @@
       top: 60px;/* Distancia entre el coponente superior y actual */
     }
 
-    .button{
+    .boton{
       top: 50px;/* Distancia entre el boton y la card */
     }
   }

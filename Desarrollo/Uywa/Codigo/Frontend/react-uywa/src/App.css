@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: gainsboro;
 }
 
 .App-header {
@@ -24,7 +25,50 @@
   min-width: auto;
   min-height: auto;
 }
+
 .leaflet-container{
   
   height: 80vh;
 }
+
+/*Estilos para el texto sobre el carrusel*/
+.slider-containers {
+  position: relative;
+  min-height: 50vh;
+  min-width: 90vw;
+}
+
+.text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 10;
+  color: white;
+  width: calc(90vw - 40px);
+  max-width: calc(max(500px, 50%));
+}
+
+.title {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-left: 80px;
+  text-align: left;
+  line-height: 1.0;
+}
+
+.description {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  margin-left: 80px;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .text-overlay {
+    left: 10px; /* Ajusta para dispositivos móviles */
+  }
+}
+
+/*Estilos para el CardHorizontal*/
+

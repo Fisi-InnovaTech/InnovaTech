@@ -28,7 +28,7 @@ const animales = [
   {"value": 6, "animal": "Gallinazo de cabeza negra"},
   {"value": 7, "animal": "Garza huaco"},
   {"value": 8, "animal": "Gavilán acanelado"},
-  {"value": 9, "animal": "Golondrina de mar acollarada"},
+  {"value": 9, "anima l": "Golondrina de mar acollarada"},
   {"value": 10, "animal": "Golondrina de mar de Markham"},
   {"value": 11, "animal": "Guanay"},
   {"value": 12, "animal": "Lagartija"},

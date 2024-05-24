@@ -1,8 +1,5 @@
-import React from "react";
-import Slider from "react-slick";
+import React, { useState, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import './carousel.css';
 
 
@@ -12,30 +9,52 @@ const images = [
   "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 ];
 
-function AutoPlay() {
-  const settings = {
-    dots: false,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    pauseOnHover: false,
-    swipe: false,
-    speed: 1000,
-    autoplaySpeed: 5000,
-    cssEase: "linear"
-  };
+const AutoPlayCarousel = () => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const maxSteps = images.length;
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    const handleNext = () => {
+      setActiveStep((prevActiveStep) => (prevActiveStep + 1));
+      setIsTransitioning(true);
+    };
+
+    timeoutRef.current = setTimeout(handleNext, 3000); // Cambia la imagen cada 3 segundos
+
+    return () => clearTimeout(timeoutRef.current);
+  }, [activeStep]);
+
+  useEffect(() => {
+    if (activeStep === maxSteps) {
+      const timeout = setTimeout(() => {
+        setIsTransitioning(false);
+        setActiveStep(0);
+      }, 1000); // La duración de la transición en ms
+
+      return () => clearTimeout(timeout);
+    }
+  }, [activeStep, maxSteps]);
+
   return (
-    <Box className="slider-container" >
-      <Slider {...settings}>
-      {images.map((src, index) => (
-          <div key={index}>
-            <img className="images-carousel" src={src} alt={`Slide ${index + 1}`} />
-          </div>
+    <Box className="slider-container">
+      <div className="slider-gradient" />
+      <Box
+        className={`slider-content ${isTransitioning ? '' : 'no-transition'}`}
+        style={{ transform: `translateX(-${activeStep * 100}%)` }}
+      >
+        {images.map((src, index) => (
+          <Box key={index} className="slider-item" style={{ backgroundImage: `url(${src})` }}>
+            <img src={src} alt={`Slide ${index + 1}`} style={{ display: 'none' }} />
+          </Box>
         ))}
-      </Slider>
+        <Box className="slider-item" style={{ backgroundImage: `url(${images[0]})` }}>
+          <img src={images[0]} alt={`Slide 1`} style={{ display: 'none' }} />
+        </Box>
+      </Box>
     </Box>
   );
-}
+};
 
-export default AutoPlay;
+export default AutoPlayCarousel;

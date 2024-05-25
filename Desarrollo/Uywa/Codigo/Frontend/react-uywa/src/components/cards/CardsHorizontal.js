@@ -9,7 +9,7 @@ import './Cards.css';
 export default function BoxSx() {
   return (
     <React.Fragment>
-      <Box className="box-container">
+      <Box className="cards-box-container">
         <Box className="card">
           <div className="image-container">
             <img src={imagen} alt="Example" className="image-background" />
@@ -55,7 +55,7 @@ export default function BoxSx() {
       </Box>
       <Box display="flex" justifyContent="center">
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" className="boton">MAS SOBRE UYWA</Button>
+          <Button variant="contained" className="cards-boton">MAS SOBRE UYWA</Button>
         </Stack>
       </Box>
     </React.Fragment>

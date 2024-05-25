@@ -17,7 +17,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
-import VerAlerta from './VerAlerta';
+import Mapa from '../components/Mapa/Map';
 
 const animales = [
   {"value": 1, "animal": "Anaconda"},
@@ -78,8 +78,7 @@ export default function ListDividers() {
   } 
   ;
   return (
-    <Container sx={{maxWidth: '80%', my:6}}>
-
+    <Container sx={{maxWidth: '80%', my:6, marginTop: "100px"}}>
     <List sx={style} aria-label="mailbox folders">
         <ListItem sx={{backgroundColor: '#F15946'}}>
             <ListItemText primary="SUBIR ARCHIVO" />
@@ -175,8 +174,11 @@ export default function ListDividers() {
         <ListItem sx={{backgroundColor: '#F15946'}}>
             <ListItemText primary="UBICACIÓN" />
         </ListItem>
-        <Divider component="li" />
-        <VerAlerta/>
+
+        <Box sx={{ width: "100%", height: "60vh" }}>
+            <Mapa/>
+        </Box>
+
     </List>
     <FormGroup>
         <FormControlLabel control={<Checkbox defaultChecked />} label="Subir de forma anónima" />

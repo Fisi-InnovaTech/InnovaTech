@@ -78,7 +78,7 @@ export default function ListDividers() {
   } 
   ;
   return (
-    <Container sx={{maxWidth: '80%', my:6}}>
+    <Container sx={{maxWidth: '80%', my:'70px', paddingY:4}}>
 
     <List sx={style} aria-label="mailbox folders">
         <ListItem sx={{backgroundColor: '#F15946'}}>

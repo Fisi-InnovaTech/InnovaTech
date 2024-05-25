@@ -1,14 +1,16 @@
 import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import { Link } from "react-router-dom";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import { Link } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
-
-const defaultTheme = createTheme();
 
 export default function SignInSide() {
   const handleSubmit = (event) => {
@@ -21,80 +23,107 @@ export default function SignInSide() {
   };
 
   return (
-    <>
-    
-    <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" alignItems="center"   justifyContent="center" sx={{ height: '100vh' }}>
-        <Grid 
-          item 
-          xs={12} 
-          sm={8} 
-          md={5} 
-          component={Paper} 
-          elevation={6} 
-          square 
-          container 
-          alignItems="center" 
-          justifyContent="center"
-          >
-
-          <Box
+    <Grid container component="main" sx={{ height: {md:'100vh', xs:'100vh'} }}>
+    <CssBaseline />
+    <Grid
+      item
+      xs={false}
+      sm={4}
+      md={7}
+      sx={{
+        backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: (t) =>
+          t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    />
+    <Grid item xs={12} sm={8} md={5} component={Paper} square>
+      <Box
+        sx={{
+          my: 4,
+          mx: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Box sx={{ width: '200px', height: '100px' }}>
+          <Logo style={{ width: '200px', height: '100px' }}/>
+        </Box>
+        <Typography component="h1" variant="h5">
+          Iniciar sesión
+        </Typography>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1}}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Correo"
+            name="email"
+            autoComplete="email"
+            autoFocus
             sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              maxWidth: '400px',
+              '& .MuiOutlinedInput-root': {
+                '&.Mui-focused fieldset': {
+                  borderColor: '#66bb6a',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                '&.Mui-focused': {
+                  color: '#66bb6a'
+                },
+              },
             }}
-          >
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Contraseña"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '&.Mui-focused fieldset': {
+                  borderColor: '#66bb6a',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                '&.Mui-focused': {
+                  color: '#66bb6a'
+                },
+              },
+            }}
+          />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Acepto terminos y condiciones"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
             
-            <div style={{ width: '250px', height: '100px' }}> 
-              <Logo style={{ width: '100%', height: '80%' }}/> 
-            </div>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                name="email"
-                autoComplete="email"
-                placeholder="Correo"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                type="password"
-                id="password"
-                placeholder="Contraseña"
-                autoComplete="current-password"
-              />
-
-              <Grid container justifyContent="flex-end">
-                
-                  <Link to ="/registrar" style={{ textDecoration: 'none' }}>
-                    <Button>Registrar</Button>
-                  </Link>
-                
-              </Grid>
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#66bb6a' } }}
-              >
-                INICIAR SESIÓN
-              </Button>
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-    </ThemeProvider>
-    </>
+            sx={{ my: 2, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#66bb6a' }}}
+          >
+            Iniciar Sesión
+          </Button>
+          <Grid container>
+            <Grid item>
+              <Link to = "/Registrar">
+                {"No tienes una cuenta? Registrate"}
+              </Link>
+            </Grid>
+          </Grid>
+          
+        </Box>
+      </Box>
+    </Grid>
+  </Grid>
   );
 }

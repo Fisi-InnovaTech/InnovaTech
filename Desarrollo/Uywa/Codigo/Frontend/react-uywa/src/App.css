@@ -17,14 +17,19 @@
 
 .slider-containers{
   min-height: 50vh;
-  min-width: 90vw;
+ width: 100vw;
 }
 
 .images-carousel{
   min-width: auto;
   min-height: auto;
+  margin-top: 70px;
 }
 .leaflet-container{
   
   height: 80vh;
+}
+
+.Menu{
+  position: relative;
 }

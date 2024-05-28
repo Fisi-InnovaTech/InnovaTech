@@ -4,11 +4,13 @@ import Box from '@mui/material/Box';
 import Carrusel from "../components/Carrusel/Carousel";
 import ActionAreaCard from '../components/Cards/Informacion';
 import CardsInformation from '../components/Cards/CardInfo';
+import TextoCarrusel from '../components/TextoPrincipal';
 function Home() {
     return (
       <div className="Menu">
-        <Box>
+        <Box sx={{position:'relative'}}>
           <Carrusel/>
+          <TextoCarrusel/>
         </Box>
         <Box sx={{display:'flex',justifyContent:'center', alignItems:'center', margin:4, flexDirection:{xs:'column', sm:'row'}}}>
           <CardsInformation

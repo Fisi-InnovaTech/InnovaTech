@@ -8,8 +8,15 @@ import { CardActionArea } from '@mui/material';
 export default function ActionAreaCard() {
   return (
     <>
-    <Card sx={{display:'flex', padding:3, marginY:3, maxWidth:'70vw'}}>
-        <CardContent sx={{ flex: 1}}>
+    <Card sx={{display:{xs:'',sm:'flex'}, padding:3, marginY:3, maxWidth:'70vw'}}>
+        <CardMedia
+              component="img"
+              height="140"
+              image="/static/images/cards/contemplative-reptile.jpg"
+              alt="green iguana"
+              sx={{ width: "30%", marginX:5, display:{xs:'flex', sm:'none'}}} 
+        />
+        <CardContent >
           <Typography gutterBottom variant="h5" component="div">
             Quienes Somos
           </Typography>
@@ -23,10 +30,10 @@ export default function ActionAreaCard() {
           height="140"
           image="/static/images/cards/contemplative-reptile.jpg"
           alt="green iguana"
-          sx={{ maxWidth: "30%", marginX:5 }} 
+          sx={{ width: "30%", marginX:5, display:{xs:'none', sm:'flex'} }} 
         />
     </Card>
-    <Card sx={{display:'flex', padding:3, marginY:3, maxWidth:'70vw'}}>
+    <Card sx={{display:{xs:'',sm:'flex'}, padding:3, marginY:3, maxWidth:'70vw'}}>
         <CardMedia
             component="img"
             height="140"

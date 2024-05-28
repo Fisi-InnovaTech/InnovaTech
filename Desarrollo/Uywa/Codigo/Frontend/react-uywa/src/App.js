@@ -11,8 +11,7 @@ import { Outlet } from "react-router-dom";
 function App() {
   return (
     <Router>
-      <div>
-        
+      <div className='App'>
         <Routes>
           <Route path='/iniciar-sesion' element={<InicioSesion/>}/>
           <Route path='/registrar' element={<Registrar/>}/>

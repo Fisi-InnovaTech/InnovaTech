@@ -101,8 +101,10 @@ export default function SignInSide() {
             }}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value="remember" color="primary"/>}
             label="Acepto terminos y condiciones"
+            //Terminos y condiciones de serfor
+            sx={{width: '100%'}}
           />
           <Button
             type="submit"

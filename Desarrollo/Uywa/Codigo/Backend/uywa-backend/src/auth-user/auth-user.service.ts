@@ -19,7 +19,7 @@ export class AuthUserService {
         user = {...user, password: hashedPassword}; // Add semicolon at the end
         try {       
         return await this.prisma.usuario.create({
-            data: { 
+            data: {
                 nombre: user.nombre,
                 apellidos: user.apellidos, // Make sure 'apellidos' property exists in 'user' object
                 correo: user.correo, // Make sure 'correo' property exists in 'user' object
@@ -35,7 +35,6 @@ export class AuthUserService {
     }
 
     async getUser(user: UserLoginAuthDto): Promise<usuario> {
-        console.log({user});
         return await this.prisma.usuario.findUnique({
             where: {
                 correo: user.email

@@ -17,7 +17,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
-
+import Mapa from '../components/Mapa/Map';
 
 const animales = [
   {"value": 1, "animal": "Anaconda"},
@@ -28,7 +28,7 @@ const animales = [
   {"value": 6, "animal": "Gallinazo de cabeza negra"},
   {"value": 7, "animal": "Garza huaco"},
   {"value": 8, "animal": "Gavilán acanelado"},
-  {"value": 9, "animal": "Golondrina de mar acollarada"},
+  {"value": 9, "anima l": "Golondrina de mar acollarada"},
   {"value": 10, "animal": "Golondrina de mar de Markham"},
   {"value": 11, "animal": "Guanay"},
   {"value": 12, "animal": "Lagartija"},
@@ -78,8 +78,7 @@ export default function ListDividers() {
   } 
   ;
   return (
-    <Container sx={{maxWidth: '80%', mt:5}}>
-
+    <Container sx={{maxWidth: '80%', my:6, marginTop: "100px"}}>
     <List sx={style} aria-label="mailbox folders">
         <ListItem sx={{backgroundColor: '#F15946'}}>
             <ListItemText primary="SUBIR ARCHIVO" />
@@ -107,7 +106,7 @@ export default function ListDividers() {
         </ListItem>
         
         <Divider component="li" />
-        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'row', alignItems:'center', marginY:4}}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:{ xs: 'column', md: 'row' }, alignItems:'center', marginY:4}}>
             <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:4}}>
             <p>Seleccionar animal</p>
                 <FormControl fullWidth>
@@ -130,10 +129,9 @@ export default function ListDividers() {
                     <p>Describir al animal afectado</p>
                     <TextField 
                       id="outlined-multiline-static"
-                      label="Multiline"
                       multiline
-                      rows={4}
-                      defaultValue=""
+                      rows={5}
+                      defaultValue=" "
                       sx={{ width: '300px' }}
                     /> 
                 </div>
@@ -156,12 +154,13 @@ export default function ListDividers() {
                 </FormControl>
                 <div>
                     <p>Descripción de los hechos</p>
-                    <TextField
-                    id="outlined-multiline-flexible"
-                    label=""
-                    multiline
-                    maxRows={4}
-                    maxLength={10000000000000000000000000}
+                    <TextField 
+                      id="outlined-multiline-static"
+                      multiline
+                      rows={5}
+                      defaultValue=""
+                      sx={{ width: '300px' }}
+                      maxLength={10000000000000000000000000}
                     /> 
                 </div>
             </Box>
@@ -175,10 +174,11 @@ export default function ListDividers() {
         <ListItem sx={{backgroundColor: '#F15946'}}>
             <ListItemText primary="UBICACIÓN" />
         </ListItem>
-        <Divider component="li" />
-        <ListItem>
-            <ListItemText primary="" />
-        </ListItem>
+
+        <Box sx={{ width: "100%", height: "60vh" }}>
+            <Mapa/>
+        </Box>
+
     </List>
     <FormGroup>
         <FormControlLabel control={<Checkbox defaultChecked />} label="Subir de forma anónima" />

@@ -1,0 +1,96 @@
+  .cards-box-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+  }
+  
+  .card {
+    width: 200px;
+    height: 300px;
+    border-radius: 12px;
+    background-color: white;
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s ease;
+    margin: calc(min((100% - 4 * 150px) / 5, 30px));
+  }
+  
+  .card:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+  
+  .image-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-background {
+    width: 80%;
+    height: 60%; 
+    border-radius: 12px; 
+    object-fit: cover;
+    margin-top: 20px;
+  }
+  
+  .image-secondary {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%); 
+    width: 70%;
+    height: 50%;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+  
+  .text-container {
+    position: absolute;
+    top: 65%;
+    left: 0;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .text-header {
+    color: black;
+    font-family: fantasy, cursive;
+  }
+  
+  .text-body {
+    color: black;
+  }
+
+  .cards-boton{
+    background-color: rgb(224, 34, 34) !important;
+    border-radius: 7px !important;
+    color: white;
+    width: 270px;
+    height: 45px;
+  }
+
+  .cards-boton:hover {
+    background-color: rgb(194, 40, 40) !important;
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 600px) {
+    .box-container {
+      flex-direction: column; /* Cambia la dirección del contenedor a columna */
+      align-items: center; /* Centra las cards horizontalmente */
+    }
+  
+    .card { /* Ajusta el ancho de las cards al 80% del contenedor */
+      margin-bottom: 20px; /* Reduce el espacio entre las cards */
+      top: 60px;/* Distancia entre el coponente superior y actual */
+    }
+
+    .cards-boton{
+      top: 50px;/* Distancia entre el boton y la card */
+    }
+  }

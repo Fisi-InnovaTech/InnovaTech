@@ -5,7 +5,7 @@ import Carrusel from "../components/Carrusel/Carousel";
 import CardHorizontal from '../components/cards/CardsHorizontal';
 import Card1 from '../components/cards/Tabla1';
 import Card2 from '../components/cards/Tabla2';
-
+//import Footer from '../components/Footer/Footer';
 function Home() {
     return (
       <div className="App">
@@ -19,7 +19,7 @@ function Home() {
         <CardHorizontal/>
         <Card1/> 
         <Card2/>
-       
+        
       </div>
     );
   }

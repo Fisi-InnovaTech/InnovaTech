@@ -1,0 +1,38 @@
+.custom-link {
+    color: white;
+    text-decoration: none; /* Elimina el subrayado */
+    display: block;
+    margin-bottom: 8px; /* Agrega espaciado inferior */
+  }
+  
+  .custom-link:hover {
+    /* Opcional: Estilo al pasar el cursor */
+    opacity: 0.8;
+  }
+  .email-input {
+    background-color: white;
+    border-radius: 8px 0 0 8px;
+  }
+  .letraBlanca{
+    color:rgb(168, 166, 166);
+    font-size: 12px;
+  }
+  .send-button {
+    border-radius: 0 8px 8px 0;
+    height: 56px;
+    background-color:#E52F60;
+  }
+  
+  .send-button:hover {
+    background-color: #E52F60;
+  }
+  .line {
+    width: 100%;
+    border: none;
+    border-top: 2px solid black;
+  }
+  
+  .logo {
+    max-width: 1000%;
+    margin-top: 5px; /* Ajusta el margen superior para separar el logo de las líneas */
+  }

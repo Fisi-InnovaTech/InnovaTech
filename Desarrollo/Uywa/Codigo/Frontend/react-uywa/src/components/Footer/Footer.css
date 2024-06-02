@@ -1,38 +1,77 @@
 .custom-link {
-    color: white;
-    text-decoration: none; /* Elimina el subrayado */
-    display: block;
-    margin-bottom: 8px; /* Agrega espaciado inferior */
-  }
-  
-  .custom-link:hover {
-    /* Opcional: Estilo al pasar el cursor */
-    opacity: 0.8;
-  }
-  .email-input {
-    background-color: white;
-    border-radius: 8px 0 0 8px;
-  }
-  .letraBlanca{
-    color:rgb(168, 166, 166);
-    font-size: 12px;
-  }
-  .send-button {
-    border-radius: 0 8px 8px 0;
-    height: 56px;
-    background-color:#E52F60;
-  }
-  
-  .send-button:hover {
-    background-color: #E52F60;
-  }
-  .line {
-    width: 100%;
-    border: none;
-    border-top: 2px solid black;
-  }
-  
-  .logo {
-    max-width: 1000%;
-    margin-top: 5px; /* Ajusta el margen superior para separar el logo de las líneas */
-  }
+  color: white;
+  text-decoration: none; 
+  display: block;
+  margin-bottom: 8px; 
+  font-size: 20px;
+}
+
+.custom-link:hover {
+  opacity: 0.8;
+}
+
+.email-input {
+  background-color: white;
+  border-radius: 8px 0 0 8px;
+}
+
+.letraBlanca {
+  color: rgb(168, 166, 166);
+  font-size: 12px;
+}
+
+.send-button {
+  border-radius: 0 8px 8px 0;
+  height: 56px;
+  background-color: #E52F60;
+}
+
+.send-button:hover {
+  background-color: #E52F60;
+}
+
+.line {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #D9D9D9;
+  margin: 0; 
+}
+
+.logo {
+  max-width: 100%;
+  width: auto; 
+  height: auto; 
+  margin-top: 20px; 
+  transform: scale(1.5, 1.5);
+  margin:20px;
+   
+}
+.circle-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+ 
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: #3AB795;
+  margin-right: 20px;
+  padding: 5px;
+}
+
+.circle svg {
+  color: white;
+  font-size: 30px;
+}
+
+.circle p {
+  color: white;
+  font-size: 14px;
+  margin-left: 10px;
+}

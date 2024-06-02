@@ -14,6 +14,7 @@
     position: relative;
     transition: background-color 0.3s ease;
     margin: calc(min((100% - 4 * 150px) / 5, 30px));
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
   
   .card:hover {
@@ -80,17 +81,17 @@
   }
 
   @media screen and (max-width: 600px) {
-    .box-container {
+    .cards-box-container {
       flex-direction: column; /* Cambia la dirección del contenedor a columna */
       align-items: center; /* Centra las cards horizontalmente */
     }
   
     .card { /* Ajusta el ancho de las cards al 80% del contenedor */
       margin-bottom: 20px; /* Reduce el espacio entre las cards */
-      top: 60px;/* Distancia entre el coponente superior y actual */
+      top: 30px;/* Distancia entre el coponente superior y actual */
     }
 
     .cards-boton{
-      top: 50px;/* Distancia entre el boton y la card */
+      top: 10px;/* Distancia entre el boton y la card */
     }
   }

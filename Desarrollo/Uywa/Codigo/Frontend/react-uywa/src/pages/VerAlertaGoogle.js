@@ -1,12 +1,12 @@
 import './AlertaGoogle.css';
 import React from "react";
 import { Box, TextField, Button } from '@mui/material';
-import Mapa from "../components/Mapa/Map";
+import Mapa from "../components/Mapa/CargadorMarks";
 
 function Maps() {
     return (
         <Box className="flex-container">
-          <Box className="map-box-container">
+          <Box>
             <Mapa/>
           </Box>
           <Box className="search-container">

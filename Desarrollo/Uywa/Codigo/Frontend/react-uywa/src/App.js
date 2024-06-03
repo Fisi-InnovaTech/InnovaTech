@@ -6,8 +6,10 @@ import RealizarAlerta from "./pages/RealizarAlerta";
 import VerAlerta from "./pages/VerAlertaGoogle"; // Solo editen la ruta al otro mapa si quieren ver la diferencia
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
+import Footer from './components/Footer/Footer';
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
+
 function App() {
   return (
     <Router>

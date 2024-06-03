@@ -1,5 +1,4 @@
-import React from "react";
-import Slider from "react-slick";
+import React, { useState, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -58,8 +57,7 @@ function AutoPlay() {
         </CardContent>
       </Card>
     </>
-
   );
-}
+};
 
-export default AutoPlay;
+export default AutoPlayCarousel;

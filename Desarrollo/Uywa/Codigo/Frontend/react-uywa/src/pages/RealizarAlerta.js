@@ -16,10 +16,13 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
+
+import Mapa from '../components/Mapa/MapaVisualizar';
 import VerAlerta from './VerAlerta';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
+
 
 const animales = [
   {"value": 1, "animal": "Anaconda"},
@@ -30,7 +33,7 @@ const animales = [
   {"value": 6, "animal": "Gallinazo de cabeza negra"},
   {"value": 7, "animal": "Garza huaco"},
   {"value": 8, "animal": "Gavilán acanelado"},
-  {"value": 9, "animal": "Golondrina de mar acollarada"},
+  {"value": 9, "anima l": "Golondrina de mar acollarada"},
   {"value": 10, "animal": "Golondrina de mar de Markham"},
   {"value": 11, "animal": "Guanay"},
   {"value": 12, "animal": "Lagartija"},
@@ -86,6 +89,7 @@ export default function ListDividers() {
           <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
           <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
           <Button
+
               component="label"
               role={undefined}
               variant="outlined"
@@ -165,7 +169,9 @@ export default function ListDividers() {
         
         <Box aria-label='marca-ubicacion'>
           <Typography sx={labelName}>UBICACION</Typography>
-          <VerAlerta/>
+          <Box sx={{ width: "100%", height: "60vh" }}>
+            <Mapa/>
+          </Box>
         </Box>
 
         <FormGroup>

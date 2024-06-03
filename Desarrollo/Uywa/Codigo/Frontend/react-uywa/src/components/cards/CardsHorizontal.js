@@ -1,111 +1,63 @@
 import * as React from 'react';
-import { Box, Typography } from '@mui/material';
-import imagen1 from './Imagen1.png';
-import imagen2 from './Tortuguita.png';
-import imagen3 from './region.png';
-import imagen4 from './Ranita.png';
+import { Box, Typography, Button, Stack } from '@mui/material';
+import imagen from './Imagen1.png';
+import imagen1 from './Tortuguita.png';
+import imagen2 from './region.png';
+import imagen3 from './Ranita.png';
+import './Cards.css';
 
 export default function BoxSx() {
   return (
-    <React.Fragment>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-      <Box
-        sx={{
-          width: 150,
-          height: 200,
-          borderRadius: 2,
-          bgcolor: 'white',
-          '&:hover': {
-            bgcolor: '#f0f0f0',
-          },
-          
-          top: '70%',
-          left: '25%',
-          transform: 'translate(-50%,-50%)',
-          border: '1px solid #ccc',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img src={imagen1} alt="Example" style={{ width: '70%', height: '60%', borderRadius: '100%', objectFit: 'cover' }}></img>
-          <img src={imagen2} alt="Example" style={{ position: 'absolute', top: '07%', width: '50%', height: '40%', borderRadius: '100%', objectFit: 'cover' }}></img>
-          <Typography variant="h5" component="h2" sx={{ color: 'black' }}>
-            hola
-          </Typography>
-          <Typography variant="body2" component="h2" sx={{ color: 'black' }}>
-            Intervenciones <br></br> de animales en <br></br> todo el año
-          </Typography>
-        </div>
+    <Box sx={{padding:"2%"}}>
+      <Box className="cards-box-container">
+        <Box className="card">
+          <div className="image-container">
+            <img src={imagen} alt="Example" className="image-background" />
+            <img src={imagen1} alt="Example" className="image-secondary" />
+          </div>
+          <div className="text-container">
+            <Typography variant="h5" component="h2" className="text-header">
+              9890
+            </Typography>
+            <Typography variant="body2" component="h2" className="text-body">
+              Intervenciones <br /> de animales en <br /> todo el año
+            </Typography>
+          </div>
+        </Box>
+        <Box className="card">
+          <div className="image-container">
+            <img src={imagen} alt="Example" className="image-background" />
+            <img src={imagen2} alt="Example" className="image-secondary" />
+          </div>
+          <div className="text-container">
+            <Typography variant="h5" component="h2" className="text-header">
+              1830
+            </Typography>
+            <Typography variant="body2" component="h2" className="text-body">
+              Intervenciones <br /> en regiones del <br /> Perú
+            </Typography>
+          </div>
+        </Box>
+        <Box className="card">
+          <div className="image-container">
+            <img src={imagen} alt="Example" className="image-background" />
+            <img src={imagen3} alt="Example" className="image-secondary" />
+          </div>
+          <div className="text-container">
+            <Typography variant="h5" component="h2" className="text-header">
+              2873
+            </Typography>
+            <Typography variant="body2" component="h2" className="text-body">
+              Ranas acuaticas <br /> intervenidas en <br /> todo el año
+            </Typography>
+          </div>
+        </Box>
       </Box>
-      <Box
-        sx={{
-          width: 150,
-          height: 200,
-          borderRadius: 2,
-          bgcolor: 'white',
-          '&:hover': {
-            bgcolor: '#f0f0f0',
-          },
-          
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          border: '1px solid #ccc',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img src={imagen1} alt="Example" style={{ width: '70%', height: '60%', borderRadius: '100%', objectFit: 'cover' }}></img>
-          <img src={imagen3} alt="Example" style={{ position: 'absolute', top: '07%', width: '50%', height: '40%', borderRadius: '100%', objectFit: 'cover' }}></img>
-          <Typography variant="h5" component="h2" sx={{ color: 'black' }}>
-            KE LY
-          </Typography>
-          <Typography variant="body2" component="h2" sx={{ color: 'black' }}>
-            Intervenciones <br></br> en regiones del <br></br> Perú
-          </Typography>
-        </div>
+      <Box display="flex" justifyContent="center" sx={{paddingY:"20px"}}>
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" className="cards-boton">MAS SOBRE UYWA</Button>
+        </Stack>
       </Box>
-      <Box
-        sx={{
-          width: 150,
-          height: 200,
-          borderRadius: 2,
-          bgcolor: 'white',
-          '&:hover': {
-            bgcolor: '#f0f0f0',
-          },
-         
-          top: '50%',
-          left: '75%',
-          transform: 'translate(-50%, -50%)',
-          border: '1px solid #ccc',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img src={imagen1} alt="Example" style={{ width: '70%', height: '60%', borderRadius: '100%', objectFit: 'cover' }}></img>
-          <img src={imagen4} alt="Example" style={{ position: 'absolute', top: '07%', width: '50%', height: '40%', borderRadius: '100%', objectFit: 'cover' }}></img>
-          <Typography variant="h5" component="h2" sx={{ color: 'black' }}>
-            como TAS
-          </Typography>
-          <Typography variant="body2" component="h2" sx={{ color: 'black' }}>
-            Ranas acuaticas <br></br> intervenidas en <br></br> todo el año
-          </Typography>
-        </div>
-      </Box>
-      </Box>
-    </React.Fragment>
+    </Box>
   );
 }

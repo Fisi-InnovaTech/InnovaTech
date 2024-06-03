@@ -3,7 +3,7 @@ import React from "react";
 import ResponsiveAppBar from './components/Navigation/NavBar';
 import Home from "./pages/Home";
 import RealizarAlerta from "./pages/RealizarAlerta";
-import VerAlerta from "./pages/VerAlerta";
+import VerAlerta from "./pages/VerAlertaGoogle"; // Solo editen la ruta al otro mapa si quieren ver la diferencia
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';

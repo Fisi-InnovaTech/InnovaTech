@@ -26,7 +26,7 @@ export class AuthUserService {
                 dni: user.dni, // Make sure 'dni' property exists in 'user' object
                 password: user.password, // Make sure 'password' property exists in 'user' object
                 estado: user.estado as string, // Make sure 'estado' property exists in 'user' object
-                insignias: user.insignias // Make sure 'insignias' property exists in 'user' object
+                insignia: user.insignias // Make sure 'insignias' property exists in 'user' object
             }
         });
         } catch (error) {
@@ -35,7 +35,6 @@ export class AuthUserService {
     }
 
     async getUser(user: UserLoginAuthDto): Promise<usuario> {
-        console.log({user});
         return await this.prisma.usuario.findUnique({
             where: {
                 correo: user.email

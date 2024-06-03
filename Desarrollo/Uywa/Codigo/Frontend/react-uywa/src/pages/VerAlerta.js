@@ -10,7 +10,7 @@ import 'leaflet/dist/leaflet.css';
 import '../App.css';
 const Maps = () => {
     return (
-    <Box sx={{marginTop:9}}>
+    <Box sx={{marginTop:'70px'}}>
             <MapContainer center={[-12.0464, -77.0428]} zoom={13} scrollWheelZoom={false}>
   <TileLayer
     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

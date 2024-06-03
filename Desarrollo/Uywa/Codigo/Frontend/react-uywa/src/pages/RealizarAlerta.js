@@ -1,23 +1,21 @@
 import * as React from 'react';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
-import Mapa from '../components/Mapa/Map';
+import Mapa from '../components/Mapa/MapaVisualizar';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
 
 const animales = [
   {"value": 1, "animal": "Anaconda"},
@@ -45,15 +43,6 @@ const animales = [
   {"value": 23, "animal": "Venado cola blanca"},
   {"value": 24, "animal": "Zorro costeño"},
 ];
-const style = {
-  p: 0,
-  width: '100%',
-  //maxWidth: '100%',
-  borderRadius: 3,
-  border: '1px solid',
-  borderColor: 'divider',
-  backgroundColor: 'background.paper',
-};
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -70,124 +59,121 @@ const VisuallyHiddenInput = styled('input')({
 export default function ListDividers() {
   const [cat, setCat] = React.useState('');
   const handleChange = (event) => {
-    setCat(event.target.value); }
+    setCat(event.target.value); };
     
   const [sel, setSel] = React.useState('');
   const handleChangeSel = (event) => {
     setSel(event.target.value);
-  } 
-  ;
-  return (
-    <Container sx={{maxWidth: '80%', my:6, marginTop: "100px"}}>
-    <List sx={style} aria-label="mailbox folders">
-        <ListItem sx={{backgroundColor: '#F15946'}}>
-            <ListItemText primary="SUBIR ARCHIVO" />
-        </ListItem>
-        <Divider component="li"/> 
-          <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:7}}>
-            <p>Solo formato JPG,PNG</p>
+  };
 
-            <Button
+  //Estilos
+  const labelName = {
+    py:1.5,
+    px:2,
+    backgroundColor:'#FB9678',
+    color:'#FFFFFF',
+    textAlign:'left',
+    fontWeight:'bold'
+  }
+  return (
+    <Container sx={{display:'flex', minWidth:'100%', justifyContent:'center', marginTop:'70px', backgroundColor:'#EDF1F5'}}>
+      <Paper sx={{width: {xs:'95%', sm:'70%',md:'60%'}, justifyContent:'center', margin:4}}>
+        <Box aria-label='archivo-subida'>
+          <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
+          <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
+          <Button
+
               component="label"
               role={undefined}
               variant="outlined"
               size="large"
-              
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              sx={{mb:3}}
             >
               Subir archivo
               <VisuallyHiddenInput type="file" />
             </Button>
+        </Box>
+        <Box>
+          <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
+          <Box sx={{flexGrow:1, p:3}}> 
+            <Grid container spacing={2} sx={{justifyContent:'center'}}>
+              <Grid item xs={12} md={6}>
+                <List aria-label='datos-caso-animal'>
+                  <FormControl sx={{width:'90%'}}>
+                    <Typography sx={{textAlign:'left', mb:2}}>Seleccionar animal</Typography>
+                    <Select
+                      labelId="category-select-label"
+                      id="category-select"
+                      value={cat}
+                      label=""
+                      onChange={handleChange}
+                      inputProps={{id:'category-input'}}
+                    >
+                      {animales.map((tipo, index) => (
+                        <MenuItem key={index} value={tipo.value}>
+                          {tipo.animal}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Typography sx={{textAlign:'left', my:2}}>Describir al animal</Typography>
+                  </FormControl>
+                  
+                  <TextField 
+                    id="animal-description"
+                    multiline
+                    rows={5}
+                    defaultValue=" "
+                    sx={{ width: '90%' }}
+                  /> 
+                </List>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <List aria-label='datos-caso-hecho'>
+                  <FormControl sx={{width:'90%'}}>
+                    <Typography sx={{textAlign:'left', mb:2}}>Seleccionar</Typography>
+                    <Select
+                      labelId="calendar-select-label"
+                      id="calendar-select"
+                      value={sel}
+                      label=""
+                      onChange={handleChangeSel}
+                      inputProps={{id:'calendar-input'}}
+                    >
+                      <MenuItem value={10}>Item1</MenuItem>
+                      <MenuItem value={20}>Item2</MenuItem>
+                      <MenuItem value={30}>Item3</MenuItem>
+                    </Select>
+                    <Typography sx={{textAlign:'left', my:2}}>Describir al animal</Typography>
+                  </FormControl>
+                  <TextField 
+                    id="hechos-descripcion"
+                    multiline
+                    rows={5}
+                    defaultValue=" "
+                    sx={{ width:'90%' }}
+                  /> 
+                </List>
+              </Grid>
+            </Grid>
           </Box>
-        <Divider component="li" />
-        <ListItem sx={{backgroundColor: '#F15946'}}>
-            <ListItemText primary="DESCRIPCION DEL CASO"/> 
-        </ListItem>
-        
-        <Divider component="li" />
-        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:{ xs: 'column', md: 'row' }, alignItems:'center', marginY:4}}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:4}}>
-            <p>Seleccionar animal</p>
-                <FormControl fullWidth>
-                  <InputLabel id="category-select-label"></InputLabel>
-                  <Select
-                    labelId="category-select-label"
-                    id="category-select"
-                    value={cat}
-                    label=""
-                    onChange={handleChange}
-                  >
-                    {animales.map((tipo, index) => (
-                      <MenuItem key={index} value={tipo.value}>
-                        {tipo.animal}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <div>
-                    <p>Describir al animal afectado</p>
-                    <TextField 
-                      id="outlined-multiline-static"
-                      multiline
-                      rows={5}
-                      defaultValue=" "
-                      sx={{ width: '300px' }}
-                    /> 
-                </div>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection:'column', alignItems:'center', margin:4}}>
-            <p>Seleccionar</p>
-                <FormControl fullWidth>
-                  <InputLabel id="category-select-label"></InputLabel>
-                  <Select
-                    labelId="category-select-label"
-                    id="category-select"
-                    value={sel}
-                    label=""
-                    onChange={handleChangeSel}
-                  >
-                    <MenuItem value={10}>Item1</MenuItem>
-                    <MenuItem value={20}>Item2</MenuItem>
-                    <MenuItem value={30}>Item3</MenuItem>
-                  </Select>
-                </FormControl>
-                <div>
-                    <p>Descripción de los hechos</p>
-                    <TextField 
-                      id="outlined-multiline-static"
-                      multiline
-                      rows={5}
-                      defaultValue=""
-                      sx={{ width: '300px' }}
-                      maxLength={10000000000000000000000000}
-                    /> 
-                </div>
-            </Box>
-            <Box>
-             
-            </Box>
         </Box>
-            
-        <Divider component="li" />
         
-        <ListItem sx={{backgroundColor: '#F15946'}}>
-            <ListItemText primary="UBICACIÓN" />
-        </ListItem>
-
-        <Box sx={{ width: "100%", height: "60vh" }}>
+        <Box aria-label='marca-ubicacion'>
+          <Typography sx={labelName}>UBICACION</Typography>
+          <Box sx={{ width: "100%", height: "60vh" }}>
             <Mapa/>
+          </Box>
         </Box>
 
-    </List>
-    <FormGroup>
-        <FormControlLabel control={<Checkbox defaultChecked />} label="Subir de forma anónima" />
-    </FormGroup>
-    <Box display="flex" justifyContent="center">
-      <Stack direction="row" spacing={2}>
-        <Button variant="contained">Enviar</Button>
-      </Stack>      
-    </Box>
+        <FormGroup>
+            <FormControlLabel control={<Checkbox defaultChecked />} sx={{p:3}} label="Subir de forma anónima" />
+        </FormGroup>
+        <Divider/>
+        <Button variant="contained" sx={{m:4}}>Enviar</Button>   
+     
+      </Paper>
     </Container>
   );
 }

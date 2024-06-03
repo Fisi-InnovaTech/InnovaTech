@@ -11,7 +11,6 @@ function MyComponent() {
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik"
   })
-  // Api-Key-temporal: AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik
 
   const [map, setMap] = useState(null)
   const [clickedLocation, setClickedLocation] = useState(null);

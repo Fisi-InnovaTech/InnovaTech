@@ -8,7 +8,7 @@ import './Cards.css';
 
 export default function BoxSx() {
   return (
-    <React.Fragment>
+    <Box sx={{padding:"2%"}}>
       <Box className="cards-box-container">
         <Box className="card">
           <div className="image-container">
@@ -53,11 +53,11 @@ export default function BoxSx() {
           </div>
         </Box>
       </Box>
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center" sx={{paddingY:"20px"}}>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" className="cards-boton">MAS SOBRE UYWA</Button>
         </Stack>
       </Box>
-    </React.Fragment>
+    </Box>
   );
 }

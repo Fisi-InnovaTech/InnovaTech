@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import './carousel.css';
+import { Container } from "@mui/material";
 
 
 const images = [
@@ -9,51 +16,47 @@ const images = [
   "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 ];
 
-const AutoPlayCarousel = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(true);
-  const maxSteps = images.length;
-  const timeoutRef = useRef(null);
-
-  useEffect(() => {
-    const handleNext = () => {
-      setActiveStep((prevActiveStep) => (prevActiveStep + 1));
-      setIsTransitioning(true);
-    };
-
-    timeoutRef.current = setTimeout(handleNext, 3000); // Cambia la imagen cada 3 segundos
-
-    return () => clearTimeout(timeoutRef.current);
-  }, [activeStep]);
-
-  useEffect(() => {
-    if (activeStep === maxSteps) {
-      const timeout = setTimeout(() => {
-        setIsTransitioning(false);
-        setActiveStep(0);
-      }, 1000); // La duración de la transición en ms
-
-      return () => clearTimeout(timeout);
-    }
-  }, [activeStep, maxSteps]);
-
+function AutoPlay() {
+  const settings = {
+    dots: false,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    pauseOnHover: false,
+    swipe: false,
+    speed: 1000,
+    autoplaySpeed: 5000,
+    cssEase: "linear",
+  };
   return (
-    <Box className="slider-container">
-      <div className="slider-gradient" />
-      <Box
-        className={`slider-content ${isTransitioning ? '' : 'no-transition'}`}
-        style={{ transform: `translateX(-${activeStep * 100}%)` }}
-      >
+    <>
+      <Box className="slider-container" sx={{position:'relative'}}>
+        <Slider {...settings}>
         {images.map((src, index) => (
-          <Box key={index} className="slider-item" style={{ backgroundImage: `url(${src})` }}>
-            <img src={src} alt={`Slide ${index + 1}`} style={{ display: 'none' }} />
-          </Box>
-        ))}
-        <Box className="slider-item" style={{ backgroundImage: `url(${images[0]})` }}>
-          <img src={images[0]} alt={`Slide 1`} style={{ display: 'none' }} />
-        </Box>
+            <div key={index}>
+              <img className="images-carousel" src={src} alt={`Slide ${index + 1}`} />
+            </div>
+          ))}
+        </Slider>
       </Box>
-    </Box>
+      <Card sx={{ maxWidth: 180, height:230, padding:1, margin:2, position:'absolute' }}>
+        <CardMedia
+          component="img"
+          alt="green iguana"
+          height="80"
+          image="/static/images/cards/contemplative-reptile.jpg"
+        />
+        <CardContent sx={{textAlign:'center'}}>
+          <Typography gutterBottom variant="h3" component="div" margin={0}>
+            wasaaaa
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+              ayudaaaa
+          </Typography>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 

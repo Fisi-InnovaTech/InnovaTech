@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color: gainsboro;
+  justify-content: center;
 }
 
 .App-header {
@@ -18,25 +18,20 @@
 
 .slider-containers{
   min-height: 50vh;
-  min-width: 90vw;
+  width: 100vw;
+  position: 'relative';
 }
 
 .images-carousel{
   min-width: auto;
   min-height: auto;
+  margin-top: 70px;
 }
 .leaflet-container{
   
   height: 80vh;
 }
-
 /*Estilos para el texto sobre el carrusel*/
-.slider-containers {
-  position: relative;
-  min-height: 50vh;
-  min-width: 90vw;
-}
-
 .text-overlay {
   position: absolute;
   top: 50%;
@@ -69,5 +64,7 @@
   }
 }
 
-/*Estilos para el CardHorizontal*/
 
+.Menu{
+  position: relative;
+}

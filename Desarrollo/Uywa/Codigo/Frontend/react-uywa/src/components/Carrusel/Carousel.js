@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from "react";
+import Slider from "react-slick";
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -40,24 +41,9 @@ function AutoPlay() {
           ))}
         </Slider>
       </Box>
-      <Card sx={{ maxWidth: 180, height:230, padding:1, margin:2, position:'absolute' }}>
-        <CardMedia
-          component="img"
-          alt="green iguana"
-          height="80"
-          image="/static/images/cards/contemplative-reptile.jpg"
-        />
-        <CardContent sx={{textAlign:'center'}}>
-          <Typography gutterBottom variant="h3" component="div" margin={0}>
-            wasaaaa
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-              ayudaaaa
-          </Typography>
-        </CardContent>
-      </Card>
     </>
-  );
-};
 
-export default AutoPlayCarousel;
+  );
+}
+
+export default AutoPlay;

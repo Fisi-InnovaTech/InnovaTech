@@ -12,6 +12,7 @@ function MyComponent() {
     googleMapsApiKey: "AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik"
   })
 
+  // eslint-disable-next-line no-unused-vars  
   const [map, setMap] = useState(null)
   const [clickedLocation, setClickedLocation] = useState(null);
 

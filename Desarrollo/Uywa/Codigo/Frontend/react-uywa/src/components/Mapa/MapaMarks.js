@@ -13,6 +13,7 @@ function MapaMarcadores({ markerData }) {
     googleMapsApiKey: "AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik"
   });
 
+  // eslint-disable-next-line no-unused-vars
   const [map, setMap] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
 

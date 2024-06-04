@@ -22,3 +22,21 @@
   font-weight: bold !important;
   color: white !important;
 }
+
+.charter-title {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-family: Arial Black !important;
+  font-size: 100px !important;
+  font-weight: bold !important;
+  color: white !important;
+}
+
+.charter-box {
+  width: 100vw !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

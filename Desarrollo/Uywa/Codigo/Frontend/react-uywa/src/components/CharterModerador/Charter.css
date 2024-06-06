@@ -3,7 +3,7 @@
   height: auto;
   padding: 1rem;
   margin: 2rem;
-  border-radius: 10px !important;
+  border-radius: 13px !important;
   box-shadow: 0 3px 6px 3px rgba(0, 0, 0, .3) !important;
   transition: transform 0.3s ease-in-out !important;
 }
@@ -16,27 +16,41 @@
   text-align: center;
 }
 
-.charter-typography {
-  font-family: "Arial Black" !important;
-  font-size: 25px !important;
-  font-weight: bold !important;
-  color: white !important;
+/* CSS para la página del moderador */
+
+.moderador-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15vh;
 }
 
-.charter-title {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  font-family: Arial Black !important;
-  font-size: 100px !important;
-  font-weight: bold !important;
-  color: white !important;
+.moderador-container-image {
+  position: relative;
+  width: 100vw;
+  height: 30vh;
+  overflow: hidden;
+  margin-top: 70px;
 }
 
-.charter-box {
-  width: 100vw !important;
+.moderador-image { /**/
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mantiene la proporción de la imagen */
+}
+
+.moderador-title { /**/
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: white;
+  transform: translate(-50%, -50%);
+  font-size: clamp(2rem, 5vw, 5rem) !important;
+}
+
+.moderador-charter-box { /**/
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100vw;
 }

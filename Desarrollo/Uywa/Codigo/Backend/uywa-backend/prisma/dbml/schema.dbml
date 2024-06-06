@@ -24,7 +24,7 @@ Table reporte {
   latitud Float [not null]
   longitud Float [not null]
   nombre_reportante String
-  fecha_creacion DateTime [not null]
+  fecha_creacion DateTime [default: `now()`, not null]
   estado String [not null]
   usuario usuario [not null]
 }

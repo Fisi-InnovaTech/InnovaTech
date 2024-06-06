@@ -2,9 +2,9 @@ import '../App.css';
 import React from "react";
 import Box from '@mui/material/Box';
 import Carrusel from "../components/Carrusel/Carousel";
-import ActionAreaCard from '../components/cards/Informacion';
-import CardsInformation from '../components/cards/CardInfo';
-import TextoCarrusel from '../components/TextoPrincipal';
+import ActionAreaCard from '../components/Cards/Informacion';
+import CardsInformation from '../components/Cards/CardInfo';
+
 function Home() {
     return (
       <div className="Menu">

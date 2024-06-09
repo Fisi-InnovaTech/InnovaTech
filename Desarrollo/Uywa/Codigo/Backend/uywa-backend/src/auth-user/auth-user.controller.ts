@@ -5,7 +5,7 @@ import { UserRegisterAuthDto } from './dto/UserRegisterAuth.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
-@Controller()
+@Controller('/auth')
 export class AuthUserController {
 
     constructor (private authUserService: AuthUserService,
@@ -23,15 +23,17 @@ export class AuthUserController {
         if(!checkPassword){
             throw new BadRequestException('Password incorrect');
         }
+        //creando el token
         const payload = {id: UserFound.id, name: UserFound.correo}
         const token = this.jwtService.sign(payload);
-        const data = {token, user: UserFound};
+        const data = {token, user: UserFound, status: 200};
         return data;
     }
 
     @UsePipes(new ValidationPipe)
     @Post('/register')
     async register(@Body() body: UserRegisterAuthDto){
+        const user = this.authUserService.registerUser(body);
         return this.authUserService.registerUser(body);
     }
 }

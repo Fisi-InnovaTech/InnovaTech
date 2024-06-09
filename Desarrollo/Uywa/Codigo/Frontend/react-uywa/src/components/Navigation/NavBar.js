@@ -5,7 +5,8 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-//import Avatar from '@mui/material/Avatar';
+import Avatar from '@mui/material/Avatar';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import { Link } from "react-router-dom";
@@ -18,6 +19,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import LoginIcon from '@mui/icons-material/Login';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
 
 const pages = [
   { path: '/', name: 'Inicio' },
@@ -28,23 +34,20 @@ const pages = [
   { path: '/realizar-alerta', name: 'Contactanos' },
 ];
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+const settings = ['Perfil', 'Cerrar Sesion'];
 
+function ResponsiveAppBar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const [open, setOpen] = React.useState(false);
 
+  const [open, setOpen] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -101,13 +104,52 @@ function ResponsiveAppBar() {
                 </Link>
               ))}
           </Box>
-          <Box sx={{ flexGrow: 0, backgroundColor: '#3AB795', borderRadius: '10px' }}>
-            <Link to="/iniciar-sesion" style={{ textDecoration: 'none' }}>
-            <Button variant="outlined" sx={{ color: '#FFFFFF', border: 'none' }}>
-              Iniciar Sesión
-            </Button>
-          </Link>
-          </Box>  
+
+          {!isLoggedIn && (
+          <Box sx={{ flexGrow: 0, borderRadius: '10px' }}>
+              <Link to="/iniciar-sesion" style={{ textDecoration: 'none' }}>
+              <Button variant="contained" sx={{ backgroundColor: '#3AB795' ,color: '#FFFFFF', border: 'none', display:{xs: 'none', md: 'flex'} }}>
+                Iniciar Sesión
+              </Button>
+              <IconButton sx={{ backgroundColor: '#3AB795' , color: '#FFFFFF', border: 'none', display:{xs: 'flex', md: 'none'} }}>
+                <LoginIcon/>
+              </IconButton>
+              </Link>
+          </Box>
+          )} 
+
+          {isLoggedIn &&(
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box> 
+          )}
+  
         </Toolbar>
       </Container>
     </AppBar>

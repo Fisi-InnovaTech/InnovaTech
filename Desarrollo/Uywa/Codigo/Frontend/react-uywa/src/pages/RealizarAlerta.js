@@ -44,6 +44,33 @@ const animales = [
   {"value": 24, "animal": "Zorro costeño"},
 ];
 
+const departamentos =[
+  {"value": 1, "departamento": "Amazonas"},
+  {"value": 2, "departamento": "Ancash"},
+  {"value": 3, "departamento": "Apurímac"},
+  {"value": 4, "departamento": "Arequipa"},
+  {"value": 5, "departamento": "Ayacucho"},
+  {"value": 6, "departamento": "Cajamarca"},
+  {"value": 7, "departamento": "Cusco"},
+  {"value": 8, "departamento": "Huancavelica"},
+  {"value": 9, "departamento": "Huanuco"},
+  {"value": 10, "departamento": "Ica"},
+  {"value": 11, "departamento": "Junín"},
+  {"value": 12, "departamento": "La Libertad"},
+  {"value": 13, "departamento": "Lambayeque"},
+  {"value": 14, "departamento": "Lima"},
+  {"value": 15, "departamento": "Loreto"},
+  {"value": 16, "departamento": "Madre de Dios"},
+  {"value": 17, "departamento": "Moquegua"},
+  {"value": 18, "departamento": "Pasco"},
+  {"value": 19, "departamento": "Piura"},
+  {"value": 20, "departamento": "Puno"},
+  {"value": 21, "departamento": "San Martín"},
+  {"value": 22, "departamento": "Tacna"},
+  {"value": 23, "departamento": "Tumbes"},
+  {"value":24 , "departamento": "Ucayali"}
+]
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -78,6 +105,8 @@ export default function ListDividers() {
   return (
     <Container sx={{display:'flex', minWidth:'100%', justifyContent:'center', marginTop:'70px', backgroundColor:'#EDF1F5'}}>
       <Paper sx={{width: {xs:'95%', sm:'70%',md:'60%'}, justifyContent:'center', margin:4}}>
+        
+        
         <Box aria-label='archivo-subida'>
           <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
           <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
@@ -96,11 +125,16 @@ export default function ListDividers() {
             </Button>
         </Box>
         <Box>
+
           <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
           <Box sx={{flexGrow:1, p:3}}> 
+
             <Grid container spacing={2} sx={{justifyContent:'center'}}>
+
+
               <Grid item xs={12} md={6}>
                 <List aria-label='datos-caso-animal'>
+
                   <FormControl sx={{width:'90%'}}>
                     <Typography sx={{textAlign:'left', mb:2}}>Seleccionar animal</Typography>
                     <Select
@@ -117,22 +151,27 @@ export default function ListDividers() {
                         </MenuItem>
                       ))}
                     </Select>
-                    <Typography sx={{textAlign:'left', my:2}}>Describir al animal</Typography>
+
+
+                    {/* <Typography sx={{textAlign:'left', my:2}}>Describir al animal</Typography> */}
                   </FormControl>
                   
-                  <TextField 
+                  {/* <TextField 
                     id="animal-description"
                     multiline
                     rows={5}
                     defaultValue=" "
                     sx={{ width: '90%' }}
-                  /> 
+                  />  */}
+                  
                 </List>
               </Grid>
+
+              
               <Grid item xs={12} md={6}>
                 <List aria-label='datos-caso-hecho'>
                   <FormControl sx={{width:'90%'}}>
-                    <Typography sx={{textAlign:'left', mb:2}}>Seleccionar</Typography>
+                    <Typography sx={{textAlign:'left', mb:2}}>Seleccionar Departamento</Typography>
                     <Select
                       labelId="calendar-select-label"
                       id="calendar-select"
@@ -141,21 +180,40 @@ export default function ListDividers() {
                       onChange={handleChangeSel}
                       inputProps={{id:'calendar-input'}}
                     >
-                      <MenuItem value={10}>Item1</MenuItem>
-                      <MenuItem value={20}>Item2</MenuItem>
-                      <MenuItem value={30}>Item3</MenuItem>
+                      {departamentos.map((tipo, index) => (
+                        <MenuItem key={index} value={tipo.value}>
+                          {tipo.departamento}
+                        </MenuItem>
+                      ))
+                      }
                     </Select>
-                    <Typography sx={{textAlign:'left', my:2}}>Describir al animal</Typography>
+                    {/* <Typography sx={{textAlign:'left', my:2}}>Describir al animal</Typography> */}
                   </FormControl>
-                  <TextField 
+                  {/* <TextField 
                     id="hechos-descripcion"
                     multiline
                     rows={5}
                     defaultValue=" "
                     sx={{ width:'90%' }}
-                  /> 
+                  />  */}
                 </List>
               </Grid>
+              
+              <Grid item xs ={11.5}>
+                <Typography sx={{textAlign:'left', mb:2}}>Describir el caso</Typography>
+                <TextField 
+                  id="hechos-descripcion"
+                  multiline
+                  rows={5}
+                  defaultValue=" "
+                  sx={{ width:'100%' }}
+                />
+              </Grid>
+
+
+
+
+
             </Grid>
           </Box>
         </Box>

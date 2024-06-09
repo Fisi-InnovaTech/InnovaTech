@@ -11,8 +11,17 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
+import {useState} from 'react'; 
+
+const url = process.env.URL;
+
+const loginUrl = url + '/aurh/login';
 
 export default function SignInSide() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -20,6 +29,40 @@ export default function SignInSide() {
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    fetch(
+      loginUrl,{
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email?email: "No ingresado",
+        password: password ? password : "No ingresado"
+      })
+    }
+    ).then(res => res.json()).then(data =>{
+      console.log(data);
+      console.log(data.status);
+      if(data.status ===200){
+        alert('Usuario logueado');
+        window.localStorage.setItem('UW-logged-session', {
+          id: data.id,
+          nombre: data.nombre,
+          email: data.email,
+          insignias: data.insignias,
+          token: data.token
+        });
+        window.location.href = '/';
+      }
+      else{
+        alert('Error al loguear usuario');
+        setEmail(()=> "");
+        setPassword(()=> "");
+      }
+      }).catch(error =>{
+      console.log(error);
+      })
   };
 
   return (
@@ -65,6 +108,8 @@ export default function SignInSide() {
             name="email"
             autoComplete="email"
             autoFocus
+            value ={email}
+            onChange={(e)=>{setEmail(e.target.value)}}
             sx={{
               '& .MuiOutlinedInput-root': {
                 '&.Mui-focused fieldset': {
@@ -87,6 +132,8 @@ export default function SignInSide() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value ={password}
+            onChange = {(e) =>{setPassword(e.target.value)}}
             sx={{
               '& .MuiOutlinedInput-root': {
                 '&.Mui-focused fieldset': {

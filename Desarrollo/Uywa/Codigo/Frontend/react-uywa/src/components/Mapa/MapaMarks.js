@@ -1,30 +1,22 @@
-import './CargadorMark.css';
 import React, { useState, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 
 const center = {
-  lat: -12.057744,
-  lng: -77.083284
+  lat: -8.7241781,
+  lng: -75.8227259
 };
 
 function MapaMarcadores({ markerData }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik"
+    googleMapsApiKey: "AIzaSyBZWT4UW-431B4nv7eJRhjBY9ecJcoYb0M"
   });
 
-  // eslint-disable-next-line no-unused-vars
-  const [map, setMap] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   const onLoad = useCallback((map) => {
-    map.setZoom(10);
+    map.setZoom(6);
     map.setCenter(center);
-    setMap(map);
-  }, []);
-
-  const onUnmount = useCallback(() => {
-    setMap(null);
   }, []);
 
   const handleMarkerClick = useCallback((marker) => {
@@ -39,22 +31,21 @@ function MapaMarcadores({ markerData }) {
     <GoogleMap
       mapContainerStyle={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
-      onUnmount={onUnmount}
       onClick={handleMapClick}
     >
       {markerData.map(marker => (
         <Marker
           key={marker.id}
-          position={marker.position}
+          position={{ lat: marker.latitud, lng: marker.longitud }}
           onClick={() => handleMarkerClick(marker)}
         />
       ))}
       {selectedMarker && (
-        <InfoWindow position={selectedMarker.position} >
+        <InfoWindow position={{ lat: selectedMarker.latitud, lng: selectedMarker.longitud }} >
           <div style={{ maxWidth: "200px", margin: "0", padding: "0" }}>
-            <img src={selectedMarker.imageUrl} alt={selectedMarker.title} style={{ width: "100%" }} />
-            <h3 >{selectedMarker.title}</h3>
-            <p>{selectedMarker.description}</p>
+            <img src={selectedMarker.evidencia_imagen} alt={selectedMarker.animal_nombre} style={{ width: "100%" }} />
+            <h3 >{selectedMarker.animal_nombre}</h3>
+            <p>{selectedMarker.descripcion}</p>
           </div>
         </InfoWindow>
       )}

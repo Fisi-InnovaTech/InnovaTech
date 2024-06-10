@@ -30,7 +30,7 @@ export class AuthUserService {
             }
         });
         } catch (error) {
-            return new BadRequestException('Error al registrar al usuario');
+            return {message: new BadRequestException('Error al registrar al usuario'), status: 400};
         }
     }
 

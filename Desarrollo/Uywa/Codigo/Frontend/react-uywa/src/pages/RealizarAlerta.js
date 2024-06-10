@@ -106,6 +106,8 @@ export default function ListDividers() {
   return (
     <Container sx={{display:'flex', minWidth:'100%', justifyContent:'center', marginTop:'70px', backgroundColor:'#EDF1F5'}}>
       <Paper sx={{width: {xs:'95%', sm:'70%',md:'60%'}, justifyContent:'center', margin:4}}>
+        
+        
         <Box aria-label='archivo-subida'>
           <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
           <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
@@ -124,12 +126,15 @@ export default function ListDividers() {
             </Button>
         </Box>
         <Box>
+
           <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
           <Box sx={{flexGrow:1, p:3}}> 
+
             <Grid container spacing={2} sx={{justifyContent:'center'}}>
 
               <Grid item xs={12} md={6}>
                 <List aria-label='datos-caso-animal'>
+
                   <FormControl sx={{width:'90%'}}>
                     <Typography sx={{textAlign:'left', mb:2}}>Seleccionar animal</Typography>
                     <Select

@@ -7,18 +7,66 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
+import { useState, useEffect } from 'react';
 
-export default function SignUp() {
-  const handleSubmit = (event) => {
+
+const url = process.env.URL;
+const registerUrl = url + '/auth/register';
+
+  export default function SignUp() {
+  
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [dni, setDni] = useState("");
+  const [password, setPassword] = useState("");
+
+const handleSumbit = (event) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-      
-    });
+      nombre: firstName ,
+      apellidos:  lastName ,
+      correo: email ,
+      dni: parseInt(dni) ,
+      password: password,
+      estado : " ",
+      insignias : " "
+    })
+    fetch(registerUrl,
+      {
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre: firstName ? firstName : "No ingresado",
+          apellidos: lastName ? lastName : "No ingresado",
+          correo: email ? email : "No ingresado",
+          dni: parseInt(dni) ? parseInt(dni) : "No ingresado",
+          password: password ? password : "No ingresado",
+          estado : "",
+          insignias : ""
+        })
+      }
+    ).then(res => res.json()).then(res =>{
+      console.log(res);
+      if(res!=null){
+        alert('Usuario registrado');
+        window.location.href = '/iniciar-sesion';
+      }
+      else{
+        alert('Error al registrar usuario')
+        setFirstName(()=> "");
+        setLastName(()=> "");
+        setEmail(()=> "");
+        setDni(()=> "");
+        setPassword(()=> "");
+      }
+    })
   };
-
+  
   return (
     <Container component="main" maxWidth="xs">
         <Box
@@ -32,7 +80,7 @@ export default function SignUp() {
           <Box sx={{ width: '200px', height: '100px' }}>
             <Logo style={{ width: '200px', height: '100px' }}/>
           </Box>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate onSubmit={handleSumbit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -43,6 +91,8 @@ export default function SignUp() {
                   id="firstName"
                   placeholder="Nombres"
                   autoFocus
+                  value = {firstName}
+                  onChange = {(e) => setFirstName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -53,6 +103,8 @@ export default function SignUp() {
                   name="lastName"
                   placeholder="Apellidos"
                   autoComplete="family-name"
+                  value = {lastName}
+                  onChange = {(e) => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -62,6 +114,8 @@ export default function SignUp() {
                   id="dni"
                   name="dni"
                   placeholder="DNI"
+                  value={dni}
+                  onChange={(e) => setDni(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -72,6 +126,8 @@ export default function SignUp() {
                   name="email"
                   placeholder="Correo electronico"
                   autoComplete="email"
+                  value = {email}
+                  onChange = {(e) => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -83,6 +139,8 @@ export default function SignUp() {
                   id="password"
                   placeholder="Contraseña"
                   autoComplete="new-password"
+                  value = {password}
+                  onChange = {(e) => setPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate } from "class-validator";   
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";   
 import { usuario } from ".prisma/client";
 
 export class AlertasAuthDto {

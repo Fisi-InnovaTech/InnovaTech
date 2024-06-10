@@ -7,21 +7,22 @@ import {
 } 
 from '@mui/material';
 import { Link } from 'react-router-dom';
-import './Charter.css';
+import { charterCard } from './CharterConstStyle';
 
 const Charter = ({opcion, colorFondo, IconComponent, ruta})=> {
+  charterCard.backgroundColor = colorFondo;
   return (
     <Link to={ruta} style={{textDecoration: 'none'}}>
-    <Card sx={{backgroundColor:colorFondo}} className="charter-card">
-    <Box sx={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", height: "150px" }}>
-          <IconComponent sx={{ fontSize: 150, color: 'white' }} />
+      <Card sx={charterCard}>
+        <Box sx={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", height: "150px" }}>
+          <IconComponent sx={{ fontSize: 140, color: 'white' }} />
         </Box>
-      <CardContent className="charter-cardContent">
-        <Typography variant="body2" color="text.secondary" sx={{fontSize:"25px", color:"white", fontWeight:"bold", fontFamily:"Arial Black"}}>
-            {opcion}
-        </Typography>
-      </CardContent>
-    </Card>
+        <CardContent sx={{textAlign: "center"}}>
+          <Typography variant="body2" color="text.secondary" sx={{fontSize:"25px", color:"white"}}>
+              {opcion}
+          </Typography>
+        </CardContent>
+      </Card>
     </Link>
   );
 }

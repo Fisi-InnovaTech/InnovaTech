@@ -15,8 +15,8 @@ export class AuthUserService {
     async registerUser(user:UserRegisterAuthDto){
         const {password} = user;
         const hashedPassword = await hash(password, 10);
+        user = {...user, password: hashedPassword};
         console.log(hashedPassword);
-        user = {...user, password: hashedPassword}; // Add semicolon at the end
         try {       
         return await this.prisma.usuario.create({
             data: {
@@ -41,6 +41,4 @@ export class AuthUserService {
             }
         });
     }
-
-
 }

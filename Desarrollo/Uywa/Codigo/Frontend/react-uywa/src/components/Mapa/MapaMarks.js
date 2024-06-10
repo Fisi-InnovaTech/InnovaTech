@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { useGoogleMaps } from './GoogleMapsLoader';
 
 const center = {
   lat: -8.7241781,
@@ -7,11 +8,8 @@ const center = {
 };
 
 function MapaMarcadores({ markerData }) {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBZWT4UW-431B4nv7eJRhjBY9ecJcoYb0M"
-  });
-
+  
+  const { isLoaded } = useGoogleMaps();
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   const onLoad = useCallback((map) => {
@@ -21,6 +19,7 @@ function MapaMarcadores({ markerData }) {
 
   const handleMarkerClick = useCallback((marker) => {
     setSelectedMarker(marker);
+    console.log(marker);
   }, []);
 
   const handleMapClick = useCallback(() => {

@@ -10,7 +10,7 @@ import {ReactComponent as Logo} from '../logoprincipal.svg';
 import { useState, useEffect } from 'react';
 
 
-const url = process.env.URL;
+const url = "https://innovatech-0rui.onrender.com";
 const registerUrl = url + '/auth/register';
 
   export default function SignUp() {

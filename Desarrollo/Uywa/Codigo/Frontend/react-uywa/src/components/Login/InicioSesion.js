@@ -11,11 +11,11 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
-import {useState} from 'react'; 
+import {useState} from 'react';
 
-const url = process.env.URL;
+const url = "https://innovatech-0rui.onrender.com";
 
-const loginUrl = url + '/aurh/login';
+const loginUrl = url + '/auth/login';
 
 export default function SignInSide() {
 
@@ -29,7 +29,6 @@ export default function SignInSide() {
       email: data.get('email'),
       password: data.get('password'),
     });
-
     fetch(
       loginUrl,{
       method:'POST',
@@ -61,7 +60,7 @@ export default function SignInSide() {
         setPassword(()=> "");
       }
       }).catch(error =>{
-      console.log(error);
+        console.log(error)
       })
   };
 

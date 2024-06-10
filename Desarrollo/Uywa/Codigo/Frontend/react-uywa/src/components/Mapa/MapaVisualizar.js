@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useGoogleMaps } from './GoogleMapsLoader';
 
 const center = {
   lat: -12.057744,
@@ -7,10 +8,8 @@ const center = {
 };
 
 function MyComponent() {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik"
-  })
+
+  const { isLoaded } = useGoogleMaps();
 
   // eslint-disable-next-line no-unused-vars  
   const [map, setMap] = useState(null)
@@ -38,6 +37,9 @@ function MyComponent() {
     setClickedLocation({ lat: clickedLat, lng: clickedLng });
   }, []);
 
+
+
+
   return isLoaded ? (
         <GoogleMap
             mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -50,6 +52,11 @@ function MyComponent() {
             )}
         </GoogleMap>
   ) : <></>
+
+
+
+
+
 }
 
 export default MyComponent

@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Container, Typography } from '@mui/material';
+import { Container, Snackbar, Typography } from '@mui/material';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -16,6 +16,8 @@ import Mapa from '../components/Mapa/MapaVisualizar';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
+import {useState} from 'react';
+import {Alert} from '@mui/material';
 
 export const animales = [
   {"value": 1, "animal": "Anaconda"},
@@ -92,6 +94,7 @@ export default function ListDividers() {
   const [sel, setSel] = React.useState('');
   const handleChangeSel = (event) => {
     setSel(event.target.value);
+
   };
 
   //Estilos
@@ -103,6 +106,28 @@ export default function ListDividers() {
     textAlign:'left',
     fontWeight:'bold'
   }
+
+
+
+  const [file, setFile] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    const fileType = selectedFile.type;
+    if(!fileType.includes('image')) {
+      setAlertMessage('Solo se permiten archivos de imagen (JPG, PNG)');
+      setOpen(true);
+    }
+    else{
+      setFile(URL.createObjectURL(selectedFile));
+    }
+  };
+  const handleClose = ()=>{
+    setOpen(false);
+  }
+
   return (
     <Container sx={{display:'flex', minWidth:'100%', justifyContent:'center', marginTop:'70px', backgroundColor:'#EDF1F5'}}>
       <Paper sx={{width: {xs:'95%', sm:'70%',md:'60%'}, justifyContent:'center', margin:4}}>
@@ -112,19 +137,25 @@ export default function ListDividers() {
           <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
           <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
           <Button
-
-              component="label"
-              role={undefined}
-              variant="outlined"
-              size="large"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-              sx={{mb:3}}
-            >
-              Subir archivo
-              <VisuallyHiddenInput type="file" />
-            </Button>
+            component="label"
+            role={undefined}
+            variant="outlined"
+            size="large"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            sx={{mb:3}}
+          >
+            Subir archivo
+            <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+          </Button>
+          <Grid>
+            {file && (
+              <img src={file} alt="Archivo seleccionado" style={{ width: '40%', height: 'auto' }} />
+              )}
+          </Grid>
         </Box>
+
+        
         <Box>
 
           <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
@@ -155,29 +186,6 @@ export default function ListDividers() {
                 </List>
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <List aria-label='datos-caso-hecho'>
-                  <FormControl sx={{width:'90%'}}>
-                    <Typography sx={{textAlign:'left', mb:2}}>Seleccionar Departamento</Typography>
-                    <Select
-                      labelId="calendar-select-label"
-                      id="calendar-select"
-                      value={sel}
-                      label=""
-                      onChange={handleChangeSel}
-                      inputProps={{id:'calendar-input'}}
-                    >
-                      {departamentos.map((tipo, index) => (
-                        <MenuItem key={index} value={tipo.value}>
-                          {tipo.departamento}
-                        </MenuItem>
-                      ))
-                      }
-                    </Select>
-                  </FormControl>
-                </List>
-              </Grid>
-
               <Grid item xs ={11.5}>
                 <Typography sx={{textAlign:'left', mb:2}}>Describir el caso</Typography>
                 <TextField 
@@ -196,7 +204,7 @@ export default function ListDividers() {
         <Box aria-label='marca-ubicacion'>
           <Typography sx={labelName}>UBICACION</Typography>
           <Box sx={{ width: "100%", height: "60vh" }}>
-            <Mapa/>
+            <Mapa />
           </Box>
         </Box>
 
@@ -207,6 +215,11 @@ export default function ListDividers() {
         <Button variant="contained" sx={{m:4}}>Enviar</Button>   
      
       </Paper>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

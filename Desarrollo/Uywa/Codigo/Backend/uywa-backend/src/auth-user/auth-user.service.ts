@@ -26,7 +26,7 @@ export class AuthUserService {
                 dni: user.dni, // Make sure 'dni' property exists in 'user' object
                 password: user.password, // Make sure 'password' property exists in 'user' object
                 estado: user.estado as string, // Make sure 'estado' property exists in 'user' object
-                insignia: user.insignias // Make sure 'insignias' property exists in 'user' object
+                insignia: user.insignias || '1' // Make sure 'insignias' property exists in 'user' object
             }
         });
         } catch (error) {

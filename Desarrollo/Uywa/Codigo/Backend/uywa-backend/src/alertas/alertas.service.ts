@@ -56,9 +56,9 @@ export class AlertasService {
                     nombre_reportante: alerta.nombre_reportante, 
                     fecha_creacion:  fecha as Date,   
                     estado: alerta.estado,
-                    usuario: { connect: { id: alerta.usuario.id } }
+                    user_id: alerta.user_id,
                 }
-            });
+            }); // Cambio a user_id ya que por alguna razón no reconocia directamente de la anterior forma
         } catch (error) {
             console.error(error);
             throw new BadRequestException('Error al registrar la alerta');

@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Body, Post, Query, UseGuards, UsePipes, ValidationPipe, Patch } from '@nestjs/common';
 import { AlertasService } from './alertas.service';
 import { AlertasAuthDto } from './dto/AlertasAuth.dto';
 import { AlertaFiltroDto } from './dto/AlertaFiltro.dto';
@@ -28,5 +28,15 @@ export class AlertasController {
     @Get('/search')
     getAlertaByFilter(@Query() alerta : AlertaFiltroDto) {
         return this.alertasService.getAlertaByFilter(alerta);
+    }
+
+    @Get('/allalerts')
+    getReportes() {
+        return this.alertasService.getAlertas();
+    }
+
+    @Post('/changingState')
+    changeState(@Body() body: {id: number, estado: string}){
+        return this.alertasService.changeState(body.id,body.estado);
     }
 }

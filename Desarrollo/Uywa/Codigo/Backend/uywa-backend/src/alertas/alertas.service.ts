@@ -133,4 +133,28 @@ export class AlertasService {
             return reportes;
         }
     }
+
+    async getAlertas() {
+        const result = await this.prisma.reporte.findMany({
+            select: {
+                id: true,
+                animal_nombre: true,
+                evidencia_imagen: true,
+                descripcion: true,
+                estado: true,
+                usuario: {
+                    select: { nombre: true },
+                },
+            },
+        });
+        if (!result) throw new BadRequestException('No hay alertas registradas.');
+        return result;
+    }
+
+    async changeState(id: number, newEstado: string){
+        return await this.prisma.reporte.update({
+            where: { id: id },
+            data: { estado: newEstado },
+        });
+    }
 }

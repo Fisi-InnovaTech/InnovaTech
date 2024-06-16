@@ -7,6 +7,7 @@ import VerAlerta from "./pages/VerAlertaGoogle";
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
+import Reportes from './pages/ReportesMod';
 import ModeradorPrincipal from './pages/Moderador';
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
@@ -28,6 +29,7 @@ function App() {
           <Route path="/realizar-alerta" element={<RealizarAlerta />} />
           <Route path='/ver-alerta' element={<VerAlerta/>} />
           <Route path='/moderador' element={<ModeradorPrincipal/>}/>
+          <Route path="/moderador-reportes" element={<Reportes/>}/>
           </Route>
         </Routes>
 

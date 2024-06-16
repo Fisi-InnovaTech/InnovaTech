@@ -18,13 +18,13 @@ export const alertaContainer = {
 
 export const mapBotonBuscar = {
   marginTop: "1.5rem",
-  backgroundColor: "rgb(224, 34, 34)",
+  backgroundColor: "#E52F60",
   borderRadius: "7px",
   color: "white",
   width: "270px",
   height: "45px",
   "&:hover": {
-    backgroundColor: "rgb(194, 40, 40)",
+    backgroundColor: "#C22828",
   },
 }
 

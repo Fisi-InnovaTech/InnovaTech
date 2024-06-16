@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 
 export class UserRegisterAuthDto {
@@ -21,6 +21,7 @@ export class UserRegisterAuthDto {
     password: string;
     @IsString()
     estado:String;
+    @IsOptional()
     @IsString()
     insignias: string;
 }

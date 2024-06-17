@@ -32,6 +32,14 @@ export const styles = {
     flexDirection: 'column',
     alignItems: 'center'
   },
+  expandedBox:{
+    width:"100%",
+    gap:"20px",
+    display:"flex",
+    flexDirection: { xs: 'column', md: 'row' },
+    justifyContent: "space-between",
+    alignItems:"center"
+  },
   description_report: {
     width: '500px',
     height: '200px',
@@ -42,7 +50,8 @@ export const styles = {
   image: {
     maxWidth: '400px',
     marginBottom: '20px',
-    borderRadius: '30px'
+    borderRadius: '30px',
+    marginTop: { xs: '16px', md: '0' }
   },
   actionButton: {
     margin: '10px',

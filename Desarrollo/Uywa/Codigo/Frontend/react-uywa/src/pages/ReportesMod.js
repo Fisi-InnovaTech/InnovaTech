@@ -50,6 +50,7 @@ const Reportes = () => {
         if (reportes.ok) {
           const data = await reportes.json();
           setReports(data);
+          setFilteredReports(data);
         } else {
           console.log("Error al buscar back, status: ", reportes.status);
         }
@@ -83,7 +84,7 @@ const Reportes = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handlePageChange = (value) => {
+  const handlePageChange = (_event, value) => {
     setCurrentPage(value);
   };
 
@@ -124,7 +125,7 @@ const Reportes = () => {
       return report;
     
     });
-    setReports(updatedReports);
+    setFilteredReports(updatedReports);
   };
   
   const getEstadoColor = (estado) => {
@@ -194,7 +195,7 @@ const Reportes = () => {
                     <TableCell colSpan={5}>
                       <Collapse in={expandedReport === report.id}>
                         <Container sx={styles.expandedContent}>
-                          <Box sx={{width:"100%", display:"flex", justifyContent: "space-between", alignItems:"center"}}>
+                          <Box sx={styles.expandedBox}>
                             <Typography sx={styles.description_report}>{report.descripcion}</Typography>
                             <img src={report.evidencia_imagen} alt={report.animal_nombre} style={styles.image} />
                           </Box>

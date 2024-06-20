@@ -78,9 +78,10 @@
 
 .copy-right {
   display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  color: white;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
+ 
 }
 
 .footer-links {

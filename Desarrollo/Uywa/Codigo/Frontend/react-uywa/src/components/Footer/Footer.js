@@ -80,12 +80,35 @@ const Footer = () => {
         </Box>
       </Box>
 
-      <hr className="line" />
-
-      <Box className="copy-right">
-        <Typography variant="body1" sx={{ color: 'white' }}>
-          © 2024 UYWA. Todos los derechos reservados.
-        </Typography>
+   
+      <Box className="circle-container">
+   
+        <div className="circle">
+          <EmailIcon />
+        </div>
+        <div>
+          <Typography variant="h6" color={'white'}>E-MAIL</Typography>
+          <Typography variant="body1" color={'white'}>alerta@serfor.gob.pe</Typography>
+    
+        </div>
+      
+        <div className="circle">
+          <PhoneIcon />
+        </div>
+        <div>
+          <Typography variant="h6" color={'white'}>TELÉFONO</Typography>
+          <Typography variant="body1" color={'white'}>947588269</Typography>
+    
+        </div>
+      </Box>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center',marginTop:'15px'}}>
+       <hr className="line" />
+      </Box>
+      <Box>
+          <Typography variant="body1" sx={{ color: 'white', marginTop: '10px' }}>
+            © 2024 UYWA. Todos los derechos reservados.
+          </Typography>
+  
       </Box>
     </Box>
   );

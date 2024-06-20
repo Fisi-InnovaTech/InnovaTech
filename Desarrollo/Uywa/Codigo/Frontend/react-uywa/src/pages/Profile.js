@@ -38,6 +38,7 @@ const profileStyles = {
   table: {
     minWidth: 200,
   },
+  
   halfPaper: {
     padding: '15px',
     height: '100%',

@@ -44,7 +44,7 @@ export class AlertasService {
     async createAlerta(alerta:AlertasAuthDto) {
 
         try{
-            const fecha: Date = new Date(alerta.fecha_creacion);
+            //const fecha: Date = new Date(alerta.fecha_creacion);
 
             return await this.prisma.reporte.create({
                 data:{
@@ -54,7 +54,7 @@ export class AlertasService {
                     latitud: alerta.latitud,
                     longitud: alerta.longitud,
                     nombre_reportante: alerta.nombre_reportante, 
-                    fecha_creacion:  fecha as Date,   
+                    //fecha_creacion:  fecha as Date,   
                     estado: alerta.estado,
                     user_id: alerta.user_id,
                 }

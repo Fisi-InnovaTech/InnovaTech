@@ -45,7 +45,7 @@ export class InsigniasService {
 
         // Se obtiene el Numero de reportes donde el user_id dependerá del id que se le pase
         const reportes = await this.prisma.reporte.count({
-            where: { user_id: Number(id) }
+            where: { user_id: Number(id), estado: 'aprobado'}
         }); 
 
         let insignia = response.insignia; // Comienza en 1 si está registrado el usuario

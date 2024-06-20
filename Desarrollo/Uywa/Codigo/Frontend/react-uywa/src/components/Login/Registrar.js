@@ -8,23 +8,41 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import { useState, useEffect } from 'react';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
-
+const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'];
+const message = ['Usuario registrado correctamente' , 'Error, Intente de nuevo']
 const url = "https://innovatech-0rui.onrender.com";
 const registerUrl = url + '/auth/register';
 
   export default function SignUp() {
-  
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [error, setError] = useState(false);
+
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [dni, setDni] = useState("");
   const [password, setPassword] = useState("");
 
-const handleSumbit = (event) => {
+  const handleErrorAlert =  () =>{
+    setOpenAlert(false);
+  
+  }
+  const handleCloseAlert = () =>{
+    setOpenAlert(false);
+    window.location.href = '/iniciar-sesion';
+  }
+
+  const handleSumbit = (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
     console.log({
       nombre: firstName ,
       apellidos:  lastName ,
@@ -52,23 +70,56 @@ const handleSumbit = (event) => {
       }
     ).then(res => res.json()).then(res =>{
       console.log(res);
-      if(res!=null){
-        alert('Usuario registrado');
-        window.location.href = '/iniciar-sesion';
-      }
-      else{
-        alert('Error al registrar usuario')
+      if(res.statusCode === 400){
+        setError(true);
+        setOpenAlert(true);
+        setFirstName(()=> "");
+        setLastName(()=> "");
+        setEmail(()=> "");
+        setDni(()=> "");
+        setPassword(()=> "");
+      }else if(res.status === 400 ){
+        setError(true);
+        setOpenAlert(true);
         setFirstName(()=> "");
         setLastName(()=> "");
         setEmail(()=> "");
         setDni(()=> "");
         setPassword(()=> "");
       }
+      else{
+        setError(false);
+        setOpenAlert(true);
+      }
     })
   };
   
   return (
     <Container component="main" maxWidth="xs">
+
+  <Dialog
+        open={openAlert}
+        onClose={error ? handleErrorAlert : handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        style = {{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}
+      >
+        <DialogTitle id="alert-dialog-title"  >{error ? message[1] : message[0]}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" >
+            <img src= {error ?  images[1]: images[0]}  alt="login" style={{ width: '30%', height: '30%'}}/>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={error ? handleErrorAlert : handleCloseAlert} color="primary" autoFocus>
+            Continuar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
+
+
         <Box
           sx={{
             marginTop: 8,
@@ -84,6 +135,8 @@ const handleSumbit = (event) => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  error = {firstName.length === 0  || firstName.length <4 ? true : false}
+                  helperText = {firstName.length === 0 || firstName.length <4 ? "Campo requerido" : ""}
                   autoComplete="given-name"
                   name="firstName"
                   required
@@ -97,6 +150,8 @@ const handleSumbit = (event) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  error = {lastName.length === 0  || lastName.length <4 ? true : false}
+                  helperText = {lastName.length === 0 || lastName.length <4 ? "Campo requerido" : ""}
                   required
                   fullWidth
                   id="lastName"
@@ -109,6 +164,8 @@ const handleSumbit = (event) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  error = {dni.length !== 8 || isNaN(parseInt(dni)) ? true : false}
+                  helperText = {dni.length !== 8 || isNaN(parseInt(dni)) ? "DNI no valido" : ""}
                   required
                   fullWidth
                   id="dni"
@@ -120,6 +177,8 @@ const handleSumbit = (event) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  error = {!email.includes('@') || !email.includes('.')  ? true : false}
+                  helperText = {!email.includes('@') ? "Correo no valido" : ""}
                   required
                   fullWidth
                   id="email"
@@ -132,6 +191,8 @@ const handleSumbit = (event) => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  error = {password.length < 6 ? true : false}
+                  helperText = {password.length < 6 ? "Contraseña no valida" : ""}
                   required
                   fullWidth
                   name="password"

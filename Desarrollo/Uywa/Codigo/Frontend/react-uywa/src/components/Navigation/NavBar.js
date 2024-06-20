@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import Button from '@mui/material/Button';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import { Link } from "react-router-dom";
@@ -24,6 +24,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
+
 
 const pages = [
   { path: '/', name: 'Inicio' },
@@ -43,14 +44,33 @@ function ResponsiveAppBar() {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (event) => {
     setAnchorElUser(null);
+    const setting = event.target.innerText;
+    console.log(setting);
+    if (setting === "Perfil"){
+      console.log(setting);
+    }
+    else if (setting === "Cerrar Sesion"){
+      window.localStorage.removeItem('UW-logged-session');
+      window.location.href = '/';
+    }
   };
 
   const [open, setOpen] = React.useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+  
+  useEffect(() => {
+    const token = window.localStorage.getItem('UW-logged-session');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+    else{
+      setIsLoggedIn(false);
+    }
+  }, [])
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>

@@ -7,7 +7,7 @@ const center = {
   lng: -77.083284
 };
 
-function MyComponent() {
+function MyComponent({lat, long}) {
 
   const { isLoaded } = useGoogleMaps();
 
@@ -33,6 +33,8 @@ function MyComponent() {
     // Mostrar las coordenadas en la consola
     console.log('Latitud: ', clickedLat);
     console.log('Longitud: ', clickedLng);
+    lat (clickedLat);
+    long(clickedLng);
     // Actualizar el estado con las coordenadas del lugar donde se hizo clic
     setClickedLocation({ lat: clickedLat, lng: clickedLng });
   }, []);

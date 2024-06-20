@@ -12,15 +12,32 @@ import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import {useState} from 'react';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
+const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'];
+const message = ['Usuario logueado correctamente' , 'Error, Intente de nuevo']
 const url = "https://innovatech-0rui.onrender.com";
-
 const loginUrl = url + '/auth/login';
 
 export default function SignInSide() {
 
+  const [openAlert, setOpenAlert] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+    window.location.href = '/';
+  }
+
+  const handleErrorAlert = () => {
+    setOpenAlert(false);
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -44,18 +61,22 @@ export default function SignInSide() {
       console.log(data);
       console.log(data.status);
       if(data.status ===200){
-        alert('Usuario logueado');
-        window.localStorage.setItem('UW-logged-session', {
-          id: data.id,
-          nombre: data.nombre,
-          email: data.email,
-          insignias: data.insignias,
+        setError(false);
+        const user = {
+          id: data.user.id,
+          nombre: data.user.nombre,
+          email: data.user.correo,
+          insignias: data.user.insignia,
           token: data.token
-        });
-        window.location.href = '/';
+        }
+        window.localStorage.setItem('UW-logged-session', JSON.stringify(user));
+        setOpenAlert(true);
+
       }
       else{
-        alert('Error al loguear usuario');
+        setError(true);
+        setOpenAlert(true);
+        //alert('Error al loguear usuario');
         setEmail(()=> "");
         setPassword(()=> "");
       }
@@ -65,7 +86,31 @@ export default function SignInSide() {
   };
 
   return (
+
+    
+    
     <Grid container component="main" sx={{ height: {md:'100vh', xs:'100vh'} }}>
+      
+      <Dialog
+        open={openAlert}
+        onClose={error ? handleErrorAlert : handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        style = {{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}
+      >
+        <DialogTitle id="alert-dialog-title"  >{error ? message[1] : message[0]}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" >
+            <img src= {error ?  images[1]: images[0]}  alt="login" style={{ width: '30%', height: '30%'}}/>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={error ? handleErrorAlert : handleCloseAlert} color="primary" autoFocus>
+            Continuar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     <CssBaseline />
     <Grid
       item
@@ -99,6 +144,8 @@ export default function SignInSide() {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1}}>
           <TextField
+            error = {!email.includes('@') || !email.includes('.')  ? true : false}
+            helperText = {!email.includes('@') ? "Correo no valido" : ""}
             margin="normal"
             required
             fullWidth
@@ -123,6 +170,8 @@ export default function SignInSide() {
             }}
           />
           <TextField
+            error = {password.length < 6 ? true : false}
+            helperText = {password.length < 6 ? "Contraseña no valida" : ""}
             margin="normal"
             required
             fullWidth

@@ -13,6 +13,7 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   return (
+    <>
     <Router>
       <div className='App'>
         <Routes>
@@ -33,6 +34,11 @@ function App() {
 
       </div>
     </Router>
+    <Router>
+      <Footer />
+    </Router>
+  </>
+
   );
 }
 

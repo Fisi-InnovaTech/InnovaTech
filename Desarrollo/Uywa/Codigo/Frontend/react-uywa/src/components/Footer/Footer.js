@@ -16,18 +16,19 @@ const Footer = () => {
         </Box>
         <hr className="line" />
 
+
         <Box className="footer-content footer-section">
           <Box className="footer-links">
-            <a href="https://www.ejemplo.com" className="custom-link">
+            <a href="https://www.centrodeayuda.com" className="custom-link">
               Centro de ayuda animal
             </a>
-            <a href="https://www.otra-pagina.com" className="custom-link">
+            <a href="https://servicios.com" className="custom-link">
               Servicios
             </a>
-            <a href="https://www.otra-pagina.com" className="custom-link">
+            <a href="https://www.zonasderiesgo.com" className="custom-link">
               Zonas de Riesgo
             </a>
-            <a href="https://www.otra-pagina.com" className="custom-link">
+            <a href="https://www.soporte.com" className="custom-link">
               Soporte
             </a>
           </Box>

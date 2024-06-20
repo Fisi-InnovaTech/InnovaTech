@@ -38,6 +38,7 @@ const profileStyles = {
   table: {
     minWidth: 200,
   },
+
   halfPaper: {
     padding: '15px',
     height: '100%',
@@ -62,7 +63,7 @@ const reportData = [
 ];
 
 const MisLogros = [
-  { logro: 'Bienvenido', date: '2022-05-01', image: primerReporte },
+  { logro: 'Bienvenido a Uywa', date: '2022-05-01', image: primerReporte },
   { logro: 'Primeros Pasos', date: '2022-12-10', image: DiezContribuciones },
   { logro: 'Amante de los animales', date: '2023-04-20', image: primerLogro },
   { logro: 'Guardián de la naturaleza', date: '2023-05-01', image: segundoReporte },

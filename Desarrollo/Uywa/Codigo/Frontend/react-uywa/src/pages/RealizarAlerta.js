@@ -161,7 +161,7 @@ export default function ListDividers() {
           <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
           <Box sx={{flexGrow:1, p:3}}> 
 
-            <Grid container spacing={2} sx={{justifyContent:'center'}}>
+            <Grid container spacing={2} sx={{justifyContent:'left'}}>
 
               <Grid item xs={12} md={6}>
                 <List aria-label='datos-caso-animal'>

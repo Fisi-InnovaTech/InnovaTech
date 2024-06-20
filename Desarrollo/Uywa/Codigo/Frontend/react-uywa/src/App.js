@@ -4,6 +4,7 @@ import ResponsiveAppBar from './components/Navigation/NavBar';
 import Home from "./pages/Home";
 import RealizarAlerta from "./pages/RealizarAlerta";
 import VerAlerta from "./pages/VerAlertaGoogle";
+import Blog from './pages/InformacionTrafico';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
@@ -25,6 +26,7 @@ function App() {
             <>
             <ResponsiveAppBar />
             <Outlet />
+            <Footer/>
             </>
           }>
           <Route path="/" element={<Home />} />
@@ -32,14 +34,11 @@ function App() {
           <Route path='/ver-alerta' element={<VerAlerta/>} />
           <Route path='/moderador' element={<ModeradorPrincipal/>}/>
           <Route path="/moderador-reportes" element={<Reportes/>}/>
-          <Route path="/ver-eventos" element={<Eventos/>}/>
+          <Route path="/informacion-trafico-animales" element={<Blog/>}/>
           </Route>
         </Routes>
 
       </div>
-    </Router>
-    <Router>
-      <Footer />
     </Router>
   </>
 

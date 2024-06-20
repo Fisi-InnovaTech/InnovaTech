@@ -1,10 +1,12 @@
-import { usuario } from '.prisma/client';
+import { usuario, moderador } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { hash } from 'bcrypt';
 import { UserRegisterAuthDto } from './dto/UserRegisterAuth.dto';
 import { UserLoginAuthDto } from './dto/UserLoginAuth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { ModeratorLoginAuthDto } from './dto/ModeratorLoginAuthDto';
+import { ModeratorRegisterAuthDto } from './dto/ModeratorRegisterAuthDto';
 
 let users =[];
 @Injectable()
@@ -34,10 +36,37 @@ export class AuthUserService {
         }
     }
 
+    async registerModerator(moderator: ModeratorRegisterAuthDto){
+        const {password} = moderator;
+        const hashedPassword = await hash(password, 10);
+        moderator = {...moderator, password: hashedPassword};
+        try {       
+            return await this.prisma.moderador.create({
+                data: {
+                    nombre: moderator.nombre,
+                    apellidos: moderator.apellidos,
+                    correo: moderator.correo,
+                    password: moderator.password,
+                }
+            });
+        } catch (error) {
+            return {message: new BadRequestException('Error al registrar al moderador'), status: 400};
+        }
+    }
+
+
     async getUser(user: UserLoginAuthDto): Promise<usuario> {
         return await this.prisma.usuario.findUnique({
             where: {
                 correo: user.email
+            }
+        });
+    }
+
+    async getModerator(moderator: ModeratorLoginAuthDto): Promise<moderador> {
+        return await this.prisma.moderador.findUnique({
+            where: {
+                correo: moderator.email
             }
         });
     }

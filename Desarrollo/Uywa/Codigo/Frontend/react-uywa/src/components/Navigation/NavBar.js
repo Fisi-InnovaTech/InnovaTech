@@ -24,21 +24,28 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
+//import path from 'path';
 
 
 const pages = [
   { path: '/', name: 'Inicio' },
   { path: '/realizar-alerta', name: 'Reportar' },
   { path: '/ver-alerta', name: 'Ver Alertas' },
-  { path: '/realizar-alerta', name: 'Eventos' },
-  { path: '/realizar-alerta', name: 'Sobre Nosotros' },
-  { path: '/realizar-alerta', name: 'Contactanos' },
+  { path: '/ver-eventos', name: 'Eventos' },
+  //{ path: '/realizar-alerta', name: 'Sobre Nosotros' },
+  //{ path: '/realizar-alerta', name: 'Contactanos' },
 ];
 
+const modPages =  [
+  {path: '/moderador', name:'Inicio'},
+  {path: '/moderador-reportes', name: 'Reportes'},
+
+]
 const settings = ['Perfil', 'Cerrar Sesion'];
 
 function ResponsiveAppBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMod, setIsMod] = useState(false);
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const handleOpenUserMenu = (event) => {
@@ -63,19 +70,42 @@ function ResponsiveAppBar() {
   };
   
   useEffect(() => {
-    const token = window.localStorage.getItem('UW-logged-session');
+    let token = window.localStorage.getItem('UW-logged-session') ;
     if (token) {
       setIsLoggedIn(true);
     }
     else{
-      setIsLoggedIn(false);
+      token = window.localStorage.getItem('UW-mod-logged-session');
+      if(token){
+        setIsMod(true);
+        setIsLoggedIn(true);
+      }
+      else{
+        setIsLoggedIn(false);
+      }
     }
   }, [])
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        {pages.map((page, index) => (
+
+        {isMod ? 
+        
+        modPages.map((page, index) => (
+          <ListItem key={index} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={page.name} />
+            </ListItemButton>
+          </ListItem>
+        ))
+        
+        :
+        
+        pages.map((page, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -85,6 +115,7 @@ function ResponsiveAppBar() {
             </ListItemButton>
           </ListItem>
         ))}
+
       </List>
     </Box>
   );

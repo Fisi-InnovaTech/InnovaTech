@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Link } from "react-router-dom";
+import { Link, useFetchers } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import {useState} from 'react';
 import Dialog from '@mui/material/Dialog';
@@ -22,9 +22,10 @@ const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview
 const message = ['Usuario logueado correctamente' , 'Error, Intente de nuevo']
 const url = "https://innovatech-0rui.onrender.com";
 const loginUrl = url + '/auth/login';
+const loginMod = url + '/auth/login-moderator';
 
 export default function SignInSide() {
-
+  const [isMod, setIsMod] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,10 +36,46 @@ export default function SignInSide() {
     window.location.href = '/';
   }
 
+  const handleCheckboxChange = (event) => {
+    setIsMod(event.target.checked);
+  };
+
   const handleErrorAlert = () => {
     setOpenAlert(false);
   }
-
+  const handleSubmitMod = (event) => {
+    event.preventDefault();
+    fetch(loginMod, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email?email: "No ingresado",
+        password: password ? password : "No ingresado"
+    })
+    }).then(res => res.json()).then(data =>{
+      console.log(data);
+      console.log(data.status);
+      if(data.status ===200){
+        setError(false);
+        const user = {
+          id: data.user.id,
+          nombre: data.user.nombre,
+          email: data.user.correo,
+          token: data.token
+        }
+        window.localStorage.setItem('UW-mod-logged-session', JSON.stringify(user));
+        window.location.href = '/moderador';
+      }
+      else{
+        setError(true);
+        setOpenAlert(true);
+        setEmail(()=> "");
+        setPassword(()=> "");
+      }
+    }).catch()
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -76,7 +113,6 @@ export default function SignInSide() {
       else{
         setError(true);
         setOpenAlert(true);
-        //alert('Error al loguear usuario');
         setEmail(()=> "");
         setPassword(()=> "");
       }
@@ -142,7 +178,8 @@ export default function SignInSide() {
         <Typography component="h1" variant="h5">
           Iniciar sesión
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1}}>
+        {/* aca hacer el llamado segun la funcion */}
+        <Box component="form" noValidate onSubmit={isMod ? handleSubmitMod: handleSubmit} sx={{ mt: 1}}>
           <TextField
             error = {!email.includes('@') || !email.includes('.')  ? true : false}
             helperText = {!email.includes('@') ? "Correo no valido" : ""}
@@ -196,8 +233,12 @@ export default function SignInSide() {
             }}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary"/>}
-            label="Acepto terminos y condiciones"
+            control={<Checkbox value="remember" color="primary"
+            checked = {isMod}
+            onChange={handleCheckboxChange}
+            />}
+            label="Ingresar como moderador"
+
             //Terminos y condiciones de serfor
             sx={{width: '100%'}}
           />

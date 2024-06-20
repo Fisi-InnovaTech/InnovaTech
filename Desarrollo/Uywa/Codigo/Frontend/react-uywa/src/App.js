@@ -9,6 +9,7 @@ import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
 import Reportes from './pages/ReportesMod';
+import Eventos from './pages/Eventos';
 import ModeradorPrincipal from './pages/Moderador';
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import { Outlet } from "react-router-dom";

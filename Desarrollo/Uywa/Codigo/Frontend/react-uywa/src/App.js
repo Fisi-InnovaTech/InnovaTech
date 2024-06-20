@@ -25,6 +25,7 @@ function App() {
             <>
             <ResponsiveAppBar />
             <Outlet />
+            <Footer/>
             </>
           }>
           <Route path="/" element={<Home />} />
@@ -37,9 +38,6 @@ function App() {
         </Routes>
 
       </div>
-    </Router>
-    <Router>
-      <Footer />
     </Router>
   </>
 

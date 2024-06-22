@@ -16,8 +16,15 @@ import Mapa from '../components/Mapa/MapaVisualizar';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Alert} from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+
 
 export const animales = [
   {"value": 1, "animal": "Anaconda"},
@@ -90,13 +97,77 @@ export default function ListDividers() {
   const [cat, setCat] = React.useState('');
   const handleChange = (event) => {
     setCat(event.target.value); };
-    
-  const [sel, setSel] = React.useState('');
-  const handleChangeSel = (event) => {
-    setSel(event.target.value);
+  
+  const [openAlert, setOpenAlert] = useState(false);
+  const [tosendFile, setTosendFile] = useState(null);
+  const [description, setDescrition] = useState('');
+  const [latitud, setLatitud] = useState(0);
+  const [longitud, setLongitud] = useState(0);
+    const url = "https://innovatech-0rui.onrender.com";
+    //const url = "http://127.0.0.1:3000";
+    const urlAlertas = url+'/alertas/guardar'
+ 
+ 
+    useEffect(() => {
+      if(localStorage.getItem('UW-logged-session') === null){
+      console.log('Usuario no logueado');
+      setOpenAlert(true);
+      //window.location.href = '/iniciar-sesion';
+    }
+    else{
+      setOpenAlert(false);
+    }
+    }, []);
+ 
+    const handleCloseAlert = () => {
+      setOpenAlert(false);
+      window.location.href = '/iniciar-sesion';
+    }
 
-  };
+    const handleSumbit = () => {
+    console.log({latitud, longitud });
+    console.log(animales[cat-1].animal);
+    console.log(description);
+    console.log(file);
+    console.log(tosendFile);
+    console.log('Subiendo archivo');
+    if(localStorage.getItem('UW-logged-session') === null){
+      console.log('Usuario no logueado');
+      setOpenAlert(true);
+      //window.location.href = '/iniciar-sesion';
+    }
+    else{
+      setOpenAlert(false);
+      const userLogged = JSON.parse(localStorage.getItem('UW-logged-session'));
+      console.log(userLogged);
+      console.log(userLogged.nombre)
+      
+      let formData = new FormData();
+      formData.append('user_id', userLogged.id);
+      formData.append('animal_nombre', animales[cat-1].animal);
+      formData.append('nombre_reportante', userLogged.nombre);
+      formData.append('fecha_creacion', '2024-12-12');
+      formData.append('latitud', latitud);
+      formData.append('longitud', longitud);
+      formData.append('descripcion', description);
+      formData.append('estado', 'pendiente');
+      formData.append('evidencia_imagen', tosendFile);
+      
+      fetch(urlAlertas, {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
+
+  }
+  }
   //Estilos
   const labelName = {
     py:1.5,
@@ -122,6 +193,7 @@ export default function ListDividers() {
     }
     else{
       setFile(URL.createObjectURL(selectedFile));
+      setTosendFile(selectedFile);
     }
   };
   const handleClose = ()=>{
@@ -131,8 +203,30 @@ export default function ListDividers() {
   return (
     <Container sx={{display:'flex', minWidth:'100%', justifyContent:'center', marginTop:'70px', backgroundColor:'#EDF1F5'}}>
       <Paper sx={{width: {xs:'95%', sm:'70%',md:'60%'}, justifyContent:'center', margin:4}}>
-        
-        
+
+
+
+      {/* ... */}
+      <Dialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Usuario no logueado"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Debe iniciar sesión para realizar una alerta
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlert} color="primary" autoFocus>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
         <Box aria-label='archivo-subida'>
           <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
           <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
@@ -161,7 +255,7 @@ export default function ListDividers() {
           <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
           <Box sx={{flexGrow:1, p:3}}> 
 
-            <Grid container spacing={2} sx={{justifyContent:'center'}}>
+            <Grid container spacing={2} sx={{justifyContent:'left'}}>
 
               <Grid item xs={12} md={6}>
                 <List aria-label='datos-caso-animal'>
@@ -193,18 +287,22 @@ export default function ListDividers() {
                   multiline
                   rows={5}
                   defaultValue=" "
+                  value={description}
+                  onChange = {(e) => {setDescrition(e.target.value)}}
                   sx={{ width:'100%' }}
                 />
               </Grid>
 
             </Grid>
           </Box>
-        </Box>
+
         
         <Box aria-label='marca-ubicacion'>
           <Typography sx={labelName}>UBICACION</Typography>
           <Box sx={{ width: "100%", height: "60vh" }}>
-            <Mapa />
+            
+            <Mapa lat={setLatitud} long = {setLongitud}/>
+
           </Box>
         </Box>
 
@@ -212,8 +310,8 @@ export default function ListDividers() {
             <FormControlLabel control={<Checkbox defaultChecked />} sx={{p:3}} label="Subir de forma anónima" />
         </FormGroup>
         <Divider/>
-        <Button variant="contained" sx={{m:4}}>Enviar</Button>   
-     
+        <Button variant="contained" onClick = {handleSumbit} sx={{m:4}}>Enviar</Button>   
+      </Box>
       </Paper>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>

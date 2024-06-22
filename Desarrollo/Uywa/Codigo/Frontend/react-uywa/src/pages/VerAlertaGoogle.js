@@ -8,7 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { alertaContainer, mapBotonBuscar, mapSearchAlert, mapMark } from "../components/Mapa/MapConstStyle";
 import { animales, departamentos } from "./RealizarAlerta";
 
-
+const baseUrl = 'https://innovatech-0rui.onrender.com'
 
 function Maps() {
   const [markerData, setMarkerData] = useState([]);
@@ -36,8 +36,9 @@ function Maps() {
   const handleSearch = async () => {
 
     const queryParams = new URLSearchParams(filtro).toString();
-    const url = `http://localhost:8000/alertas/search?${queryParams}`;
-
+    //https://innovatech-0rui.onrender.com"
+    //const url = `http://127.0.0.1:3000/alertas/search?${queryParams}`;
+    const url = `${baseUrl}?${queryParams}`
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -62,7 +63,7 @@ function Maps() {
   useEffect(() => {
     const cargarMarcadores = async () => {
       try {
-        const response = await fetch('http://localhost:8000/alertas/allmap');
+        const response = await fetch(`${baseUrl}/alertas/allmap`);
         if (response.ok) {
           const data = await response.json();
           setMarkerData(data);

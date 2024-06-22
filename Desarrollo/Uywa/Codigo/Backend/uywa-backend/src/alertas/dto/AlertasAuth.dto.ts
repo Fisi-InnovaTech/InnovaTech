@@ -22,12 +22,9 @@ export class AlertasAuthDto {
     @IsString()
     nombre_reportante: string;
     @IsString()
-    fecha_creacion: string;
-    @IsString()
     estado: string;
 
     @IsNotEmpty()
     user_id: number;
-
-    usuario: usuario;
+    //usuario: usuario;
 }

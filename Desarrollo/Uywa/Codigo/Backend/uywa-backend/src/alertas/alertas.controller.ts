@@ -55,4 +55,15 @@ export class AlertasController {
     changeState(@Body() body: {id: number, estado: string}){
         return this.alertasService.changeState(body.id,body.estado);
     }
+    
+    // Funciones para la pestaña de estadísticas
+    @Get('/alertsByYear')
+    async getAlertsByYear(@Query('year') year: string) {
+        return this.alertasService.getAlertsByYear(parseInt(year, 10));
+    }
+
+    @Get('/latestAlerts')
+    async getLatestAlerts() {
+        return this.alertasService.getLatestReports();
+    }
 }

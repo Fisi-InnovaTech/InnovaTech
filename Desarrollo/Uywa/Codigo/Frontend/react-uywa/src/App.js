@@ -11,6 +11,7 @@ import Footer from './components/Footer/Footer';
 import Reportes from './pages/ReportesMod';
 import Eventos from './pages/Eventos';
 import ModeradorPrincipal from './pages/Moderador';
+import Report from './pages/EstadisticaAlertUI';
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
 
@@ -35,6 +36,7 @@ function App() {
           <Route path='/moderador' element={<ModeradorPrincipal/>}/>
           <Route path="/moderador-reportes" element={<Reportes/>}/>
           <Route path="/informacion-trafico-animales" element={<Blog/>}/>
+          <Route path="/estadistica" element={<Report/>}/>
           </Route>
         </Routes>
 

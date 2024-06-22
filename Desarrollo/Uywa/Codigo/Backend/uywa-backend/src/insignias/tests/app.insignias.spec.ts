@@ -4,7 +4,6 @@ import { InsigniasService } from '../insignias.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
 
-
 describe('InsigniasController', () => {
   let insigniasController: InsigniasController;
   let insigniasService: InsigniasService;

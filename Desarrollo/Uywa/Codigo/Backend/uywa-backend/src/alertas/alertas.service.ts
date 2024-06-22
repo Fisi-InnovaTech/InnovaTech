@@ -30,7 +30,7 @@ export class AlertasService {
                 const addressComponents = results[0].address_components;
                 const regionComponent = addressComponents.find(
                     component => component.types.includes('administrative_area_level_1')
-            );
+                );
                 return regionComponent ? regionComponent.long_name : null;
             } else {
                 throw new Error('No se pudo determinar la región.');
@@ -156,5 +156,48 @@ export class AlertasService {
             where: { id: id },
             data: { estado: newEstado },
         });
+    }
+
+    // Funciones para la pestaña de estadísticas
+    async getAlertsByYear(year: number) {
+        const alertas = await this.prisma.reporte.findMany({
+          where: {
+            fecha_creacion: {
+              gte: new Date(`${year}-01-01`),
+              lt: new Date(`${year}-12-31`),
+            },
+          },
+          orderBy: {
+            fecha_creacion: 'asc',
+          },
+        });
+
+        const reportes = await Promise.all(
+            alertas.map(async (alerta) => {
+                const region = await this.obtenerRegion(alerta.latitud, alerta.longitud);
+                return { ...alerta, region: region };
+            })
+        );
+
+        return reportes
+    }
+
+    async getLatestReports() {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      
+        const latestReports = await this.prisma.reporte.findMany({
+          where: {
+            fecha_creacion: {
+              gte: oneYearAgo,
+            },
+          },
+          orderBy: {
+            fecha_creacion: 'desc',
+          },
+          take: 10,
+        });
+      
+        return latestReports;
     }
 }

@@ -55,9 +55,14 @@ export class InsigniasService {
         // Igualmente, se debe hacer una verificacion del string  
         // Por ejemplo, el usuario ya tiene el numero 5 de la insignia y aún el usuario tiene 50 reportes, no se debe de agregar más. 
         // Por lo tanto, se hace otra verificacion para que no se añada más de una vez la misma insignia
-        if (reportes >= 50) {
-            if (!insignia.includes('5')) {
-                insignia += '5';
+        if (reportes >= 1) {
+            if (!insignia.includes('2')) {
+                insignia += '2';
+            }
+        }
+        if (reportes >= 10) {
+            if (!insignia.includes('3')) {
+                insignia += '3';
             }
         } 
         if (reportes >= 25) {
@@ -65,16 +70,11 @@ export class InsigniasService {
                 insignia += '4';
             }
         } 
-        if (reportes >= 10) {
-            if (!insignia.includes('3')) {
-                insignia += '3';
+        if (reportes >= 50) {
+            if (!insignia.includes('5')) {
+                insignia += '5';
             }
         } 
-        if (reportes >= 1) {
-            if (!insignia.includes('2')) {
-                insignia += '2';
-            }
-        }
         await this.prisma.usuario.update({
             where: { id: Number(id) },
             data: { insignia: insignia }

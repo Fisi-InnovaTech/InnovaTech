@@ -32,7 +32,7 @@ function AutoPlay() {
   };
   return (
     <>
-      <Box className="slider-container" sx={{position:'relative'}}>
+      <Box className="slider-container" sx={{position:'relative'}} data-testid="carousel">
         <Slider {...settings}>
         {images.map((src, index) => (
             <div key={index}>

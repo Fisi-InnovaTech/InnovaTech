@@ -52,9 +52,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "matchmedia-polyfill": "^0.3.2"
   },
-  "jest":{
-
-  }
+  "jest": {}
 }

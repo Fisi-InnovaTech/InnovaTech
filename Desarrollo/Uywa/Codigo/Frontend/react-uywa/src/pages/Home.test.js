@@ -2,14 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Home from './Home';
-import { act } from 'react';
 
 describe('Home Component', () => {
   test('renders Home component correctly', () => {
-
-    act(() => {
-      render(<Home />);
-    });
+    render(<Home />);
 
     const carouselElement = screen.getByTestId('carousel');
     expect(carouselElement).toBeInTheDocument();

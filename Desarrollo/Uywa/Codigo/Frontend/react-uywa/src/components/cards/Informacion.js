@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -6,7 +7,7 @@ import Typography from '@mui/material/Typography';
 
 export default function ActionAreaCard() {
   return (
-    <>
+    <Box data-testid="action-area-card">
     <Card sx={{display:{xs:'',sm:'flex'}, flexWrap:'wrap', padding:3, marginY:3, maxWidth:{xs:'70vw',md:'60vw'}, alignContent:'center'}}>
         <CardMedia
               component="img"
@@ -140,8 +141,7 @@ export default function ActionAreaCard() {
           </Typography>
         </CardContent>
     </Card>
-    </>
-    
+    </Box>
   );
 }
 

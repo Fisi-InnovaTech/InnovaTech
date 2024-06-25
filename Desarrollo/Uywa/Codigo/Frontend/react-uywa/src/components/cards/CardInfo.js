@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 
 const CardsInformation = ({icono, numero, contenido})=> {
   return (
-    <Card sx={{ maxWidth: 180, height:220, padding:1, margin:2 }}>
+    <Card sx={{ maxWidth: 180, height:220, padding:1, margin:2 }} data-testid="card-info">
       {icono}
       <CardContent sx={{textAlign:'center', pt:0}}>
         <Typography gutterBottom variant="h3" component="div" margin={0}>

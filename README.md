@@ -1,4 +1,6 @@
-![Innovatech](https://avatars.githubusercontent.com/u/167157687?s=400&u=a65fdeca8efd79932b9de50c4364030a70237e66&v=4)
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Fisi-InnovaTech/InnovaTech/main/Desarrollo/Uywa/Codigo/Frontend/react-uywa/public/logo-no-background.png" alt="Vista Previa" />
+</div>
 
 **Innovatech** es una empresa peruana lider especializada en el desarrollo de sistemas y software a medida para empresas de diversos sectores, incluyendo aplicaciones web, móviles y soluciones de software empresarial. La empresa se destaca por su experiencia en el desarrollo de sistemas de gestión empresarial (ERP), sistemas de gestión de relaciones con clientes (CRM), aplicaciones móviles y soluciones de comercio electrónico.
 

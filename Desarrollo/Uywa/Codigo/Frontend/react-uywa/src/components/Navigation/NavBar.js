@@ -31,7 +31,7 @@ const pages = [
   { path: '/', name: 'Inicio' },
   { path: '/realizar-alerta', name: 'Reportar' },
   { path: '/ver-alerta', name: 'Ver Alertas' },
-  { path: '/ver-eventos', name: 'Eventos' },
+  { path: '/informacion-trafico-animales', name: 'Eventos' },
   //{ path: '/realizar-alerta', name: 'Sobre Nosotros' },
   //{ path: '/realizar-alerta', name: 'Contactanos' },
 ];
@@ -60,6 +60,7 @@ function ResponsiveAppBar() {
     }
     else if (setting === "Cerrar Sesion"){
       window.localStorage.removeItem('UW-logged-session');
+      window.localStorage.removeItem('UW-mod-logged-session');
       window.location.href = '/';
     }
   };
@@ -77,8 +78,8 @@ function ResponsiveAppBar() {
     else{
       token = window.localStorage.getItem('UW-mod-logged-session');
       if(token){
-        setIsMod(true);
         setIsLoggedIn(true);
+        setIsMod(true);
       }
       else{
         setIsLoggedIn(false);

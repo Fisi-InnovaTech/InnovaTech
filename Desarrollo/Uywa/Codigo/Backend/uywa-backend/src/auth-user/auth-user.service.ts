@@ -38,7 +38,9 @@ export class AuthUserService {
 
     async registerModerator(moderator: ModeratorRegisterAuthDto){
         const {password} = moderator;
+        
         const hashedPassword = await hash(password, 10);
+
         moderator = {...moderator, password: hashedPassword};
         try {       
             return await this.prisma.moderador.create({
@@ -69,5 +71,22 @@ export class AuthUserService {
                 correo: moderator.email
             }
         });
+    }
+
+    async upgradeUserToModerator(userId: number){
+        const usuario = await this.prisma.usuario.findUnique({
+            where: { id: Number(userId) }
+        });
+
+        if(!usuario) throw new BadRequestException('Usuario no encontrado');
+
+        const newModerator = {
+            nombre: usuario.nombre,
+            apellidos: usuario.apellidos,
+            correo: usuario.correo,
+            password: usuario.password
+        }
+
+        return newModerator;
     }
 }

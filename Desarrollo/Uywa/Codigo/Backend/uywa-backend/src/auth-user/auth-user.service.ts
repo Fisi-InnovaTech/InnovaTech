@@ -39,7 +39,13 @@ export class AuthUserService {
     async registerModerator(moderator: ModeratorRegisterAuthDto){
         const {password} = moderator;
         
-        const hashedPassword = await hash(password, 10);
+        let hashedPassword;
+        // Para evitar que se vuelva a hashear la contraseña al promover un usuario a moderador
+        if (password.startsWith('$2b$')) {
+            hashedPassword = password;
+        } else {
+            hashedPassword = await hash(password, 10);
+        }
 
         moderator = {...moderator, password: hashedPassword};
         try {       

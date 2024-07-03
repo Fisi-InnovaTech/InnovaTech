@@ -17,6 +17,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'];
 const message = ['Usuario logueado correctamente' , 'Error, Intente de nuevo']
@@ -122,11 +124,8 @@ export default function SignInSide() {
   };
 
   return (
-
-    
     
     <Grid container component="main" sx={{ height: {md:'100vh', xs:'100vh'} }}>
-      
       <Dialog
         open={openAlert}
         onClose={error ? handleErrorAlert : handleCloseAlert}
@@ -162,6 +161,12 @@ export default function SignInSide() {
         backgroundPosition: 'top',
       }}
     />
+    <Link to={"/"}>
+      <IconButton sx={{position:'absolute', backgroundColor:{sm:'#DDE2E5'}, color:'gray', m:2}}>
+        <ArrowBackIcon/>
+      </IconButton>
+    </Link>
+
     <Grid item xs={12} sm={8} md={5} component={Paper} square>
       <Box
         sx={{

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthUserService } from './auth-user.service';
 import { UserLoginAuthDto } from './dto/UserLoginAuth.dto';
 import { UserRegisterAuthDto } from './dto/UserRegisterAuth.dto';
@@ -63,8 +63,13 @@ export class AuthUserController {
     async registerModerator(@Body() body: ModeratorRegisterAuthDto){
         const moderator = this.authUserService.registerModerator(body);
         return this.authUserService.registerModerator(body);
-    }
+    } 
 
+    @Post('/promoverUser/:userId')
+    async upgradeUserToModerator( @Param('userId') userId: number ){
+        const newMod = await this.authUserService.upgradeUserToModerator(userId);
+        return this.authUserService.registerModerator(newMod);
+    }
     
 }
 //logout es por parte del front

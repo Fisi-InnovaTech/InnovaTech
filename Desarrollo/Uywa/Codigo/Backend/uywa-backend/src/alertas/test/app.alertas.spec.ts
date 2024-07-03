@@ -83,4 +83,19 @@ describe('AlertasController', () => {
       expect(service.getLocations).toHaveBeenCalled();
     });
   });
+  
+  describe('getAlertaByFilter', () => {
+    it('should return filtered alerts', async () => {
+      const dto: AlertaFiltroDto = {
+        fecha_ini: '2024-01-01',
+        fecha_fin: '2024-12-31',
+        animal: 'test animal',
+        region: 'test region',
+      };
+      const result = await controller.getAlertaByFilter(dto);
+      expect(result).toEqual([dto]);
+      expect(service.getAlertaByFilter).toHaveBeenCalledWith(dto);
+    });
+  });
+
 });

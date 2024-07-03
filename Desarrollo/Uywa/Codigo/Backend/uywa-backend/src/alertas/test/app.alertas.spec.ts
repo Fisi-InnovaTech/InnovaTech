@@ -97,5 +97,12 @@ describe('AlertasController', () => {
       expect(service.getAlertaByFilter).toHaveBeenCalledWith(dto);
     });
   });
+  describe('getReportes', () => {
+    it('should return all alerts', async () => {
+      const result = await controller.getReportes();
+      expect(result).toEqual([{ id: 1, alert: 'test' }]);
+      expect(service.getAlertas).toHaveBeenCalled();
+    });
+  });
 
 });

@@ -76,4 +76,11 @@ describe('AlertasController', () => {
       });
     });
   });
+  describe('getLocation', () => {
+    it('should return all locations', async () => {
+      const result = await controller.getLocation();
+      expect(result).toEqual([{ lat: 0, lng: 0 }]);
+      expect(service.getLocations).toHaveBeenCalled();
+    });
+  });
 });

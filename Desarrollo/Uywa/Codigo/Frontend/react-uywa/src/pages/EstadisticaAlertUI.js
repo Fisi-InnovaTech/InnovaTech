@@ -48,7 +48,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchReports = async (selectedYear) => {
       try {
-        const response = await fetch(`http://localhost:8000/alertas/alertsByYear?year=${selectedYear}`);
+        const response = await fetch(`https://innovatech-0rui.onrender.com/alertas/alertsByYear?year=${selectedYear}`);
         const data = await response.json();
         setReports(data);
       } catch (error) {
@@ -62,7 +62,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchLatestReports = async () => {
       try {
-        const response = await fetch('http://localhost:8000/alertas/latestAlerts');
+        const response = await fetch('https://innovatech-0rui.onrender.com/alertas/latestAlerts');
         const data = await response.json();
         setLatestReports(data);
       } catch (error) {

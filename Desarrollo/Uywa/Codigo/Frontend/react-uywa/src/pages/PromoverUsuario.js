@@ -18,12 +18,12 @@ import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import { styles } from '../components/Promover/StylesPromover';
 
-const MisLogros = [
-  { logro: 'Bienvenido a Uywa' },
-  { logro: 'Primeros Pasos' },
-  { logro: 'Amante de los animales' },
-  { logro: 'Guardián de la naturaleza' },
-  { logro: 'Protector de la biósfera' },
+const MiRango = [
+  { rango: 'Aprendiz de Naturaleza' },
+  { rango: 'Vigilante de la Vida Silvestre' },
+  { rango: 'Guardián del Medio Ambiente' },
+  { rango: 'Defensor del Ecosistema' },
+  { rango: 'Héroe de la Tierra' },
 ];
 
 const Reportes = () => {
@@ -195,7 +195,7 @@ const Reportes = () => {
                   <TableCell sx={{textAlign: "center"}}>{report.correo}</TableCell>
                   <TableCell sx={{textAlign: "center"}}>
                     <Typography variant="small" sx={{backgroundColor: '#3AB795', borderRadius:"15px", paddingY:"5px", paddingX:"15px", display: "inline-block", width:"100px", color:"white"}}>
-                      {MisLogros[Number(report.insignia)-1].logro}
+                      {MiRango[Number(report.insignia)-1].rango}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{textAlign: "right"}}>

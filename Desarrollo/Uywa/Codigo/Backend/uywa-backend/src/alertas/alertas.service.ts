@@ -57,7 +57,7 @@ export class AlertasService {
                     latitud: alerta.latitud,
                     longitud: alerta.longitud,
                     nombre_reportante: alerta.nombre_reportante, 
-                    //fecha_creacion:  fecha as Date,   
+                    fecha_creacion: new Date,   
                     estado: alerta.estado,
                     user_id: alerta.user_id,
                 }

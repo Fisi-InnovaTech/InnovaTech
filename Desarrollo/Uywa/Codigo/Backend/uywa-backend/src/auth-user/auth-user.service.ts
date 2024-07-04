@@ -99,4 +99,30 @@ export class AuthUserService {
 
         return newModerator;
     }
+
+    async upgradeUser(userId: number){
+        const user = await this.prisma.usuario.findUnique({
+            where: { id: Number(userId) }
+        });
+
+        if(!user) throw new BadRequestException('Usuario no encontrado');
+
+        const insigniaNumber = parseInt(user.insignia, 10);
+        if (isNaN(insigniaNumber)) throw new BadRequestException('Insignia no válida');
+
+        const newUser = await this.prisma.usuario.update({
+            where: { id: Number(userId) },
+            data: {
+                insignia: String(insigniaNumber + 1)
+            }
+        });
+
+        if(!newUser) throw new BadRequestException('No se pudo promover al usuario');
+
+        return newUser;
+    }
+
+    async getAllUsers(){
+        return await this.prisma.usuario.findMany();
+    }
 }

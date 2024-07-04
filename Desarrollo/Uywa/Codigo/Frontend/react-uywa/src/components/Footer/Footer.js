@@ -2,20 +2,20 @@ import React from 'react';
 import { Box, Typography, TextField, Button, Divider,Card, CardActionArea } from '@mui/material';
 import { Email as EmailIcon, Phone as PhoneIcon } from '@mui/icons-material';
 import './Footer.css';
-import { ReactComponent as Logo } from '../logoprincipal.svg';
+import logo from '../../assets/logo-no-background.png';
 
 const Footer = () => {
   return (
     <Box component="footer" className="footer-container">
-      <Box sx={{ textAlign:'start', p:2}}>
+      <Box sx={{ textAlign:'start', p:2,mx:7}}>
         <a href="/">
-          <Logo className="logo"/>
+          <img src={logo} alt='Innovatech' className='footer-logo'/>
         </a>
       </Box>
-      <Divider variant='middle' sx={{backgroundColor:'#495057'}}/>
+      <Divider variant='middle' sx={{backgroundColor:'#495057', mx:7}}/>
       
       <Box className="footer-section">
-        <Box className="footer-links" sx={{flexDirection:{xs:'column', md:'row'}, textAlign:'start', px:3, py:2}}>
+        <Box className="footer-links" sx={{flexDirection:{xs:'column', md:'row'}, textAlign:'start', px:7, py:2}}>
           <a href="https://www.centrodeayuda.com" className="custom-link">
             Centro de ayuda animal
           </a>
@@ -50,7 +50,7 @@ const Footer = () => {
         </Box>
       </Box>
 
-      <Divider variant='middle' sx={{backgroundColor:'#495057'}}/>
+      <Divider variant='middle' sx={{backgroundColor:'#495057', mx:7}}/>
 
       <Box className="footer-section" sx={{display:'flex', justifyContent:'space-around', flexWrap:'wrap', m:2}}>
 
@@ -70,9 +70,9 @@ const Footer = () => {
         </Card>
       </Box>
 
-      <Divider variant='middle' sx={{backgroundColor:'#495057'}}/>
+      <Divider variant='middle' sx={{backgroundColor:'#495057', mx:7}}/>
       <Box>
-          <Typography variant="body1" sx={{ color: 'white', marginTop: '10px' }}>
+          <Typography variant="body1" sx={{ color: 'white', p:2 }}>
             © 2024 UYWA. Todos los derechos reservados.
           </Typography>
   

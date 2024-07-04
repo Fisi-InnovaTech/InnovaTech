@@ -38,7 +38,7 @@ function Maps() {
     const queryParams = new URLSearchParams(filtro).toString();
     //https://innovatech-0rui.onrender.com"
     //const url = `http://127.0.0.1:3000/alertas/search?${queryParams}`;
-    const url = `${baseUrl}?${queryParams}`
+    const url = `${baseUrl}/alertas/search?${queryParams}`
     try {
       const response = await fetch(url, {
         method: "GET",

@@ -63,18 +63,12 @@ const profileStyles = {
   },
 };
 
-const reportData = [
-  { animal: 'Anaconda', date: '2023-01-15' },
-  { animal: 'Cotorra', date: '2023-02-22' },
-  { animal: 'Rana del Titicaca', date: '2023-03-10' },
-];
-
 const MisLogros = [
-  { logro: 'Bienvenido a Uywa', date: '2022-05-01', image: primerReporte },
-  { logro: 'Primeros Pasos', date: '2022-12-10', image: DiezContribuciones },
-  { logro: 'Amante de los animales', date: '2023-04-20', image: primerLogro },
-  { logro: 'Guardián de la naturaleza', date: '2023-05-01', image: segundoReporte },
-  { logro: 'Protector de la biósfera', date: '2023-06-10', image: tercerReporte },
+  { insignia: "1", logro: 'Bienvenido a Uywa',  image: primerReporte , rango: 'Aprendiz de Naturaleza'},
+  { insignia: "2", logro: 'Primeros Pasos',  image: DiezContribuciones, rango: 'Vigilante de la Vida Silvestre' },
+  { insignia: "3", logro: 'Amante de los animales',  image: primerLogro, rango: 'Guardián del Medio Ambiente' },
+  { insignia: "4", logro: 'Guardián de la naturaleza', image: segundoReporte, rango: 'Defensor del Ecosistema' },
+  { insignia: "5", logro: 'Protector de la biósfera',  image: tercerReporte, rango: 'Héroe de la Tierra' },
 ];
 
 const Profile = () => {
@@ -89,6 +83,18 @@ const Profile = () => {
     setOpenAlert(false);
     window.location.href = '/iniciar-sesion';
   }
+  const cookie = JSON.parse(window.localStorage.getItem('UW-logged-session'));
+  function filtrarLogros(logros) {
+    return MisLogros.filter(logro => logros.includes(logro.insignia));
+  }
+  function obtenerRangoPorInsignia(insignia) {
+    const logro = MisLogros.find(logro => logro.insignia === insignia);
+    return logro ? logro.rango : null;
+  }
+  const logrosFiltrados = filtrarLogros(cookie.insignias);
+  const cadena = cookie.insignias;
+  const _range = cadena.charAt(cadena.length - 1);
+  const rangoCorrespondiente = obtenerRangoPorInsignia(_range);
 
 
   useEffect(()=>{
@@ -131,7 +137,7 @@ const Profile = () => {
         </Grid>
         <Grid item xs={12} style={profileStyles.textCenter}>
           <Typography variant="h5"> {} </Typography>
-          <Typography variant="subtitle1">Doctor</Typography>
+          <Typography variant="subtitle1">{cookie.nombre}</Typography>
         </Grid>
         <Grid item xs={12} style={profileStyles.textCenter}>
           <Typography variant="body1">
@@ -142,12 +148,12 @@ const Profile = () => {
           <>
             <Grid item xs={12}>
               <Paper style={profileStyles.infoPaper}>
-                <Typography variant="body1"><strong>Correo:</strong> brayan@llacza.com</Typography>
+                <Typography variant="body1"><strong>Correo:</strong> {cookie.email}</Typography>
               </Paper>
             </Grid>
             <Grid item xs={12}>
               <Paper style={profileStyles.infoPaper}>
-                <Typography variant="body1"><strong>Rango:</strong> Dotero Senior</Typography>
+                <Typography variant="body1"><strong>Rango:</strong> {rangoCorrespondiente}</Typography>
               </Paper>
             </Grid>
             <Grid item xs={12}>
@@ -157,36 +163,13 @@ const Profile = () => {
             </Grid>
             <Grid item xs={12}>
               <Paper style={profileStyles.halfPaper}>
-                <Typography variant="h6" gutterBottom>Mis reportes</Typography>
-                <TableContainer>
-                  <Table style={profileStyles.table} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Animal</TableCell>
-                        <TableCell align="right">Fecha de Reporte</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {reportData.map((row) => (
-                        <TableRow key={row.animal}>
-                          <TableCell component="th" scope="row">{row.animal}</TableCell>
-                          <TableCell align="right">{row.date}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper style={profileStyles.halfPaper}>
                 <Typography variant="h6" gutterBottom>Mis Logros</Typography>
                 <Box>
-                  {MisLogros.map((logro, index) => (
+                  {logrosFiltrados.map((logro, index) => (
                     <Box key={index} style={profileStyles.achievementBox}>
                       <img src={logro.image} alt={logro.logro} style={profileStyles.achievementImage} />
                       <Typography variant="body1">
-                        <strong>{logro.logro}</strong> - {logro.date}
+                        <strong>{logro.logro}</strong> 
                       </Typography>
                     </Box>
                   ))}
@@ -198,12 +181,12 @@ const Profile = () => {
           <>
             <Grid item xs={4}>
               <Paper style={profileStyles.infoPaper}>
-                <Typography variant="body1"><strong>Correo:</strong> brayan@llacza.com</Typography>
+                <Typography variant="body1"><strong>Correo:</strong> {cookie.email}</Typography>
               </Paper>
             </Grid>
             <Grid item xs={4}>
               <Paper style={profileStyles.infoPaper}>
-                <Typography variant="body1"><strong>Rango:</strong> Dotero Senior</Typography>
+                <Typography variant="body1"><strong>Rango:</strong> {rangoCorrespondiente}</Typography>
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -211,38 +194,15 @@ const Profile = () => {
                 <Typography variant="body1"><strong>Contribuciones:</strong> 120</Typography>
               </Paper>
             </Grid>
-            <Grid item xs={6}>
-              <Paper style={profileStyles.halfPaper}>
-                <Typography variant="h6" gutterBottom>Mis reportes</Typography>
-                <TableContainer>
-                  <Table style={profileStyles.table} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Animal</TableCell>
-                        <TableCell align="right">Fecha de Reporte</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {reportData.map((row) => (
-                        <TableRow key={row.animal}>
-                          <TableCell component="th" scope="row">{row.animal}</TableCell>
-                          <TableCell align="right">{row.date}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Paper style={profileStyles.halfPaper}>
                 <Typography variant="h6" gutterBottom>Mis Logros</Typography>
                 <Box>
-                  {MisLogros.map((logro, index) => (
+                  {logrosFiltrados.map((logro, index) => (
                     <Box key={index} style={profileStyles.achievementBox}>
                       <img src={logro.image} alt={logro.logro} style={profileStyles.achievementImage} />
                       <Typography variant="body1">
-                        <strong>{logro.logro}</strong> - {logro.date}
+                        <strong>{logro.logro}</strong> 
                       </Typography>
                     </Box>
                   ))}

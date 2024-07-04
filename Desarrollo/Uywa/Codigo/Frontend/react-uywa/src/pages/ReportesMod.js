@@ -1,4 +1,3 @@
-// src/pages/Reportes.jsx
 import React, { useState, useEffect } from "react";
 import { 
   Container,
@@ -46,39 +45,43 @@ const Reportes = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const cargarMarcadores = async () => {
+    const fetchReports = async () => {
       try {
-        const reportes = await fetch('https://innovatech-0rui.onrender.com/alertas/allalerts');
-        if (reportes.ok) {
-          const data = await reportes.json();
+        const response = await fetch('https://innovatech-0rui.onrender.com/alertas/allalerts');
+        if (response.ok) {
+          const data = await response.json();
           setReports(data);
           setFilteredReports(data);
         } else {
-          console.log("Error al buscar back, status: ", reportes.status);
+          console.log("Error al obtener datos del servidor:", response.status);
         }
       } catch (error) {
-        console.log("Error al conectarse con el back: ", error.message || "Error desconocido");
+        console.error("Error al conectar con el servidor:", error.message);
       }
     };
 
-    cargarMarcadores();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchReports();
   }, []);
 
-  async function changeState(report) {
+  const changeState = async (report) => {
     try {
-      const reportes = await fetch('https://innovatech-0rui.onrender.com/alertas/changingState',{
+      const response = await fetch('https://innovatech-0rui.onrender.com/alertas/changingState', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ id: report.id, estado: report.estado })
       });
-      if (!reportes.ok) {
-        console.log("Error al buscar back, no se pudo cambiar el estado: ", reportes.status);
+
+      if (!response.ok) {
+        console.log("Error al cambiar el estado en el servidor:", response.status);
+        return false;
       }
+
+      return true;
     } catch (error) {
-      console.log("Error al conectarse con el back: ", error.message || "Error desconocido");
+      console.error("Error al conectar con el servidor:", error.message);
+      return false;
     }
   };
 
@@ -100,16 +103,18 @@ const Reportes = () => {
       setCurrentPage(pageNumber);
     }
   };
+
   const handleClick = () => {
-  const filteredReports = reports.filter(report =>
-    report.usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.animal_nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.estado.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  setFilteredReports(filteredReports);
-  setCurrentPage(1);
-  }
+    const filteredReports = reports.filter(report =>
+      report.usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.animal_nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.estado.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredReports(filteredReports);
+    setCurrentPage(1);
+  };
 
   const paginatedReports = filteredReports.slice((currentPage - 1) * reportsPerPage, currentPage * reportsPerPage);
 
@@ -117,19 +122,34 @@ const Reportes = () => {
     setExpandedReport(expandedReport === reportId ? null : reportId);
   };
 
-  const handleState = (reportId, newEstado) => {
-    const updatedReports = reports.map((report) => {
-      if (report.id === reportId) {
-        const newReport = { ...report, estado: newEstado };
-        changeState(newReport)
-        return newReport;
+  const handleState = async (reportId, newEstado) => {
+    try {
+      const updatedReports = reports.map((report) => {
+        if (report.id === reportId) {
+          return { ...report, estado: newEstado };
+        }
+        return report;
+      });
+
+      const reportToUpdate = updatedReports.find(report => report.id === reportId);
+
+      if (!reportToUpdate) {
+        console.log("No se encontró el reporte a actualizar.");
+        return;
       }
-      return report;
-    
-    });
-    setFilteredReports(updatedReports);
+
+      const success = await changeState(reportToUpdate);
+      if (success) {
+        setReports(updatedReports);
+        setFilteredReports(updatedReports);
+      } else {
+        console.log("La solicitud para cambiar el estado no fue exitosa.");
+      }
+    } catch (error) {
+      console.error("Error al actualizar estado:", error);
+    }
   };
-  
+
   const getEstadoColor = (estado) => {
     switch (estado) {
       case 'aprobado':
@@ -157,7 +177,7 @@ const Reportes = () => {
         />
         <Button
           variant="contained"
-          className="send-button" 
+          className="send-button"
           sx={styles.searchIcon}
           onClick={handleClick}
         >
@@ -167,7 +187,6 @@ const Reportes = () => {
 
       <TableContainer component={Paper}>
         <Table>
-
           <TableHead>
             <TableRow>
               <TableCell sx={{textAlign: "center"}}>ID</TableCell>
@@ -177,7 +196,6 @@ const Reportes = () => {
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
-
           <TableBody>
             {paginatedReports.map((report) => (
               <React.Fragment key={report.id}>
@@ -185,7 +203,11 @@ const Reportes = () => {
                   <TableCell sx={{textAlign: "center"}}>{report.id}</TableCell>
                   <TableCell sx={{textAlign: "center"}}>{report.usuario.nombre}</TableCell>
                   <TableCell sx={{textAlign: "center"}}>{report.animal_nombre}</TableCell>
-                  <TableCell sx={{textAlign: "center"}}><Typography variant="small" sx={{backgroundColor: getEstadoColor(report.estado), borderRadius:"15px", paddingY:"5px", paddingX:"15px", display: "inline-block", width:"80px", color:"white"}}>{report.estado}</Typography></TableCell>
+                  <TableCell sx={{textAlign: "center"}}>
+                    <Typography variant="small" sx={{backgroundColor: getEstadoColor(report.estado), borderRadius:"15px", paddingY:"5px", paddingX:"15px", display: "inline-block", width:"80px", color:"white"}}>
+                      {report.estado}
+                    </Typography>
+                  </TableCell>
                   <TableCell sx={{textAlign: "right"}}>
                     <Button sx={styles.visibilityIcon} onClick={() => toggleReport(report.id)}>
                       <VisibilitySharpIcon sx={{ color: 'white' }}/>
@@ -237,7 +259,6 @@ const Reportes = () => {
         Volver
       </Button>
     </Container>
-
   );
 };
 

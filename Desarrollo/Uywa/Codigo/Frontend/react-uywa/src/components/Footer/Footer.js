@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, TextField, Button, Checkbox, FormControlLabel, FormGroup, Divider,Card, CardActionArea } from '@mui/material';
+import { Box, Typography, TextField, Button, Divider,Card, CardActionArea } from '@mui/material';
 import { Email as EmailIcon, Phone as PhoneIcon } from '@mui/icons-material';
 import './Footer.css';
 import { ReactComponent as Logo } from '../logoprincipal.svg';
@@ -52,16 +52,16 @@ const Footer = () => {
 
       <Divider variant='middle' sx={{backgroundColor:'#495057'}}/>
 
-      <Box className="footer-section" sx={{display:'flex', justifyContent:'space-around', m:2}}>
+      <Box className="footer-section" sx={{display:'flex', justifyContent:'space-around', flexWrap:'wrap', m:2}}>
 
-        <Card sx={{minWidth:150, backgroundColor:'#495057', color:'whitesmoke', p:1}} >
+        <Card sx={{minWidth:150, backgroundColor:'#495057', color:'whitesmoke', m:1, p:1}} >
           <CardActionArea>
             <EmailIcon/>
             <Typography variant="h6">E-MAIL</Typography>
             <Typography variant="body1">alerta@serfor.gob.pe</Typography>
           </CardActionArea>
         </Card>
-        <Card sx={{minWidth:150, backgroundColor:'#495057', color:'whitesmoke', p:1}}>
+        <Card sx={{minWidth:150, backgroundColor:'#495057', color:'whitesmoke', m:1,p:1}}>
           <CardActionArea>
             <PhoneIcon/>
             <Typography variant="h6" >TELEFONO</Typography>

@@ -13,6 +13,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Link } from 'react-router-dom';
+import { IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'];
 const message = ['Usuario registrado correctamente' , 'Error, Intente de nuevo']
@@ -95,9 +98,9 @@ const registerUrl = url + '/auth/register';
   };
   
   return (
-    <Container component="main" maxWidth="xs">
-
-  <Dialog
+    <Container component="main" sx={{width:'100%', display:'flex', justifyContent:'center'}}>
+      
+    <Dialog
         open={openAlert}
         onClose={error ? handleErrorAlert : handleCloseAlert}
         aria-labelledby="alert-dialog-title"
@@ -115,112 +118,114 @@ const registerUrl = url + '/auth/register';
             Continuar
           </Button>
         </DialogActions>
-      </Dialog>
-
-
-
-
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ width: '200px', height: '100px' }}>
-            <Logo style={{ width: '200px', height: '100px' }}/>
-          </Box>
-          <Box component="form" noValidate onSubmit={handleSumbit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  error = {firstName.length === 0  || firstName.length <4 ? true : false}
-                  helperText = {firstName.length === 0 || firstName.length <4 ? "Campo requerido" : ""}
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  placeholder="Nombres"
-                  autoFocus
-                  value = {firstName}
-                  onChange = {(e) => setFirstName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  error = {lastName.length === 0  || lastName.length <4 ? true : false}
-                  helperText = {lastName.length === 0 || lastName.length <4 ? "Campo requerido" : ""}
-                  required
-                  fullWidth
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Apellidos"
-                  autoComplete="family-name"
-                  value = {lastName}
-                  onChange = {(e) => setLastName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  error = {dni.length !== 8 || isNaN(parseInt(dni)) ? true : false}
-                  helperText = {dni.length !== 8 || isNaN(parseInt(dni)) ? "DNI no valido" : ""}
-                  required
-                  fullWidth
-                  id="dni"
-                  name="dni"
-                  placeholder="DNI"
-                  value={dni}
-                  onChange={(e) => setDni(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  error = {!email.includes('@') || !email.includes('.')  ? true : false}
-                  helperText = {!email.includes('@') ? "Correo no valido" : ""}
-                  required
-                  fullWidth
-                  id="email"
-                  name="email"
-                  placeholder="Correo electronico"
-                  autoComplete="email"
-                  value = {email}
-                  onChange = {(e) => setEmail(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  error = {password.length < 6 ? true : false}
-                  helperText = {password.length < 6 ? "Contraseña no valida" : ""}
-                  required
-                  fullWidth
-                  name="password"
-                  type="password"
-                  id="password"
-                  placeholder="Contraseña"
-                  autoComplete="new-password"
-                  value = {password}
-                  onChange = {(e) => setPassword(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="Acepto los terminos y condiciones"
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#66bb6a' }}}
-            >
-              REGISTRAR
-            </Button>
-          </Box>
-        </Box>
+    </Dialog>
+    <Link to={"/"}>
+      <IconButton sx={{position:'absolute', backgroundColor:{sm:'#DDE2E5'}, color:'gray', my:2}}>
+        <ArrowBackIcon/>
+      </IconButton>
+    </Link>
+    <Box
+      sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width:{xs:'85vw', sm:'50vw', lg:'30vw'}
+      }}
+    >
+    <Box sx={{ width: '200px', height: '100px' }}>
+      <Logo style={{ width: '200px', height: '100px' }}/>
+    </Box>
+    <Box component="form" noValidate onSubmit={handleSumbit} sx={{ mt: 3 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            error = {firstName.length === 0  || firstName.length <4 ? true : false}
+            helperText = {firstName.length === 0 || firstName.length <4 ? "Campo requerido" : ""}
+            autoComplete="given-name"
+            name="firstName"
+            required
+            fullWidth
+            id="firstName"
+            placeholder="Nombres"
+            autoFocus
+            value = {firstName}
+            onChange = {(e) => setFirstName(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            error = {lastName.length === 0  || lastName.length <4 ? true : false}
+            helperText = {lastName.length === 0 || lastName.length <4 ? "Campo requerido" : ""}
+            required
+            fullWidth
+            id="lastName"
+            name="lastName"
+            placeholder="Apellidos"
+            autoComplete="family-name"
+            value = {lastName}
+            onChange = {(e) => setLastName(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            error = {dni.length !== 8 || isNaN(parseInt(dni)) ? true : false}
+            helperText = {dni.length !== 8 || isNaN(parseInt(dni)) ? "DNI no valido" : ""}
+            required
+            fullWidth
+            id="dni"
+            name="dni"
+            placeholder="DNI"
+            value={dni}
+            onChange={(e) => setDni(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            error = {!email.includes('@') || !email.includes('.')  ? true : false}
+            helperText = {!email.includes('@') ? "Correo no valido" : ""}
+            required
+            fullWidth
+            id="email"
+            name="email"
+            placeholder="Correo electronico"
+            autoComplete="email"
+            value = {email}
+            onChange = {(e) => setEmail(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            error = {password.length < 6 ? true : false}
+            helperText = {password.length < 6 ? "Contraseña no valida" : ""}
+            required
+            fullWidth
+            name="password"
+            type="password"
+            id="password"
+            placeholder="Contraseña"
+            autoComplete="new-password"
+            value = {password}
+            onChange = {(e) => setPassword(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={<Checkbox value="allowExtraEmails" color="primary" />}
+            label="Acepto los terminos y condiciones"
+          />
+        </Grid>
+      </Grid>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#66bb6a' }}}
+      >
+        REGISTRAR
+      </Button>
+    </Box>
+    </Box>
       
     </Container>
   );

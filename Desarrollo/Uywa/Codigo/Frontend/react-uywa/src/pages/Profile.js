@@ -158,7 +158,7 @@ const Profile = () => {
             </Grid>
             <Grid item xs={12}>
               <Paper style={profileStyles.infoPaper}>
-                <Typography variant="body1"><strong>Contribuciones:</strong> 120</Typography>
+                <Typography variant="body1"><strong>Contribuciones:</strong> 0</Typography>
               </Paper>
             </Grid>
             <Grid item xs={12}>

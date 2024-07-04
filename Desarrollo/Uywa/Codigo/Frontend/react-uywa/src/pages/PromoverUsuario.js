@@ -14,6 +14,7 @@ import {
   TextField,
   Pagination
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import { styles } from '../components/Promover/StylesPromover';
 
@@ -33,6 +34,7 @@ const Reportes = () => {
   const [filteredReports, setFilteredReports] = useState([]);
 
   const reportsPerPage = 10;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const cargarMarcadores = async () => {
@@ -220,6 +222,15 @@ const Reportes = () => {
         </Box>
         <Pagination count={pageCount} page={currentPage} onChange={handlePageChange} />
       </Box>
+
+      <Button 
+        variant="contained" 
+        color="primary" 
+        sx={{ mt: 3 }} 
+        onClick={() => navigate('/moderador')}
+      >
+        Volver
+      </Button>
     </Container>
   );
 };

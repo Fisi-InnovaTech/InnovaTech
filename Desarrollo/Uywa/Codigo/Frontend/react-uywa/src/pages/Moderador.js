@@ -2,7 +2,6 @@ import React from "react";
 import {Box, Container, Typography, CardMedia, Card}  from '@mui/material';
 import Charter from '../components/CharterModerador/Charter';
 import Warning from '@mui/icons-material/Warning';
-import InsertInvitation from "@mui/icons-material/InsertInvitation";
 import Person from "@mui/icons-material/Person";
 import QueryStats from '@mui/icons-material/QueryStats';
 import '../App.css';
@@ -31,8 +30,7 @@ function ModeradorPrincipal() {
                 </Card>
                 <Box sx={moderadorCharterBox}>
                     <Charter opcion="Lista de Alertas" colorFondo="#1ec48c" IconComponent={Warning} ruta="/moderador-reportes"/>
-                    <Charter opcion="Gestionar Eventos" colorFondo="#1ec48c" IconComponent={InsertInvitation} ruta="/ver-alerta"/>
-                    <Charter opcion="Promover Usuario" colorFondo="#E02200" IconComponent={Person} ruta="/ver-alerta"/>
+                    <Charter opcion="Promover Usuario" colorFondo="#E02200" IconComponent={Person} ruta="/promover-usuario"/>
                     <Charter opcion="Ver estadística" colorFondo="#E02200" IconComponent={QueryStats} ruta="/estadistica"/>
                 </Box>
             </Container>

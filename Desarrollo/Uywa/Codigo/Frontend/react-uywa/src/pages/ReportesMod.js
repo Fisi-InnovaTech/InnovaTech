@@ -46,7 +46,7 @@ const Reportes = () => {
   useEffect(() => {
     const cargarMarcadores = async () => {
       try {
-        const reportes = await fetch('http://localhost:8000/alertas/allalerts');
+        const reportes = await fetch('https://innovatech-0rui.onrender.com/alertas/allalerts');
         if (reportes.ok) {
           const data = await reportes.json();
           setReports(data);

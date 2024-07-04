@@ -15,10 +15,10 @@ export class AuthUserService {
     constructor (private prisma: PrismaService){}
 
     async registerUser(user:UserRegisterAuthDto){
-        console.log(`Intentando registrar usuario: ${user.correo}`);
         const {password} = user;
         const hashedPassword = await hash(password, 10);
         user = {...user, password: hashedPassword};
+        console.log(hashedPassword);
 
         try {       
             return await this.prisma.$transaction(async (prisma) => {

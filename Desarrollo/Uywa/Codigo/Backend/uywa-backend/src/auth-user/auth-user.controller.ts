@@ -60,7 +60,6 @@ export class AuthUserController {
     @UsePipes(new ValidationPipe)
     @Post('/register-moderator')
     async registerModerator(@Body() body: ModeratorRegisterAuthDto){
-        const moderator = this.authUserService.registerModerator(body);
         return this.authUserService.registerModerator(body);
     } 
 

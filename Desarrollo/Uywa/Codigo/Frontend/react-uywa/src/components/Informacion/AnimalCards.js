@@ -11,7 +11,8 @@ const AnimalCardInformation =({imgAnimal, textAlter, title, description})=> {
       <CardActionArea>
         <CardMedia
           component="img"
-          height="140"
+          height="400"
+          width = "150"
           image={imgAnimal}
           alt={textAlter}
         />

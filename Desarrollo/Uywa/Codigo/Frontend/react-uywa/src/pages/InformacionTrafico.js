@@ -9,36 +9,46 @@ const Blog = () =>{
                 <Typography variant="h3" sx={{m:5, py:3, width:'100vw', height:'auto', alignContent:'center', fontWeight:'bold'}}>CONOCE MAS SOBRE NUESTRA FAUNA</Typography>
             </Box>
             <Box sx={{display:'flex', p:5, flexWrap:'wrap', justifyContent:'center'}}>
+            <a href="https://www.gob.pe/institucion/serfor/campa%C3%B1as/44774-yo-no-soy-parte-de-la-ruta-del-trafico-de-fauna-silvestre">
             <AnimalCardInformation
-                imgAnimal="https://plus.unsplash.com/premium_photo-1667873584030-ad34ab3f0f0c?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                imgAnimal="https://cdn.www.gob.pe/uploads/campaign/photo/000/044/774/campaign_Dise%C3%B1o_web_842x450_px_-_No_soy_parte_de_la_Ruta_del_tr%C3%A1fico.jpg"
                 textAlter="Animal"
-                title="TITULO"
-                description = "Descripcion de la card"
+                title="Yo no soy parte de la ruta del tráfico de fauna silvestre"
+                description = "30 de noviembre de 2023"
             />
+            </a>
+            <a href ="https://www.gob.pe/institucion/serfor/campa%C3%B1as/1784-prevencion-y-reduccion-de-incendios-forestales">
             <AnimalCardInformation
-                imgAnimal="https://plus.unsplash.com/premium_photo-1667873584030-ad34ab3f0f0c?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                imgAnimal="https://cdn.www.gob.pe/uploads/campaign/photo/000/001/784/campaign_PORTADAPRINCIPALIF.png"
                 textAlter="Animal"
-                title="TITULO"
-                description = "Descripcion de la card"
+                title="Prevención y reducción de incendios forestales"
+                description = "27 de agosto de 2020"
             />
+            </a>
+            <a href="https://www.gob.pe/institucion/serfor/campa%C3%B1as/53150-curso-internacional-identificacion-botanica-y-anatomica-de-especies-forestales">
             <AnimalCardInformation
-                imgAnimal="https://plus.unsplash.com/premium_photo-1667873584030-ad34ab3f0f0c?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                textAlter="Animal"
-                title="TITULO"
-                description = "Descripcion de la card"
-            />
+                imgAnimal="https://cdn.www.gob.pe/uploads/campaign/photo/000/053/150/campaign_WhatsApp_Image_2024-02-20_at_11.00.59.jpeg"
+                textAlter="20 de febrero de 2024"
+                title="Curso Internacional: Identificación botánica y anatómica de especies forestales"
+                description = "20 de febrero de 2024"
+                />
+            </a>
+            <a href="https://www.gob.pe/institucion/serfor/campa%C3%B1as/67942-el-bosque-en-nuestras-manos">
             <AnimalCardInformation
-                imgAnimal="https://plus.unsplash.com/premium_photo-1667873584030-ad34ab3f0f0c?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                imgAnimal="https://cdn.www.gob.pe/uploads/campaign/photo/000/056/829/campaign_campa%C3%B1a_madera.png"
                 textAlter="Animal"
-                title="TITULO"
-                description = "Descripcion de la card"
-            />
+                title="El Bosque en nuestras manos"
+                description = "20 de junio de 2024"
+                />
+            </a>
+            <a href="https://www.gob.pe/institucion/serfor/campa%C3%B1as/57266-convocatoria-para-la-seleccion-de-coordinadores-regionales-del-programa-bps">
             <AnimalCardInformation
-                imgAnimal="https://plus.unsplash.com/premium_photo-1667873584030-ad34ab3f0f0c?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                imgAnimal="https://cdn.www.gob.pe/uploads/campaign/photo/000/057/266/campa%C3%B1a_bps.png"
                 textAlter="Animal"
-                title="TITULO"
-                description = "Descripcion de la card"
+                title="Convocatoria para la selección de coordinadores\n regionales del programa BPS"
+                description = "18 de marzo de 2024"
             />
+            </a>
             </Box>
             
         </div>

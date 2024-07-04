@@ -97,7 +97,7 @@ export default function ListDividers() {
   const [cat, setCat] = React.useState('');
   const handleChange = (event) => {
     setCat(event.target.value); };
-  
+  const [finishAlert , setFinishAlert] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [tosendFile, setTosendFile] = useState(null);
   const [description, setDescrition] = useState('');
@@ -124,6 +124,7 @@ export default function ListDividers() {
     }
 
     const handleSumbit = () => {
+    setIsButtonDisabled(true);
     console.log({latitud, longitud });
     console.log(animales[cat-1].animal);
     console.log(description);
@@ -143,7 +144,7 @@ export default function ListDividers() {
       
       let formData = new FormData();
       formData.append('user_id', userLogged.id);
-      formData.append('animal_nombre', animales[cat-1].animal);
+      formData.append('animal_nombre', animales[cat-1].animal || 'No ingresado');
       formData.append('nombre_reportante', userLogged.nombre);
       formData.append('fecha_creacion', '2024-12-12');
       formData.append('latitud', latitud);
@@ -159,6 +160,9 @@ export default function ListDividers() {
       .then(res => res.json())
       .then(data => {
         console.log(data);
+        setFinishAlert(true);
+        setIsButtonDisabled(false);
+        window.location.href('/realizar-alerta')
       })
       .catch(error => {
         console.log(error);
@@ -178,7 +182,7 @@ export default function ListDividers() {
   }
 
 
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [file, setFile] = useState(null);
   const [open, setOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -197,6 +201,10 @@ export default function ListDividers() {
   };
   const handleClose = ()=>{
     setOpen(false);
+  }
+
+  const handleCloseFinishAlert = () => {
+    setFinishAlert(false);
   }
 
   return (
@@ -224,6 +232,27 @@ export default function ListDividers() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      
+      <Dialog
+        open={finishAlert}
+        onClose={handleCloseFinishAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Alerta Realizada Correctamente"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Para visualizar su alerta debe esperar a que sea revisada por un moderador
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseFinishAlert} color="primary" autoFocus>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
 
         <Box aria-label='archivo-subida'>
@@ -309,7 +338,7 @@ export default function ListDividers() {
             <FormControlLabel control={<Checkbox defaultChecked />} sx={{p:3}} label="Subir de forma anónima" />
         </FormGroup>
         <Divider/>
-        <Button variant="contained" onClick = {handleSumbit} sx={{m:4}}>Enviar</Button>   
+        <Button variant="contained" onClick = {handleSumbit} disabled={isButtonDisabled} sx={{m:4}}>Enviar</Button>   
       </Box>
       </Paper>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

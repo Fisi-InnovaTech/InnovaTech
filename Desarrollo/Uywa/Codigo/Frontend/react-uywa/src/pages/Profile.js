@@ -18,7 +18,7 @@ import Button from '@mui/material/Button';
 const profileStyles = {
   paper: {
     padding: '50px',
-    margin: 'auto',
+    marginTop: '70px',
     maxWidth: '900px',
     backgroundColor: '#f0f0f0',
   },
@@ -104,10 +104,8 @@ const Profile = () => {
   }, [])
 
   return (
+    <Box sx={{display:'flex',justifyContent:'center', my:8, px:2}}>
     <Paper style={profileStyles.paper}>
-
-
-      
     <Dialog
         open={openAlert}
         onClose={handleCloseAlert}
@@ -126,13 +124,6 @@ const Profile = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-
-
-
-
-
-
 
       <Grid container spacing={2}>
         <Grid item xs={12} style={profileStyles.textCenter}>
@@ -262,6 +253,7 @@ const Profile = () => {
         )}
       </Grid>
     </Paper>
+    </Box>
   );
 };
 

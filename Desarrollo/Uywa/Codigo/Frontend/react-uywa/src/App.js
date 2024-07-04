@@ -9,10 +9,10 @@ import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
 import Reportes from './pages/ReportesMod';
-import Eventos from './pages/Eventos';
 import ModeradorPrincipal from './pages/Moderador';
 import Profile from './pages/Profile';
 import Report from './pages/EstadisticaAlertUI';
+import Promover from './pages/PromoverUsuario';
 import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
 
@@ -39,6 +39,7 @@ function App() {
           <Route path="/informacion-trafico-animales" element={<Blog/>}/>
           <Route path="/perfil" element={<Profile/>}/>
           <Route path="/estadistica" element={<Report/>}/>
+          <Route path="/promover-usuario" element={<Promover/>}/>
           </Route>
         </Routes>
 

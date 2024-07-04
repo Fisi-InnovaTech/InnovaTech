@@ -68,7 +68,16 @@ export class AuthUserController {
         const newMod = await this.authUserService.upgradeUserToModerator(userId);
         return this.authUserService.registerModerator(newMod);
     }
+
+    @Post('/promover/:userId')
+    async upgradeUser( @Param('userId') userId: number ){
+        return this.authUserService.upgradeUser(userId);
+    }
     
+    @Get('/allUsers')
+    async getAllUsers(){
+        return this.authUserService.getAllUsers();   
+    }
 }
 //logout es por parte del front
 //elimina la cookie y ya no tiene acceso

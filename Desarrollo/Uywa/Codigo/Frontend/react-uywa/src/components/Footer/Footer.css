@@ -4,18 +4,13 @@
 }
 
 .footer-logo {
-  margin-bottom: 20px;
+  margin: 5px 0 0 15px;
+  width: 150px;
 }
 
 .footer-section {
   padding-top: 5px;
   padding-bottom: 10px;
-}
-
-.email-icon, .phone-icon {
-  color: #3AB795;
-  font-size: px;
-  margin-right: 8px;
 }
 
 .custom-link {

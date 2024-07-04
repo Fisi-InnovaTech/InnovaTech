@@ -27,10 +27,10 @@ function AutoPlay() {
   };
   return (
     <Box>
-      <Box sx={{position:'absolute', height:"70%", width:{xs:'80%', md:'50%'},mt:'70px', py:'5%',px:'10%', zIndex:2, textAlign:{xs:'center', md:'start'}}}>
-        <Typography color={'white'} sx={{fontSize:{xs:'2.5em', sm:'4.5rem',md:'5rem', lg:'7rem'}, fontWeight: 'bold', width:'100%', lineHeight:1.1}}>AYUDANOS A SALVAR NUESTRA FAUNA!</Typography>
-        <Typography color={'white'} sx={{display:{xs:'none', sm:'flex'}, fontSize:'1.3rem', width:{xs:'100%', md:'80%'}, my:3}}>
-          Juntos podemos detener el maltrato y la explotación de nuestros animales silvestres. Reporta cualquier incidente y se parte del cambio. Tu voz es crucial para proteger nuestro entorno natural!
+      <Box sx={{position:'absolute', height:"70%", width:{xs:'80%', md:'50%'},mt:'70px', py:'5%',px:'10%', zIndex:2, textAlign:{xs:'center', md:'start'}, alignContent:'center'}}>
+        <Typography color={'white'} sx={{fontSize:'6vw', fontWeight: 'bold', width:'100%', lineHeight:1.1}}>AYUDANOS A SALVAR NUESTRA FAUNA!</Typography>
+        <Typography color={'white'} sx={{display:{xs:'none', sm:'flex'}, fontSize:'1.3vw', width:{xs:'100%', md:'80%'}, mt:3}}>
+          Juntos podemos detener el maltrato y la explotación de nuestros animales silvestres. Reporta cualquier incidente y se parte del cambio.
         </Typography>
         <Typography color={'white'} sx={{display:{xs:'flex', sm:'none'}, my:2, justifyContent:'center'}}>Bienvenido a UYWA</Typography>
       </Box>
@@ -42,7 +42,7 @@ function AutoPlay() {
       height:'100%'
       }}>
       </Box>
-      <Box className="slider-container" sx={{position:'relative'}} data-testid="carousel">
+      <Box className="slider-container" sx={{position:'relative'}} data-testid="carousel">  
         <Slider {...settings}>
         {images.map((src, index) => (
             <div key={index}>

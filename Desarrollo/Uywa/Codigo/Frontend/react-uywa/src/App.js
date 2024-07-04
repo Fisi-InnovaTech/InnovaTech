@@ -38,7 +38,7 @@ function App() {
           <Route path='/moderador' element={<ModeradorPrincipal/>}/>
           <Route path="/moderador-reportes" element={<Reportes/>}/>
           <Route path="/informacion-trafico-animales" element={<Blog/>}/>
-          <Route path="/Perfil" element={<Profile/>}/>
+          <Route path="/perfil" element={<Profile/>}/>
           <Route path="/estadistica" element={<Report/>}/>
           <Route path="/promover-usuario" element={<Promover/>}/>
           </Route>

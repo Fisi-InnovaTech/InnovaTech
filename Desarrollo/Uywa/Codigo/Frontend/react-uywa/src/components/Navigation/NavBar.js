@@ -50,6 +50,7 @@ function ResponsiveAppBar() {
     console.log(setting);
     if (setting === "Perfil"){
       console.log(setting);
+      window.location.href = '/perfil';
     }
     else if (setting === "Cerrar Sesion"){
       window.localStorage.removeItem('UW-logged-session');

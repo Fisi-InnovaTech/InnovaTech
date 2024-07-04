@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Card } from '@mui/material';
+import { Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Card, Container } from '@mui/material';
 import { Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,7 +30,7 @@ const transactions = [
 
 const Estadisticas = () => {
   return (
-    <Box display="flex" flexDirection="column" height="100vh" >
+    <Container display="flex" flexDirection="column" height="100vh" >
         <Box  
             display="flex" 
             justifyContent="center" 
@@ -112,8 +112,7 @@ const Estadisticas = () => {
                 </Box>
             </Card>
         </Box>
-
-    </Box>
+    </Container>
   );
 };
 

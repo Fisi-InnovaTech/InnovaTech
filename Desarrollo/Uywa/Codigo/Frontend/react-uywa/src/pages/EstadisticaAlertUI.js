@@ -13,8 +13,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Button
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { BarChart, LineChart } from '@mui/x-charts';
 import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -43,7 +45,7 @@ const Reportes = () => {
   // Add estado data
   const [aprobadoData, setAprobadoData] = useState([]);
   const [rechazadoData, setRechazadoData] = useState([]);
-
+  const navigate = useNavigate();
   // Callbackend data
   useEffect(() => {
     const fetchReports = async (selectedYear) => {
@@ -268,6 +270,13 @@ const Reportes = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      
+      <Box display="flex" justifyContent="center" padding="1.5rem" mt="auto">
+        <Button variant="contained" color="primary" onClick={() => navigate('/moderador')}>
+          Volver
+        </Button>
+      </Box>
     </Container>
   );
 };

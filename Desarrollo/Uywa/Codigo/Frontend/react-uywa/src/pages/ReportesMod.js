@@ -65,7 +65,7 @@ const Reportes = () => {
 
   async function changeState(report) {
     try {
-      const reportes = await fetch('http://localhost:8000/alertas/changingState',{
+      const reportes = await fetch('https://innovatech-0rui.onrender.com/alertas/changingState',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

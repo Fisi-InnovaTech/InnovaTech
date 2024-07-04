@@ -37,7 +37,7 @@ const Reportes = () => {
   useEffect(() => {
     const cargarMarcadores = async () => {
       try {
-        const reportes = await fetch('http://localhost:8000/auth/allusers');
+        const reportes = await fetch('https://innovatech-0rui.onrender.com/auth/allusers');
         if (reportes.ok) {
           const datas = await reportes.json();
           const filteredData = datas.filter(report => Number(report.insignia) < 5);
@@ -56,7 +56,7 @@ const Reportes = () => {
 
   async function upgradeModerator(userId) {
     try {
-      const response = await fetch(`http://localhost:8000/auth/promoverUser/${userId}`, {
+      const response = await fetch(`https://innovatech-0rui.onrender.com/auth/promoverUser/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -76,7 +76,7 @@ const Reportes = () => {
 
   async function changeInsignia(userId) {
     try {
-      const response = await fetch(`http://localhost:8000/auth/promover/${userId}`, {
+      const response = await fetch(`https://innovatech-0rui.onrender.com/auth/promover/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

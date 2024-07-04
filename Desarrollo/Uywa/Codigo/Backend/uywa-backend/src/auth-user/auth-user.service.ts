@@ -15,22 +15,26 @@ export class AuthUserService {
     constructor (private prisma: PrismaService){}
 
     async registerUser(user:UserRegisterAuthDto){
+        console.log(`Intentando registrar usuario: ${user.correo}`);
         const {password} = user;
         const hashedPassword = await hash(password, 10);
         user = {...user, password: hashedPassword};
-        console.log(hashedPassword);
+
         try {       
-        return await this.prisma.usuario.create({
-            data: {
-                nombre: user.nombre,
-                apellidos: user.apellidos, // Make sure 'apellidos' property exists in 'user' object
-                correo: user.correo, // Make sure 'correo' property exists in 'user' object
-                dni: user.dni, // Make sure 'dni' property exists in 'user' object
-                password: user.password, // Make sure 'password' property exists in 'user' object
-                estado: user.estado as string, // Make sure 'estado' property exists in 'user' object
-                insignia: user.insignias || '1' // Make sure 'insignias' property exists in 'user' object
-            }
-        });
+            return await this.prisma.$transaction(async (prisma) => {
+                const newUser = await prisma.usuario.create({
+                    data: {
+                        nombre: user.nombre,
+                        apellidos: user.apellidos,
+                        correo: user.correo,
+                        dni: user.dni,
+                        password: user.password,
+                        estado: user.estado as string,
+                        insignia: user.insignias || '1'
+                    }
+                });
+                return newUser;
+            });
         } catch (error) {
             return {message: new BadRequestException('Error al registrar al usuario'), status: 400};
         }

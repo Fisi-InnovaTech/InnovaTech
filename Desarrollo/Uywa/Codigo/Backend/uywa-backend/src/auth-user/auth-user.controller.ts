@@ -35,7 +35,6 @@ export class AuthUserController {
     @UsePipes(new ValidationPipe)
     @Post('/register')
     async register(@Body() body: UserRegisterAuthDto){
-        const user = this.authUserService.registerUser(body);
         return this.authUserService.registerUser(body);
     }
 

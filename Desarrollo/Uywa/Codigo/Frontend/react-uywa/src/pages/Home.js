@@ -2,6 +2,7 @@ import '../App.css';
 import React from "react";
 import Box from '@mui/material/Box';
 import Carrusel from "../components/Carrusel/Carousel";
+
 import ReportHelp from '../components/cards/Informacion.js';
 import CardsInformation from '../components/cards/CardInfo.js';
 import { Typography } from '@mui/material';

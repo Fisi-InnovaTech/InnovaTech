@@ -186,8 +186,8 @@ export default function SignInSide() {
         {/* aca hacer el llamado segun la funcion */}
         <Box component="form" noValidate onSubmit={isMod ? handleSubmitMod: handleSubmit} sx={{ mt: 1}}>
           <TextField
-            error = {!email.includes('@') || !email.includes('.')  ? true : false}
-            helperText = {!email.includes('@') ? "Correo no valido" : ""}
+            error = {email.length > 0 && (!email.includes('@') || !email.includes('.'))}
+            helperText = {email.length > 0 && (!email.includes('@') || !email.includes('.')) ? "Correo no válido" : ""}
             margin="normal"
             required
             fullWidth
@@ -212,8 +212,8 @@ export default function SignInSide() {
             }}
           />
           <TextField
-            error = {password.length < 6 ? true : false}
-            helperText = {password.length < 6 ? "Contraseña no valida" : ""}
+            error = {password.length > 0 && password.length < 6}
+            helperText = {password.length > 0 && password.length < 6 ? "Contraseña no válida" : ""}
             margin="normal"
             required
             fullWidth

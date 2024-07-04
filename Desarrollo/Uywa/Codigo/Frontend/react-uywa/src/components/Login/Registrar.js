@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import {ReactComponent as Logo} from '../logoprincipal.svg';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -90,7 +90,7 @@ const registerUrl = url + '/auth/register';
         setDni(()=> "");
         setPassword(()=> "");
       }
-      else{
+      else if (res.status === 200){
         setError(false);
         setOpenAlert(true);
       }
@@ -140,8 +140,8 @@ const registerUrl = url + '/auth/register';
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
-            error = {firstName.length === 0  || firstName.length <4 ? true : false}
-            helperText = {firstName.length === 0 || firstName.length <4 ? "Campo requerido" : ""}
+            error = {firstName.length > 0 && firstName.length < 4}
+            helperText = {firstName.length > 0 && firstName.length < 4 ? "Campo requerido" : ""}
             autoComplete="given-name"
             name="firstName"
             required
@@ -155,8 +155,8 @@ const registerUrl = url + '/auth/register';
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            error = {lastName.length === 0  || lastName.length <4 ? true : false}
-            helperText = {lastName.length === 0 || lastName.length <4 ? "Campo requerido" : ""}
+          error = {lastName.length > 0 && lastName.length < 4}
+            helperText = {lastName.length > 0 && lastName.length < 4? "Campo requerido" : ""}
             required
             fullWidth
             id="lastName"
@@ -169,8 +169,8 @@ const registerUrl = url + '/auth/register';
         </Grid>
         <Grid item xs={12}>
           <TextField
-            error = {dni.length !== 8 || isNaN(parseInt(dni)) ? true : false}
-            helperText = {dni.length !== 8 || isNaN(parseInt(dni)) ? "DNI no valido" : ""}
+            error = {dni.length > 0 && (dni.length !== 8 || isNaN(parseInt(dni)))}
+            helperText = {dni.length > 0 && (dni.length !== 8 || isNaN(parseInt(dni))) ? "DNI no válido" : ""}
             required
             fullWidth
             id="dni"
@@ -182,8 +182,8 @@ const registerUrl = url + '/auth/register';
         </Grid>
         <Grid item xs={12}>
           <TextField
-            error = {!email.includes('@') || !email.includes('.')  ? true : false}
-            helperText = {!email.includes('@') ? "Correo no valido" : ""}
+            error = {email.length > 0 && (!email.includes('@') || !email.includes('.'))}
+            helperText = {email.length > 0 && (!email.includes('@') || !email.includes('.')) ? "Correo no válido" : ""}
             required
             fullWidth
             id="email"
@@ -196,8 +196,8 @@ const registerUrl = url + '/auth/register';
         </Grid>
         <Grid item xs={12}>
           <TextField
-            error = {password.length < 6 ? true : false}
-            helperText = {password.length < 6 ? "Contraseña no valida" : ""}
+            error = {password.length > 0 && password.length < 6}
+            helperText = {password.length > 0 && password.length < 6 ? "Contraseña no válida" : ""}
             required
             fullWidth
             name="password"

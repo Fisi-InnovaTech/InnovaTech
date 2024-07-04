@@ -32,15 +32,8 @@ const pages = [
   { path: '/realizar-alerta', name: 'Reportar' },
   { path: '/ver-alerta', name: 'Ver Alertas' },
   { path: '/informacion-trafico-animales', name: 'Eventos' },
-  //{ path: '/realizar-alerta', name: 'Sobre Nosotros' },
-  //{ path: '/realizar-alerta', name: 'Contactanos' },
 ];
 
-const modPages =  [
-  {path: '/moderador', name:'Inicio'},
-  {path: '/moderador-reportes', name: 'Reportes'},
-
-]
 const settings = ['Perfil', 'Cerrar Sesion'];
 
 function ResponsiveAppBar() {
@@ -85,27 +78,19 @@ function ResponsiveAppBar() {
         setIsLoggedIn(false);
       }
     }
-  }, [])
+    console.log(isMod);
+    console.log(isLoggedIn);
+  }, [isLoggedIn, isMod])
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
 
-        {isMod ? 
-        
-        modPages.map((page, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={page.name} />
-            </ListItemButton>
-          </ListItem>
-        ))
-        
-        :
-        
+        {
+          isMod?
+          null
+          :
+          
         pages.map((page, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton>
@@ -115,7 +100,9 @@ function ResponsiveAppBar() {
               <ListItemText primary={page.name} />
             </ListItemButton>
           </ListItem>
-        ))}
+        ))
+
+        }
 
       </List>
     </Box>
@@ -146,7 +133,14 @@ function ResponsiveAppBar() {
           <Box sx={{flexGrow: 1, display: { xs: 'flex', md: 'none' }}}><Logo/></Box>
   
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page, index) => (
+            {
+            isMod?
+            
+            null
+            
+            :
+
+            pages.map((page, index) => (
                 <Link key={index} to={page.path} style={{ textDecoration: 'none' }}>
                   <Button
                     sx={{ my: 2, mr: 3, color: '#212429', display: 'block', fontWeight: 'bold' }}
@@ -154,7 +148,8 @@ function ResponsiveAppBar() {
                     {page.name}
                   </Button>
                 </Link>
-              ))}
+              ))
+              }
           </Box>
 
           {!isLoggedIn && (
@@ -174,7 +169,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src="https://www.digitary.net/wp-content/uploads/2021/07/Generic-Profile-Image.png" />
                 </IconButton>
               </Tooltip>
               <Menu

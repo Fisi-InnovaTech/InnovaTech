@@ -7,6 +7,13 @@ import tercerReporte from '../assets/Logros/TercerLogro.png';
 import primerLogro from '../assets/Logros/PrimerLogro.png';
 import DiezContribuciones from '../assets/Logros/DiezContribuciones.png';
 import avatarImage from '../assets/avatar.jpg';
+import {useEffect, useState} from 'react';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 const profileStyles = {
   paper: {
@@ -74,14 +81,65 @@ const Profile = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [isLogin, setIsLogin] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [name, SetName] = useState('');
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+    window.location.href = '/iniciar-sesion';
+  }
+
+
+  useEffect(()=>{
+    if(window.localStorage.getItem('UW-logged-session') === null){
+      console.log('')
+      //setOpenAlert(true);
+      //setIsLogin(false);
+    }
+    else{
+        //setOpenAlert(false);
+        //setIsLogin(true);
+    }
+  }, [])
+
   return (
     <Paper style={profileStyles.paper}>
+
+
+      
+    <Dialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Usuario no logueado"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Debe iniciar sesión para poder ver su perfil
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlert} color="primary" autoFocus>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
+
+
+
+
+
+
       <Grid container spacing={2}>
         <Grid item xs={12} style={profileStyles.textCenter}>
           <Avatar alt="User Avatar" src="/path_to_your_avatar.jpg" style={profileStyles.avatar} />
         </Grid>
         <Grid item xs={12} style={profileStyles.textCenter}>
-          <Typography variant="h5">Brayan Llacza Valeta</Typography>
+          <Typography variant="h5"> {} </Typography>
           <Typography variant="subtitle1">Doctor</Typography>
         </Grid>
         <Grid item xs={12} style={profileStyles.textCenter}>

@@ -104,9 +104,8 @@ export default function ListDividers() {
   const [latitud, setLatitud] = useState(0);
   const [longitud, setLongitud] = useState(0);
     const url = "https://innovatech-0rui.onrender.com";
-    //const url = "http://127.0.0.1:3000";
-    const urlAlertas = url+'/alertas/guardar'
- 
+
+    const urlAlertas = url+'/alertas/guardar' 
  
     useEffect(() => {
       if(localStorage.getItem('UW-logged-session') === null){

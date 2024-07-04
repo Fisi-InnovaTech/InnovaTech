@@ -25,6 +25,7 @@ export const moderadorTitle = {
   color: "white",
   transform: "translate(-50%, -50%)",
   fontSize: "clamp(3rem, 5vw, 5rem)",
+  fontWeight: "bold",
 }
 
 export const moderadorCharterBox = { 

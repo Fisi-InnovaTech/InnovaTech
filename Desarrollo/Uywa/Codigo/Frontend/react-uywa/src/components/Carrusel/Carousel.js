@@ -25,6 +25,7 @@ function AutoPlay() {
     autoplaySpeed: 5000,
     cssEase: "linear",
   };
+  
   return (
     <Box>
       <Box sx={{position:'absolute', height:"70%", width:{xs:'80%', md:'50%'},mt:'70px', py:'5%',px:'10%', zIndex:2, textAlign:{xs:'center', md:'start'}, alignContent:'center'}}>
@@ -35,24 +36,23 @@ function AutoPlay() {
         <Typography color={'white'} sx={{display:{xs:'flex', sm:'none'}, my:2, justifyContent:'center'}}>Bienvenido a UYWA</Typography>
       </Box>
       <Box sx={{
-      position: 'absolute',
-      zIndex: 1,
-      background: 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(50, 50, 50, 0) 80%)',
-      width: '80%',
-      height:'100%'
+        position: 'absolute',
+        zIndex: 1,
+        background: 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(50, 50, 50, 0) 80%)',
+        width: '80%',
+        height:'100%'
       }}>
       </Box>
       <Box className="slider-container" sx={{position:'relative'}} data-testid="carousel">  
         <Slider {...settings}>
-        {images.map((src, index) => (
-            <div key={index}>
-              <img className="images-carousel" src={src} alt={`Slide ${index + 1}`} />
+          {images.map((src) => (
+            <div key={src}>
+              <img className="images-carousel" src={src} alt="Wildlife conservation" />
             </div>
           ))}
         </Slider>
       </Box>
     </Box>
-
   );
 }
 

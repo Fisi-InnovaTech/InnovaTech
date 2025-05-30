@@ -13,12 +13,9 @@ import ModeradorPrincipal from './pages/Moderador';
 import Profile from './pages/Profile';
 import Report from './pages/EstadisticaAlertUI';
 import Promover from './pages/PromoverUsuario';
-import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
-import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <>
     <Router>
       <div className='App'>
         <Routes>
@@ -45,8 +42,6 @@ function App() {
 
       </div>
     </Router>
-  </>
-
   );
 }
 

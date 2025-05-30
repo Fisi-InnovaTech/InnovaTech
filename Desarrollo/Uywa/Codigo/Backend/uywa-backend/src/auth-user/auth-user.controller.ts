@@ -10,8 +10,8 @@ import { ModeratorRegisterAuthDto } from './dto/ModeratorRegisterAuthDto';
 @Controller('/auth')
 export class AuthUserController {
 
-    constructor (private authUserService: AuthUserService,
-        private jwtService: JwtService){}
+    constructor (private readonly authUserService: AuthUserService,
+        private readonly jwtService: JwtService){}
 
     @UsePipes(new ValidationPipe)
     @Post('/login')

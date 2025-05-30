@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, isNumber } from "class-validator";
+import {IsString } from "class-validator";
 
 export class AlertaFiltroDto {
     @IsString()

@@ -4,10 +4,9 @@ import { AlertasService } from '../alertas.service';
 import { AlertasAuthDto } from '../dto/AlertasAuth.dto';
 import { AlertaFiltroDto } from '../dto/AlertaFiltro.dto';
 import { ValidationPipe } from '@nestjs/common';
-import { MulterModule } from '@nestjs/platform-express';
 import { UploadMiddleware } from '../config/upload.middleware';
 import { APP_PIPE } from '@nestjs/core';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterModule } from '@nestjs/platform-express';
 
 describe('AlertasController', () => {
   let controller: AlertasController;

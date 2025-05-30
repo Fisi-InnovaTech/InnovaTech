@@ -1,6 +1,6 @@
 import React from "react";
 import Box from '@mui/material/Box';
-import { CardMedia, Container, Typography } from "@mui/material";
+import {  Typography } from "@mui/material";
 import AnimalCardInformation from "../components/Informacion/AnimalCards";
 const Blog = () =>{
     return(

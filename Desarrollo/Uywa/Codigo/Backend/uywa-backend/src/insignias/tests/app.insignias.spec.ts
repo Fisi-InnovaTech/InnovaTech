@@ -31,7 +31,6 @@ describe('InsigniasController', () => {
 
     insigniasController = module.get<InsigniasController>(InsigniasController);
     insigniasService = module.get<InsigniasService>(InsigniasService);
-    prismaService = module.get<PrismaService>(PrismaService);
   });
   it('should be defined', () => {
     expect(insigniasController).toBeDefined();

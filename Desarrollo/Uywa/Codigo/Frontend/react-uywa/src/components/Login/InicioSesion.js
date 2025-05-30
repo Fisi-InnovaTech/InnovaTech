@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Link, useFetchers } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import {useState} from 'react';
 import Dialog from '@mui/material/Dialog';
@@ -53,8 +52,8 @@ export default function SignInSide() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email?email: "No ingresado",
-        password: password ? password : "No ingresado"
+        email: email || "No ingresado",
+        password: password || "No ingresado"
     })
     }).then(res => res.json()).then(data =>{
       console.log(data);
@@ -92,8 +91,8 @@ export default function SignInSide() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email?email: "No ingresado",
-        password: password ? password : "No ingresado"
+        email: email || "No ingresado",
+        password: password || "No ingresado"
       })
     }
     ).then(res => res.json()).then(data =>{

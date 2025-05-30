@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { InsigniasService } from './insignias.service';
 
 @Controller('insignias')
 export class InsigniasController {
 
-    constructor(private insigniasService: InsigniasService) {}
+    constructor(private readonly insigniasService: InsigniasService) {}
 
     // Get all insignias from usuario model
     //@UsePipes(new ValidationPipe)

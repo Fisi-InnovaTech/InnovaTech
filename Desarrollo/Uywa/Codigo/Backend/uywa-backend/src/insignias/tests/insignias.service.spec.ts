@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 describe('InsigniasService', () => {
   let insigniasService: InsigniasService;
+  const MOCK_PASSWORD = 'password'; 
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -38,7 +39,7 @@ describe('InsigniasService', () => {
         apellidos: 'User',
         correo: 'test@example.com',
         dni: 12345678,
-        password: 'password',
+        password: MOCK_PASSWORD,
         fecha_nac: new Date(),
         estado: 'active',
         insignia: '123'
@@ -64,7 +65,7 @@ describe('InsigniasService', () => {
         apellidos: 'User',
         correo: 'test@example.com',
         dni: 12345678,
-        password: 'password',
+        password: MOCK_PASSWORD,
         fecha_nac: new Date(),
         estado: 'active',
         insignia: '1'

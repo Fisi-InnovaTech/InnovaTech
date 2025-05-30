@@ -6,18 +6,10 @@ import axios from 'axios';
 
 @Injectable()
 export class AlertasService {
-    constructor (private prisma: PrismaClient){}
+    constructor (private readonly prisma: PrismaClient){}
     
     async obtenerRegion(latitud, longitud) {
         const googleMapsApiKey = 'AIzaSyBZWT4UW-431B4nv7eJRhjBY9ecJcoYb0M';
-        const departamentosPeru = [
-            "Amazonas", "Áncash", "Apurímac", "Arequipa", "Ayacucho",
-            "Cajamarca", "Callao", "Cusco", "Huancavelica", "Huánuco",
-            "Ica", "Junín", "La Libertad", "Lambayeque", "Lima",
-            "Loreto", "Madre de Dios", "Moquegua", "Pasco", "Piura",
-            "Puno", "San Martín", "Tacna", "Tumbes", "Ucayali"
-        ];
-
         try {
             const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
                 params: {

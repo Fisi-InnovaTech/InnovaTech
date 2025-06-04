@@ -21,10 +21,12 @@ const images = [
   'https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 
   'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'
 ];
+
 const messages = [
   'Usuario registrado correctamente',
   'Error, Intente de nuevo'
 ];
+
 const url = "https://innovatech-ztzv.onrender.com";
 const registerUrl = url + '/auth/register';
 
@@ -32,18 +34,6 @@ const resetFormState = (setters) => {
   setters.forEach(setter => setter(""));
 };
 
-const handleApiResponse = (res, setError, setOpenAlert, resetForm) => {
-  if (res.statusCode === 400 || res.status === 400) {
-    setError(true);
-    setOpenAlert(true);
-    resetForm();
-  } else if (res.status === 200) {
-    setError(false);
-    setOpenAlert(true);
-  }
-};
-
-// Validation helper functions
 const isNameInvalid = (name) => name.length > 0 && name.length < 4;
 
 const isDniInvalid = (dni) => {
@@ -60,7 +50,9 @@ const isPasswordInvalid = (password) => password.length > 0 && password.length <
 
 export default function SignUp() {
   const [openAlert, setOpenAlert] = useState(false);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(messages[0]);
+  const [alertImage, setAlertImage] = useState(images[0]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -68,6 +60,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
 
   const handleErrorAlert = () => setOpenAlert(false);
+  
   const handleCloseAlert = () => {
     setOpenAlert(false);
     window.location.href = '/iniciar-sesion';
@@ -75,17 +68,53 @@ export default function SignUp() {
 
   const resetForm = () => resetFormState([setFirstName, setLastName, setEmail, setDni, setPassword]);
 
+  const handleApiResponse = (res, resetForm) => {
+    if (res.ok) {
+      setIsError(false);
+      setAlertMessage(messages[0]);
+      setAlertImage(images[0]);
+      setOpenAlert(true);
+    } else {
+      setIsError(true);
+      let errorMsg = messages[1];
+      
+      if (res.status === 400) {
+        errorMsg = 'Datos inválidos. Por favor verifica la información';
+      } else if (res.status === 409) {
+        errorMsg = 'El correo electrónico ya está registrado';
+      } else if (res.status === 500) {
+        errorMsg = 'Error del servidor. Por favor intenta más tarde';
+      }
+      
+      setAlertMessage(errorMsg);
+      setAlertImage(images[1]);
+      setOpenAlert(true);
+      resetForm();
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    // Validación del formulario
+    if (isNameInvalid(firstName) || isNameInvalid(lastName) || 
+        isDniInvalid(dni) || isEmailInvalid(email) || 
+        isPasswordInvalid(password)) {
+      setIsError(true);
+      setAlertMessage('Por favor completa todos los campos correctamente');
+      setAlertImage(images[1]);
+      setOpenAlert(true);
+      return;
+    }
+
     const userData = {
-      nombre: firstName || "No ingresado",
-      apellidos: lastName || "No ingresado",
-      correo: email || "No ingresado",
-      dni: parseInt(dni) || "No ingresado",
-      password: password || "No ingresado",
-      estado: "",
-      insignias: ""
+      nombre: firstName,
+      apellidos: lastName,
+      correo: email,
+      dni: parseInt(dni),
+      password: password,
+      estado: "activo",
+      insignias: "1"
     };
 
     fetch(registerUrl, {
@@ -93,10 +122,19 @@ export default function SignUp() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     })
-    .then(res => res.json())
-    .then(res => handleApiResponse(res, setError, setOpenAlert, resetForm))
+    .then(async (res) => {
+      const data = await res.json();
+      return {
+        ok: res.ok,
+        status: res.status,
+        ...data
+      };
+    })
+    .then(res => handleApiResponse(res, resetForm))
     .catch(error => {
-      setError(true);
+      setIsError(true);
+      setAlertMessage('Error de conexión. Por favor verifica tu internet');
+      setAlertImage(images[1]);
       setOpenAlert(true);
       resetForm();
     });
@@ -106,28 +144,32 @@ export default function SignUp() {
     <Container component="main" sx={{width:'100%', display:'flex', justifyContent:'center'}}>
       <Dialog
         open={openAlert}
-        onClose={error ? handleErrorAlert : handleCloseAlert}
+        onClose={isError ? handleErrorAlert : handleCloseAlert}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        style = {{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}
+        style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}
       >
-        <DialogTitle id="alert-dialog-title">{error ? messages[1] : messages[0]}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {alertMessage}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <img src={error ? images[1] : images[0]} alt="login" style={{ width: '30%', height: '30%'}}/>
+            <img src={alertImage} alt="status" style={{ width: '30%', height: '30%'}}/>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={error ? handleErrorAlert : handleCloseAlert} color="primary" autoFocus>
+          <Button onClick={isError ? handleErrorAlert : handleCloseAlert} color="primary" autoFocus>
             Continuar
           </Button>
         </DialogActions>
       </Dialog>
+      
       <Link to={"/"}>
         <IconButton sx={{position:'absolute', backgroundColor:{sm:'#DDE2E5'}, color:'gray', my:2}}>
           <ArrowBackIcon/>
         </IconButton>
       </Link>
+      
       <Box
         sx={{
           marginTop: 8,
@@ -140,6 +182,7 @@ export default function SignUp() {
         <Box sx={{ width: '200px', height: '100px' }}>
           <Logo style={{ width: '200px', height: '100px' }}/>
         </Box>
+        
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

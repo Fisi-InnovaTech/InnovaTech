@@ -47,7 +47,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await fetch('https://innovatech-0rui.onrender.com/alertas/allalerts');
+        const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/allalerts');
         if (response.ok) {
           const data = await response.json();
           setReports(data);
@@ -65,7 +65,7 @@ const Reportes = () => {
 
   const changeState = async (report) => {
     try {
-      const response = await fetch('https://innovatech-0rui.onrender.com/alertas/changingState', {
+      const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/changingState', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

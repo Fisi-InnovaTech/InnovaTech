@@ -25,7 +25,7 @@ const messages = [
   'Usuario registrado correctamente',
   'Error, Intente de nuevo'
 ];
-const url = "https://innovatech-0rui.onrender.com";
+const url = "https://innovatech-ztzv.onrender.com";
 const registerUrl = url + '/auth/register';
 
 const resetFormState = (setters) => {

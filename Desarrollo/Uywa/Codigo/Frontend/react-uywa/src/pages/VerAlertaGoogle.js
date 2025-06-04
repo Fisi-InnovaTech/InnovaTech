@@ -62,7 +62,7 @@ const DEPARTMENT_OPTIONS = [
   { id: 'dept-25', value: "Ucayali", departamento: "Ucayali" }
 ];
 
-const baseUrl = 'https://innovatech-0rui.onrender.com';
+const baseUrl = 'https://innovatech-ztzv.onrender.com';
 
 function Maps() {
   const [markerData, setMarkerData] = useState([]);

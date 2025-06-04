@@ -21,7 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'];
 const message = ['Usuario logueado correctamente' , 'Error, Intente de nuevo']
-const url = "https://innovatech-0rui.onrender.com";
+const url = "https://innovatech-ztzv.onrender.com";
 const loginUrl = url + '/auth/login';
 const loginMod = url + '/auth/login-moderator';
 

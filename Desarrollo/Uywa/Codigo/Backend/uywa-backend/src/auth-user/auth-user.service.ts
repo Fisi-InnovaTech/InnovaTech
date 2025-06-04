@@ -14,6 +14,14 @@ export class AuthUserService {
     constructor(private readonly prisma: PrismaService) {}
 
     async registerUser(user: UserRegisterAuthDto) {
+        const existingUser = await this.prisma.usuario.findUnique({
+            where: { correo: user.correo }
+        });
+    
+        if (existingUser) {
+            throw new BadRequestException('El correo electrónico ya está registrado');
+        }
+    
         try {
             const hashedPassword = await hash(user.password, 10);
             return await this.prisma.usuario.create({
@@ -29,9 +37,6 @@ export class AuthUserService {
             });
         } catch (error) {
             this.logger.error(`User registration failed: ${error.message}`);
-            if (error.code === 'P2002') {
-                throw new BadRequestException('El correo electrónico ya está registrado');
-            }
             throw new BadRequestException('Error al registrar al usuario');
         }
     }

@@ -21,6 +21,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import {Alert} from '@mui/material';
+import { Container, Snackbar, Typography } from '@mui/material';
+
 
 const ANIMAL_OPTIONS = [
   { id: 'animal-1', value: 1, animal: "Anaconda" },
@@ -88,7 +91,8 @@ const VisuallyHiddenInput = styled('input')({
   whiteSpace: 'nowrap',
   width: 1,
 });
-
+export const animales = ANIMAL_OPTIONS.map(({ animal }) => ({ animal }));
+export const departamentos = DEPARTMENT_OPTIONS.map(({ departamento }) => ({ departamento }));
 export default function AlertForm() {
   const [selectedAnimal, setSelectedAnimal] = React.useState('');
   const [finishAlert, setFinishAlert] = useState(false);
@@ -102,7 +106,7 @@ export default function AlertForm() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const url = "https://innovatech-0rui.onrender.com";
+  const url = "https://innovatech-ztzv.onrender.com";
   const urlAlertas = url+'/alertas/guardar';
 
   const handleAnimalChange = (event) => {

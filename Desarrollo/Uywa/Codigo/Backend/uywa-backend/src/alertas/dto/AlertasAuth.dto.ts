@@ -1,4 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";   
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";   
+import { usuario } from ".prisma/client";
+import { Transform } from 'class-transformer';
 
 export class AlertasAuthDto {
     @IsOptional() // Cambio para que permita la subida

@@ -12,7 +12,7 @@ const insigniasMap = {
 @Injectable()
 export class InsigniasService {
 
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) {}
 
     // Las insignias devuelven un string que contiene nums
     // Del 1 al 5: Cada número representa una insignia

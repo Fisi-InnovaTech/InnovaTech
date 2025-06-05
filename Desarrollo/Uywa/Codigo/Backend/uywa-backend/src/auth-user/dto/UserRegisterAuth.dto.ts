@@ -20,7 +20,7 @@ export class UserRegisterAuthDto {
     @MinLength(5)
     password: string;
     @IsString()
-    estado:string;
+    estado:String;
     @IsOptional()
     @IsString()
     insignias: string;

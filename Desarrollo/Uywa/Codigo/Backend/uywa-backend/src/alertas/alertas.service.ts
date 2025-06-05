@@ -6,10 +6,18 @@ import axios from 'axios';
 
 @Injectable()
 export class AlertasService {
-    constructor (private readonly prisma: PrismaClient){}
+    constructor (private prisma: PrismaClient){}
     
     async obtenerRegion(latitud, longitud) {
         const googleMapsApiKey = 'AIzaSyBZWT4UW-431B4nv7eJRhjBY9ecJcoYb0M';
+        const departamentosPeru = [
+            "Amazonas", "Áncash", "Apurímac", "Arequipa", "Ayacucho",
+            "Cajamarca", "Callao", "Cusco", "Huancavelica", "Huánuco",
+            "Ica", "Junín", "La Libertad", "Lambayeque", "Lima",
+            "Loreto", "Madre de Dios", "Moquegua", "Pasco", "Piura",
+            "Puno", "San Martín", "Tacna", "Tumbes", "Ucayali"
+        ];
+
         try {
             const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
                 params: {
@@ -36,7 +44,7 @@ export class AlertasService {
     async createAlerta(alerta:AlertasAuthDto) {
 
         try{
-            const baseUrl = 'https://innovatech-ztzv.onrender.com';
+            const baseUrl = 'https://innovatech-0rui.onrender.com';
             const imagePath = alerta.evidencia_imagen.startsWith('/') ? alerta.evidencia_imagen : '/' + alerta.evidencia_imagen;
             const fullImageUrl = baseUrl + imagePath;
 

@@ -36,6 +36,7 @@ model reporte {
   nombre_reportante  String?
   fecha_creacion     DateTime
   estado             String
+  reporte_detallado  String?
   usuario            usuario @relation(fields: [user_id], references: [id])
 }
 

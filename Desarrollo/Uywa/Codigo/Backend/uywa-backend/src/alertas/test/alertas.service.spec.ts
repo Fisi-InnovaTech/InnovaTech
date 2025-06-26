@@ -123,7 +123,7 @@ describe('AlertasService', () => {
 
       expect(mockPrisma.reporte.create).toHaveBeenCalledWith({
         data: {
-          evidencia_imagen: 'https://innovatech-0rui.onrender.com/images/evidencia.jpg',
+          evidencia_imagen: 'https://innovatech-ztzv.onrender.com/images/evidencia.jpg',
           animal_nombre: 'Perro',
           descripcion: 'Perro perdido',
           latitud: -12.0464,

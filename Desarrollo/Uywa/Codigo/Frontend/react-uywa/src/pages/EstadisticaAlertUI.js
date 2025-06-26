@@ -21,7 +21,7 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { styles } from '../components/Estadistica/StatisticsStyle.js';
-import { animales, departamentos } from './RealizarAlerta.js';
+import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from './RealizarAlerta.js';
 import dayjs from 'dayjs';
 
 const MONTH_NAMES = [
@@ -51,7 +51,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchReports = async (selectedYear) => {
       try {
-        const response = await fetch(`https://innovatech-0rui.onrender.com/alertas/alertsByYear?year=${selectedYear}`);
+        const response = await fetch(`https://innovatech-ztzv.onrender.com/alertas/alertsByYear?year=${selectedYear}`);
         const data = await response.json();
         setReports(data);
       } catch (error) {
@@ -65,7 +65,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchLatestReports = async () => {
       try {
-        const response = await fetch('https://innovatech-0rui.onrender.com/alertas/latestAlerts');
+        const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/latestAlerts');
         const data = await response.json();
         setLatestReports(data);
       } catch (error) {
@@ -98,7 +98,7 @@ const Reportes = () => {
       return acc;
     }, {});
 
-    const data = animales.map(({ animal }) => ({
+    const data = ANIMAL_OPTIONS.map(({ animal }) => ({
       animal,
       count: animalCounts[animal] || 0,
     }));
@@ -113,7 +113,7 @@ const Reportes = () => {
       return acc;
     }, {});
 
-    const data = departamentos.map(({ departamento }) => ({
+    const data = DEPARTMENT_OPTIONS.map(({ departamento }) => ({
       region: departamento,
       count: regionCounts[departamento] || 0,
     }));

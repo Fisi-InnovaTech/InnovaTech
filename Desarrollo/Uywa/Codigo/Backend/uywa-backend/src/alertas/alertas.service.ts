@@ -44,7 +44,7 @@ export class AlertasService {
     async createAlerta(alerta:AlertasAuthDto) {
 
         try{
-            const baseUrl = 'https://innovatech-0rui.onrender.com';
+            const baseUrl = 'https://innovatech-ztzv.onrender.com';
             const imagePath = alerta.evidencia_imagen.startsWith('/') ? alerta.evidencia_imagen : '/' + alerta.evidencia_imagen;
             const fullImageUrl = baseUrl + imagePath;
 

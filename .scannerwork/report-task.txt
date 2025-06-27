@@ -1,0 +1,6 @@
+projectKey=Uywa
+serverUrl=http://localhost:9000
+serverVersion=25.5.0.107428
+dashboardUrl=http://localhost:9000/dashboard?id=Uywa
+ceTaskId=8dc34ad4-5f2a-4b8a-84ad-118003c1b095
+ceTaskUrl=http://localhost:9000/api/ce/task?id=8dc34ad4-5f2a-4b8a-84ad-118003c1b095

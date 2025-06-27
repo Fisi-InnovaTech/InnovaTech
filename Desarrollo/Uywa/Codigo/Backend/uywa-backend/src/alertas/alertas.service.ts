@@ -44,7 +44,7 @@ export class AlertasService {
     async createAlerta(alerta:AlertasAuthDto) {
 
         try{
-            const baseUrl = 'https://innovatech-0rui.onrender.com';
+            const baseUrl = 'https://innovatech-ztzv.onrender.com';
             const imagePath = alerta.evidencia_imagen.startsWith('/') ? alerta.evidencia_imagen : '/' + alerta.evidencia_imagen;
             const fullImageUrl = baseUrl + imagePath;
 
@@ -154,10 +154,21 @@ export class AlertasService {
         return result;
     }
 
-    async changeState(id: number, newEstado: string){
+    async changeState(id: number, newEstado: string, reporte_detallado?: string) {
+        const updateData: {
+            estado: string;
+            reporte_detallado?: string;
+        } = { 
+            estado: newEstado 
+        };
+    
+        if (reporte_detallado !== undefined) {
+            updateData.reporte_detallado = reporte_detallado;
+        }
+    
         return await this.prisma.reporte.update({
             where: { id: id },
-            data: { estado: newEstado },
+            data: updateData,
         });
     }
 

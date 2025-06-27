@@ -9,8 +9,8 @@ generator dbml { // Para generar el diagrama de la db
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("SECRET")
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model usuario {
@@ -24,6 +24,7 @@ model usuario {
   estado    String
   reporte   reporte[]
   insignia  String
+  es_moderador Boolean  @default(false)
 }
 
 model reporte {
@@ -37,6 +38,7 @@ model reporte {
   nombre_reportante  String?
   fecha_creacion     DateTime @default(now())
   estado             String
+  reporte_detallado  String?
   usuario            usuario @relation(fields: [user_id], references: [id])
 }
 

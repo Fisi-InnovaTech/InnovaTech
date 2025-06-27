@@ -31,7 +31,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "sonar": "sonar-scanner",
+    "test:sonar": "npm run test:coverage && npm run sonar"
   },
   "eslintConfig": {
     "extends": [
@@ -53,7 +56,60 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "matchmedia-polyfill": "^0.3.2"
+    "@babel/plugin-transform-modules-commonjs": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "@types/jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.2",
+    "jest-junit": "^16.0.0",
+    "jest-transform-css": "^6.0.3",
+    "jest-transform-stub": "^2.0.0",
+    "jest-watch-typeahead": "^3.0.1",
+    "matchmedia-polyfill": "^0.3.2",
+    "sonarqube-scanner": "^4.3.0"
   },
-  "jest": {}
+  "jest": {
+    "coverageReporters": [
+      "lcov",
+      "text-summary",
+      "html"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": [
+        "babel-jest",
+        {
+          "presets": [
+            "@babel/preset-env",
+            "@babel/preset-react"
+          ],
+          "plugins": [
+            "@babel/plugin-transform-modules-commonjs"
+          ]
+        }
+      ],
+      "^.+\\.(svg)$": "jest-transform-stub",
+      "^.+\\.css$": "jest-transform-css"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/index.js",
+      "!src/serviceWorker.js",
+      "!src/reportWebVitals.js",
+      "!src/setupTests.js",
+      "!**/__tests__/**",
+      "!src/**/*.test.{js,jsx,ts,tsx}",
+      "!src/**/*.spec.{js,jsx,ts,tsx}"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/*.(test|spec).{js,jsx,ts,tsx}"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(?:@mui/x-date-pickers|@mui/x-charts|@babel/runtime|react-leaflet)/)"
+    ],
+    "moduleNameMapper": {
+      "dayjs": "<rootDir>/src/__mocks__/dayjs.js"
+    }
+  }
 }

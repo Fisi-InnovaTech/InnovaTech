@@ -1,4 +1,3 @@
-// src/pages/Reportes.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   Container,
@@ -22,39 +21,41 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { styles } from '../components/Estadistica/StatisticsStyle.js';
-import { animales, departamentos } from './RealizarAlerta.js';
+import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from './RealizarAlerta.js';
 import dayjs from 'dayjs';
 
-const monthNames = [
+export const MONTH_NAMES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",
   "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
 ];
-const charters = ['Reportes por Fechas', 'Reportes por Animales', 'Reportes por Region', 'Comparación de Reportes'];
+
+export const CHARTERS = [
+  { id: 'date', label: 'Reportes por Fechas' },
+  { id: 'animal', label: 'Reportes por Animales' },
+  { id: 'region', label: 'Reportes por Region' },
+  { id: 'comparison', label: 'Comparación de Reportes' }
+];
 
 const Reportes = () => {
-  // Selectors
   const [year, setYear] = useState(new Date().getFullYear());
-  const [chartX, setChartX] = useState(charters[0]);
-
-  // Arrays by statistics
+  const [chartX, setChartX] = useState(CHARTERS[0].id);
   const [reports, setReports] = useState([]);
   const [latestReports, setLatestReports] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [animalData, setAnimalData] = useState([]);
   const [regionData, setRegionData] = useState([]);
-  // Add estado data
   const [aprobadoData, setAprobadoData] = useState([]);
   const [rechazadoData, setRechazadoData] = useState([]);
   const navigate = useNavigate();
-  // Callbackend data
+
   useEffect(() => {
     const fetchReports = async (selectedYear) => {
       try {
-        const response = await fetch(`https://innovatech-0rui.onrender.com/alertas/alertsByYear?year=${selectedYear}`);
+        const response = await fetch(`https://innovatech-ztzv.onrender.com/alertas/alertsByYear?year=${selectedYear}`);
         const data = await response.json();
         setReports(data);
       } catch (error) {
-        console.log('Error al conectarse al back:', error);
+        console.error('Error al conectarse al back:', error);
       }
     };
 
@@ -64,90 +65,77 @@ const Reportes = () => {
   useEffect(() => {
     const fetchLatestReports = async () => {
       try {
-        const response = await fetch('https://innovatech-0rui.onrender.com/alertas/latestAlerts');
+        const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/latestAlerts');
         const data = await response.json();
         setLatestReports(data);
       } catch (error) {
-        console.log('Error al conectarse al back:', error);
+        console.error('Error al conectarse al back:', error);
       }
     };
 
     fetchLatestReports();
   }, []);
 
-  // Filter data by month
   useEffect(() => {
     const groupByMonth = reports.reduce((acc, report) => {
       const month = new Date(report.fecha_creacion).getMonth();
-      acc[month] = acc[month] ? acc[month] + 1 : 1;
+      acc[month] = (acc[month] || 0) + 1;
       return acc;
     }, {});
 
-    const data = Array.from({ length: 12 }, (_, i) => ({
-      month: monthNames[i],
-      count: groupByMonth[i] || 0,
+    const data = MONTH_NAMES.map((month, index) => ({
+      month,
+      count: groupByMonth[index] || 0,
     }));
 
     setFilteredData(data);
   }, [reports]);
 
-  // Filter data by animal
   useEffect(() => {
     const animalCounts = reports.reduce((acc, report) => {
       const animal = report.animal_nombre;
-      acc[animal] = acc[animal] ? acc[animal] + 1 : 1;
+      acc[animal] = (acc[animal] || 0) + 1;
       return acc;
     }, {});
 
-    const data = animales.map(animal => ({
-      animal: animal.animal,
-      count: animalCounts[animal.animal] || null,
+    const data = ANIMAL_OPTIONS.map(({ animal }) => ({
+      animal,
+      count: animalCounts[animal] || 0,
     }));
 
     setAnimalData(data);
   }, [reports]);
 
-  // Filter data by region
   useEffect(() => {
     const regionCounts = reports.reduce((acc, report) => {
       const region = report.region;
-      acc[region] = acc[region] ? acc[region] + 1 : 1;
+      acc[region] = (acc[region] || 0) + 1;
       return acc;
     }, {});
 
-    const data = departamentos.map(departamento => ({
-      region: departamento.departamento,
-      count: regionCounts[departamento.departamento] || 0,
+    const data = DEPARTMENT_OPTIONS.map(({ departamento }) => ({
+      region: departamento,
+      count: regionCounts[departamento] || 0,
     }));
 
     setRegionData(data);
   }, [reports]);
 
-  
-  // Filter by estado
-  useEffect(() =>{
+  useEffect(() => {
     const estadosCounts = (status) => {
       return reports.reduce((acc, report) => {
         if (report.estado === status) {
           const month = new Date(report.fecha_creacion).getMonth();
-          acc[month] = acc[month] ? acc[month] + 1 : 1;
+          acc[month] = (acc[month] || 0) + 1;
         }
         return acc;
       }, {});
     };
 
-    const aprobados = estadosCounts('aprobado');
-    const rechazados = estadosCounts('rechazado');
+    setAprobadoData(Array.from({ length: 12 }, (_, i) => estadosCounts('aprobado')[i] || 0));
+    setRechazadoData(Array.from({ length: 12 }, (_, i) => estadosCounts('rechazado')[i] || 0));
+  }, [reports]);
 
-    const createDataArray = (groupedData) => {
-      return Array.from({ length: 12 }, (_, i) => groupedData[i] || 0);
-    };
-
-    setAprobadoData(createDataArray(aprobados));
-    setRechazadoData(createDataArray(rechazados));
-  }, [reports])
-
-  // Manejadores para selectores
   const handleYearChange = (newDate) => {
     setYear(new Date(newDate).getFullYear());
   };
@@ -159,19 +147,19 @@ const Reportes = () => {
   return (
     <Container maxWidth="lg" sx={styles.container}>
       <Box sx={styles.searchBox}>
-        <FormControl  sx={styles.searchField}>
+        <FormControl sx={styles.searchField}>
           <InputLabel id="category-select-label">Gráfico Estadístico</InputLabel>
-          <Select 
+          <Select
             labelId="category-select-label"
             id="category-select"
             value={chartX}
             label="Gráfico Estadístico"
             onChange={handleChartX}
             sx={{ textAlign: "left" }}
-            >
-            {charters.map((chart, index) => (
-              <MenuItem key={index} value={chart}>
-                {chart}
+          >
+            {CHARTERS.map(({ id, label }) => (
+              <MenuItem key={id} value={id}>
+                {label}
               </MenuItem>
             ))}
           </Select>
@@ -180,16 +168,17 @@ const Reportes = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoItem sx={styles.searchField}>
             <DatePicker
-            label={'"Año"'}
-            views={['year']}
-            value={dayjs(new Date(year, 0, 1))}
-            onChange={handleYearChange}/>
+              label={'"Año"'}
+              views={['year']}
+              value={dayjs(new Date(year, 0, 1))}
+              onChange={handleYearChange}
+            />
           </DemoItem>
         </LocalizationProvider>
       </Box>
 
-      <Box style={{width: "100%"}}>
-        {chartX === charters[0] && (
+      <Box style={{ width: "100%" }}>
+        {chartX === 'date' && (
           <BarChart
             dataset={filteredData}
             xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
@@ -197,56 +186,43 @@ const Reportes = () => {
             height={500}
           />
         )}
-        {chartX === charters[1] && (
+        {chartX === 'animal' && (
           <BarChart
             dataset={animalData}
             yAxis={[{ scaleType: 'band', dataKey: 'animal' }]}
             series={[{ dataKey: 'count', label: 'Animal Reports' }]}
             layout="horizontal"
             height={500}
-            sx={{
-              padding: "40px",
-            }}
           />
         )}
-        {chartX === charters[2] && (
+        {chartX === 'region' && (
           <BarChart
             dataset={regionData}
             yAxis={[{ scaleType: 'band', dataKey: 'region' }]}
             series={[{ dataKey: 'count', label: 'Region Reports' }]}
             layout="horizontal"
             height={500}
-            sx={{
-              padding: "20px",
-            }}
           />
         )}
-
-        {chartX === charters[3] && (
+        {chartX === 'comparison' && (
           <LineChart
             xAxis={[
               {
-                data: monthNames.map((_label, index) => index + 1),
-                valueFormatter: (value) => monthNames[value - 1],
+                data: MONTH_NAMES.map((_, index) => index + 1),
+                valueFormatter: (value) => MONTH_NAMES[value - 1],
               },
             ]}
             series={[
-              {
-                data: aprobadoData,
-                label: 'Aprobados',
-              },
-              {
-                data: rechazadoData,
-                label: 'Rechazados',
-              },
+              { data: aprobadoData, label: 'Aprobados' },
+              { data: rechazadoData, label: 'Rechazados' },
             ]}
             height={500}
-            sx={{  width: '100%' }}
+            sx={{ width: '100%' }}
           />
         )}
       </Box>
       
-      <TableContainer component={Paper} sx={{ marginY: "20px"}}>
+      <TableContainer component={Paper} sx={{ marginY: "20px" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -271,7 +247,6 @@ const Reportes = () => {
         </Table>
       </TableContainer>
 
-      
       <Box display="flex" justifyContent="center" padding="1.5rem" mt="auto">
         <Button variant="contained" color="primary" onClick={() => navigate('/moderador')}>
           Volver
@@ -280,5 +255,6 @@ const Reportes = () => {
     </Container>
   );
 };
+
 
 export default Reportes;

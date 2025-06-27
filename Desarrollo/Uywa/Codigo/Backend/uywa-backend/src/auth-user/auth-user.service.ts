@@ -3,24 +3,24 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { hash } from 'bcrypt';
 import { UserRegisterAuthDto } from './dto/UserRegisterAuth.dto';
 import { UserLoginAuthDto } from './dto/UserLoginAuth.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ModeratorLoginAuthDto } from './dto/ModeratorLoginAuthDto';
 import { ModeratorRegisterAuthDto } from './dto/ModeratorRegisterAuthDto';
 
-let users =[];
+let users = [];
 @Injectable()
 export class AuthUserService {
-    
-    constructor (private prisma: PrismaService){}
 
-    async registerUser(user:UserRegisterAuthDto){
-        const {password} = user;
+    constructor(private prisma: PrismaService) { }
+
+    async registerUser(user: UserRegisterAuthDto) {
+        const { password } = user;
         const hashedPassword = await hash(password, 10);
-        user = {...user, password: hashedPassword};
+        user = { ...user, password: hashedPassword };
         console.log(hashedPassword);
 
-        try {       
+        try {
             return await this.prisma.$transaction(async (prisma) => {
                 const newUser = await prisma.usuario.create({
                     data: {
@@ -36,13 +36,13 @@ export class AuthUserService {
                 return newUser;
             });
         } catch (error) {
-            return {message: new BadRequestException('Error al registrar al usuario'), status: 400};
+            throw new BadRequestException('Error al registrar al usuario');
         }
     }
 
-    async registerModerator(moderator: ModeratorRegisterAuthDto){
-        const {password} = moderator;
-        
+    async registerModerator(moderator: ModeratorRegisterAuthDto) {
+        const { password } = moderator;
+
         let hashedPassword;
         // Para evitar que se vuelva a hashear la contraseña al promover un usuario a moderador
         if (password.startsWith('$2b$')) {
@@ -51,8 +51,8 @@ export class AuthUserService {
             hashedPassword = await hash(password, 10);
         }
 
-        moderator = {...moderator, password: hashedPassword};
-        try {       
+        moderator = { ...moderator, password: hashedPassword };
+        try {
             return await this.prisma.moderador.create({
                 data: {
                     nombre: moderator.nombre,
@@ -62,7 +62,7 @@ export class AuthUserService {
                 }
             });
         } catch (error) {
-            return {message: new BadRequestException('Error al registrar al moderador'), status: 400};
+            throw new BadRequestException('Error al registrar al moderador');
         }
     }
 
@@ -83,12 +83,12 @@ export class AuthUserService {
         });
     }
 
-    async upgradeUserToModerator(userId: number){
+    async upgradeUserToModerator(userId: number) {
         const usuario = await this.prisma.usuario.findUnique({
             where: { id: Number(userId) }
         });
 
-        if(!usuario) throw new BadRequestException('Usuario no encontrado');
+        if (!usuario) throw new BadRequestException('Usuario no encontrado');
 
         const newModerator = {
             nombre: usuario.nombre,
@@ -100,12 +100,12 @@ export class AuthUserService {
         return newModerator;
     }
 
-    async upgradeUser(userId: number){
+    async upgradeUser(userId: number) {
         const user = await this.prisma.usuario.findUnique({
             where: { id: Number(userId) }
         });
 
-        if(!user) throw new BadRequestException('Usuario no encontrado');
+        if (!user) throw new BadRequestException('Usuario no encontrado');
 
         const insigniaNumber = parseInt(user.insignia, 10);
         if (isNaN(insigniaNumber)) throw new BadRequestException('Insignia no válida');
@@ -117,12 +117,12 @@ export class AuthUserService {
             }
         });
 
-        if(!newUser) throw new BadRequestException('No se pudo promover al usuario');
+        if (!newUser) throw new BadRequestException('No se pudo promover al usuario');
 
         return newUser;
     }
 
-    async getAllUsers(){
+    async getAllUsers() {
         return await this.prisma.usuario.findMany();
     }
 }

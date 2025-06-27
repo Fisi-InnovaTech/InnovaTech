@@ -52,8 +52,18 @@ export class AlertasController {
     }
 
     @Post('/changingState')
-    changeState(@Body() body: {id: number, estado: string}){
-        return this.alertasService.changeState(body.id,body.estado);
+    changeState(
+        @Body() body: { 
+            id: number, 
+            estado: string, 
+            reporte_detallado?: string 
+        }
+    ) {
+        return this.alertasService.changeState(
+            body.id,
+            body.estado,
+            body.reporte_detallado || null  
+        );
     }
     
     // Funciones para la pestaña de estadísticas

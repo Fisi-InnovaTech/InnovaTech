@@ -39,7 +39,7 @@ const Reportes = () => {
   useEffect(() => {
     const cargarMarcadores = async () => {
       try {
-        const reportes = await fetch('https://innovatech-0rui.onrender.com/auth/allusers');
+        const reportes = await fetch('https://innovatech-ztzv.onrender.com/auth/allusers');
         if (reportes.ok) {
           const datas = await reportes.json();
           const filteredData = datas.filter(report => Number(report.insignia) < 5);
@@ -58,7 +58,7 @@ const Reportes = () => {
 
   async function upgradeModerator(userId) {
     try {
-      const response = await fetch(`https://innovatech-0rui.onrender.com/auth/promoverUser/${userId}`, {
+      const response = await fetch(`https://innovatech-ztzv.onrender.com/auth/promoverUser/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -76,25 +76,7 @@ const Reportes = () => {
     }
   }
 
-  async function changeInsignia(userId) {
-    try {
-      const response = await fetch(`https://innovatech-0rui.onrender.com/auth/promover/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) {
-        console.log("Error al buscar back, no se pudo cambiar el estado: ", response.status);
-      } else {
-        const data = await response.json();
-        return data;
-      }
-    } catch (error) {
-      console.log("Error al conectarse con el back: ", error.message || "Error desconocido");
-    }
-  }
-
+ 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -133,8 +115,8 @@ const Reportes = () => {
             await upgradeModerator(reportId);
             return null;
           }
-          await changeInsignia(reportId);
-          const newInsignia = Number(report.insignia) + 1;
+          await upgradeModerator(reportId);
+          const newInsignia = Number(report.insignia);
           return { ...report, insignia: newInsignia.toString() };
         }
         return report;

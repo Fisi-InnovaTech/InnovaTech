@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Link, useFetchers } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {ReactComponent as Logo} from '../logoprincipal.svg';
 import {useState} from 'react';
 import Dialog from '@mui/material/Dialog';
@@ -22,7 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const images = ['https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icono-de-circulo-de-marca-de-verificacion.png', 'https://static.vecteezy.com/system/resources/previews/001/192/257/non_2x/incorrect-sign-circle-png.png'];
 const message = ['Usuario logueado correctamente' , 'Error, Intente de nuevo']
-const url = "https://innovatech-0rui.onrender.com";
+const url = "https://innovatech-ztzv.onrender.com";
 const loginUrl = url + '/auth/login';
 const loginMod = url + '/auth/login-moderator';
 
@@ -53,8 +52,8 @@ export default function SignInSide() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email?email: "No ingresado",
-        password: password ? password : "No ingresado"
+        email: email || "No ingresado",
+        password: password || "No ingresado"
     })
     }).then(res => res.json()).then(data =>{
       console.log(data);
@@ -92,8 +91,8 @@ export default function SignInSide() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email?email: "No ingresado",
-        password: password ? password : "No ingresado"
+        email: email || "No ingresado",
+        password: password || "No ingresado"
       })
     }
     ).then(res => res.json()).then(data =>{

@@ -1,85 +1,90 @@
-import * as React from 'react';
-import List from '@mui/material/List';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { Container, Snackbar, Typography } from '@mui/material';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
+import { 
+  Box,
+  TextField,
+  MenuItem,
+  FormControl,
+  Select,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Paper,
+  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Alert,
+  CircularProgress,
+  Container, 
+  Snackbar, 
+  Typography,
+  styled 
+} from '@mui/material';
+import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import Mapa from '../components/Mapa/MapaVisualizar';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
-import {useState, useEffect} from 'react';
-import {Alert} from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+// Constantes de configuración
+const MAX_FILE_SIZE_MB = 5;
+const MAX_DESCRIPTION_LENGTH = 1000;
+const MIN_DESCRIPTION_LENGTH = 30;
+const VALID_FILE_TYPES = ['image/jpeg', 'image/png'];
 
-
-
-export const animales = [
-  {"value": 1, "animal": "Anaconda"},
-  {"value": 2, "animal": "Boa"},
-  {"value": 3, "animal": "Cotorra"},
-  {"value": 4, "animal": "Escarabajo"},
-  {"value": 5, "animal": "Escarabajo arlequín"},
-  {"value": 6, "animal": "Gallinazo de cabeza negra"},
-  {"value": 7, "animal": "Garza huaco"},
-  {"value": 8, "animal": "Gavilán acanelado"},
-  {"value": 9, "animal": "Golondrina de mar acollarada"},
-  {"value": 10, "animal": "Golondrina de mar de Markham"},
-  {"value": 11, "animal": "Guanay"},
-  {"value": 12, "animal": "Lagartija"},
-  {"value": 13, "animal": "Lobo marino chusco"},
-  {"value": 14, "animal": "Mantona"},
-  {"value": 15, "animal": "Mono machín negro"},
-  {"value": 16, "animal": "Pihuicho ala amarilla"},
-  {"value": 17, "animal": "Rana acuática"},
-  {"value": 18, "animal": "Rana del Titicaca"},
-  {"value": 19, "animal": "Sapo"},
-  {"value": 20, "animal": "Sapo marino"},
-  {"value": 21, "animal": "Taricaya"},
-  {"value": 22, "animal": "Tortuga motelo"},
-  {"value": 23, "animal": "Venado cola blanca"},
-  {"value": 24, "animal": "Zorro costeño"},
+export const ANIMAL_OPTIONS = [
+  { id: 'animal-1', value: 1, animal: "Anaconda" },
+  { id: 'animal-2', value: 2, animal: "Boa" },
+  { id: 'animal-3', value: 3, animal: "Cotorra" },
+  { id: 'animal-4', value: 4, animal: "Escarabajo" },
+  { id: 'animal-5', value: 5, animal: "Escarabajo arlequín" },
+  { id: 'animal-6', value: 6, animal: "Gallinazo de cabeza negra" },
+  { id: 'animal-7', value: 7, animal: "Garza huaco" },
+  { id: 'animal-8', value: 8, animal: "Gavilán acanelado" },
+  { id: 'animal-9', value: 9, animal: "Golondrina de mar acollarada" },
+  { id: 'animal-10', value: 10, animal: "Golondrina de mar de Markham" },
+  { id: 'animal-11', value: 11, animal: "Guanay" },
+  { id: 'animal-12', value: 12, animal: "Lagartija" },
+  { id: 'animal-13', value: 13, animal: "Lobo marino chusco" },
+  { id: 'animal-14', value: 14, animal: "Mantona" },
+  { id: 'animal-15', value: 15, animal: "Mono machín negro" },
+  { id: 'animal-16', value: 16, animal: "Pihuicho ala amarilla" },
+  { id: 'animal-17', value: 17, animal: "Rana acuática" },
+  { id: 'animal-18', value: 18, animal: "Rana del Titicaca" },
+  { id: 'animal-19', value: 19, animal: "Sapo" },
+  { id: 'animal-20', value: 20, animal: "Sapo marino" },
+  { id: 'animal-21', value: 21, animal: "Taricaya" },
+  { id: 'animal-22', value: 22, animal: "Tortuga motelo" },
+  { id: 'animal-23', value: 23, animal: "Venado cola blanca" },
+  { id: 'animal-24', value: 24, animal: "Zorro costeño" }
 ];
 
-export const departamentos =[
-  {"value": 1, "departamento": "Amazonas"},
-  {"value": 2, "departamento": "Ancash"},
-  {"value": 3, "departamento": "Apurímac"},
-  {"value": 4, "departamento": "Arequipa"},
-  {"value": 5, "departamento": "Ayacucho"},
-  {"value": 6, "departamento": "Cajamarca"},
-  {"value": 7, "departamento": "Callao"},
-  {"value": 8, "departamento": "Cusco"},
-  {"value": 9, "departamento": "Huancavelica"},
-  {"value": 10, "departamento": "Huanuco"},
-  {"value": 11, "departamento": "Ica"},
-  {"value": 12, "departamento": "Junín"},
-  {"value": 13, "departamento": "La Libertad"},
-  {"value": 14, "departamento": "Lambayeque"},
-  {"value": 15, "departamento": "Lima"},
-  {"value": 16, "departamento": "Loreto"},
-  {"value": 17, "departamento": "Madre de Dios"},
-  {"value": 18, "departamento": "Moquegua"},
-  {"value": 19, "departamento": "Pasco"},
-  {"value": 20, "departamento": "Piura"},
-  {"value": 21, "departamento": "Puno"},
-  {"value": 22, "departamento": "San Martín"},
-  {"value": 23, "departamento": "Tacna"},
-  {"value": 24, "departamento": "Tumbes"},
-  {"value": 25, "departamento": "Ucayali"}
-]
+export const DEPARTMENT_OPTIONS = [
+  { id: 'dept-1', value: 1, departamento: "Amazonas" },
+  { id: 'dept-2', value: 2, departamento: "Ancash" },
+  { id: 'dept-3', value: 3, departamento: "Apurímac" },
+  { id: 'dept-4', value: 4, departamento: "Arequipa" },
+  { id: 'dept-5', value: 5, departamento: "Ayacucho" },
+  { id: 'dept-6', value: 6, departamento: "Cajamarca" },
+  { id: 'dept-7', value: 7, departamento: "Callao" },
+  { id: 'dept-8', value: 8, departamento: "Cusco" },
+  { id: 'dept-9', value: 9, departamento: "Huancavelica" },
+  { id: 'dept-10', value: 10, departamento: "Huanuco" },
+  { id: 'dept-11', value: 11, departamento: "Ica" },
+  { id: 'dept-12', value: 12, departamento: "Junín" },
+  { id: 'dept-13', value: 13, departamento: "La Libertad" },
+  { id: 'dept-14', value: 14, departamento: "Lambayeque" },
+  { id: 'dept-15', value: 15, departamento: "Lima" },
+  { id: 'dept-16', value: 16, departamento: "Loreto" },
+  { id: 'dept-17', value: 17, departamento: "Madre de Dios" },
+  { id: 'dept-18', value: 18, departamento: "Moquegua" },
+  { id: 'dept-19', value: 19, departamento: "Pasco" },
+  { id: 'dept-20', value: 20, departamento: "Piura" },
+  { id: 'dept-21', value: 21, departamento: "Puno" },
+  { id: 'dept-22', value: 22, departamento: "San Martín" },
+  { id: 'dept-23', value: 23, departamento: "Tacna" },
+  { id: 'dept-24', value: 24, departamento: "Tumbes" },
+  { id: 'dept-25', value: 25, departamento: "Ucayali" }
+];
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -93,157 +98,182 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function ListDividers() {
-  const [cat, setCat] = React.useState('');
-  const handleChange = (event) => {
-    setCat(event.target.value); };
-  const [finishAlert , setFinishAlert] = useState(false);
+export default function AlertForm() {
+  // Estados
+  const [selectedAnimal, setSelectedAnimal] = useState('');
+  const [finishAlert, setFinishAlert] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [tosendFile, setTosendFile] = useState(null);
-  const [description, setDescrition] = useState('');
-  const [latitud, setLatitud] = useState(0);
-  const [longitud, setLongitud] = useState(0);
-    const url = "https://innovatech-0rui.onrender.com";
+  const [description, setDescription] = useState('');
+  const [latitud, setLatitud] = useState(null);
+  const [longitud, setLongitud] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [file, setFile] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(true);
+  const [errors, setErrors] = useState({
+    animal: false,
+    description: false,
+    location: false,
+    file: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const urlAlertas = url+'/alertas/guardar' 
- 
-    useEffect(() => {
-      if(localStorage.getItem('UW-logged-session') === null){
-      console.log('Usuario no logueado');
+  const url = "https://innovatech-ztzv.onrender.com";
+  const urlAlertas = url + '/alertas/guardar';
+
+  // Efectos
+  useEffect(() => {
+    if (!localStorage.getItem('UW-logged-session')) {
       setOpenAlert(true);
-      //window.location.href = '/iniciar-sesion';
     }
-    else{
-      setOpenAlert(false);
-    }
-    }, []);
- 
-    const handleCloseAlert = () => {
-      setOpenAlert(false);
-      window.location.href = '/iniciar-sesion';
+  }, []);
+
+  // Validar formulario
+  const validateForm = () => {
+    const newErrors = {
+      animal: !selectedAnimal,
+      description: description.length < MIN_DESCRIPTION_LENGTH,
+      location: !latitud || !longitud,
+      file: !tosendFile
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error);
+  };
+
+  // Manejo de cambios
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (!selectedFile) return;
+
+    // Validar tipo de archivo
+    if (!VALID_FILE_TYPES.includes(selectedFile.type)) {
+      setAlertMessage(`Formato no válido. Solo se permiten: ${VALID_FILE_TYPES.map(t => t.split('/')[1]).join(', ')}`);
+      setOpenSnackbar(true);
+      return;
     }
 
-    const handleSumbit = () => {
+    // Validar tamaño
+    const maxSize = MAX_FILE_SIZE_MB * 1024 * 1024;
+    if (selectedFile.size > maxSize) {
+      setAlertMessage(`El archivo es demasiado grande (Máx. ${MAX_FILE_SIZE_MB}MB)`);
+      setOpenSnackbar(true);
+      return;
+    }
+
+    setFile(URL.createObjectURL(selectedFile));
+    setTosendFile(selectedFile);
+    setErrors({...errors, file: false});
+  };
+
+  const handleDescriptionChange = (e) => {
+    if (e.target.value.length <= MAX_DESCRIPTION_LENGTH) {
+      setDescription(e.target.value);
+      setErrors({...errors, description: e.target.value.length < MIN_DESCRIPTION_LENGTH});
+    }
+  };
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+    window.location.href = '/iniciar-sesion';
+  };
+
+  const handleCloseFinishAlert = () => {
+    setFinishAlert(false);
+    window.location.href = '/realizar-alerta';
+  };
+
+  // Envío del formulario
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      setAlertMessage('Por favor complete todos los campos requeridos');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    setIsSubmitting(true);
     setIsButtonDisabled(true);
-    console.log({latitud, longitud });
-    console.log(animales[cat-1].animal);
-    console.log(description);
-    console.log(file);
-    console.log(tosendFile);
-    console.log('Subiendo archivo');
-    if(localStorage.getItem('UW-logged-session') === null){
-      console.log('Usuario no logueado');
-      setOpenAlert(true);
-      //window.location.href = '/iniciar-sesion';
-    }
-    else{
-      setOpenAlert(false);
+
+    try {
       const userLogged = JSON.parse(localStorage.getItem('UW-logged-session'));
-      console.log(userLogged);
-      console.log(userLogged.nombre)
-      
+      const selectedAnimalData = ANIMAL_OPTIONS.find(animal => animal.value == selectedAnimal);
+
       let formData = new FormData();
-      formData.append('user_id', userLogged.id);
-      formData.append('animal_nombre', animales[cat-1].animal || 'No ingresado');
-      formData.append('nombre_reportante', userLogged.nombre);
-      formData.append('fecha_creacion', '2024-12-12');
+      formData.append('user_id', isAnonymous ? '' : userLogged.id);
+      formData.append('animal_nombre', selectedAnimalData?.animal || '');
+      formData.append('nombre_reportante', isAnonymous ? 'Anónimo' : userLogged.nombre);
+      formData.append('fecha_creacion', new Date().toISOString());
       formData.append('latitud', latitud);
       formData.append('longitud', longitud);
       formData.append('descripcion', description);
       formData.append('estado', 'pendiente');
       formData.append('evidencia_imagen', tosendFile);
-      
-      fetch(urlAlertas, {
+      formData.append('es_anonimo', isAnonymous);
+
+      const response = await fetch(urlAlertas, {
         method: 'POST',
         body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        setFinishAlert(true);
-        setIsButtonDisabled(false);
-        window.location.href('/realizar-alerta')
-      })
-      .catch(error => {
-        console.log(error);
       });
 
+      if (!response.ok) throw new Error('Error en el servidor');
 
-  }
-  }
-  //Estilos
-  const labelName = {
-    py:1.5,
-    px:2,
-    backgroundColor:'#FB9678',
-    color:'#FFFFFF',
-    textAlign:'left',
-    fontWeight:'bold'
-  }
-
-
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [file, setFile] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    const fileType = selectedFile.type;
-    if(!fileType.includes('image')) {
-      setAlertMessage('Solo se permiten archivos de imagen (JPG, PNG)');
-      setOpen(true);
-    }
-    else{
-      setFile(URL.createObjectURL(selectedFile));
-      setTosendFile(selectedFile);
+      await response.json();
+      setFinishAlert(true);
+    } catch (error) {
+      console.error('Error:', error);
+      setAlertMessage('Error al enviar la alerta. Por favor intente nuevamente');
+      setOpenSnackbar(true);
+    } finally {
+      setIsSubmitting(false);
+      setIsButtonDisabled(false);
     }
   };
-  const handleClose = ()=>{
-    setOpen(false);
-  }
 
-  const handleCloseFinishAlert = () => {
-    setFinishAlert(false);
-  }
+  // Componentes de UI
+  const labelName = {
+    py: 1.5,
+    px: 2,
+    backgroundColor: '#FB9678',
+    color: '#FFFFFF',
+    textAlign: 'left',
+    fontWeight: 'bold'
+  };
 
   return (
-    <Container sx={{display:'flex', minWidth:'100%', justifyContent:'center', marginTop:'70px', backgroundColor:'#EDF1F5'}}>
-      <Paper sx={{width: {xs:'95%', sm:'70%',md:'60%'}, justifyContent:'center', margin:4}}>
-
-
-
-      {/* ... */}
+    <Container sx={{ display: 'flex', minWidth: '100%', justifyContent: 'center', marginTop: '70px', backgroundColor: '#EDF1F5' }}>
+      {/* Diálogos */}
       <Dialog
         open={openAlert}
         onClose={handleCloseAlert}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Usuario no logueado"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Acceso Requerido"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Debe iniciar sesión para realizar una alerta
+            Debes iniciar sesión para acceder a esta página. Serás redirigido a la página de inicio de sesión.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAlert} color="primary" autoFocus>
-            Aceptar
+            Entendido
           </Button>
         </DialogActions>
       </Dialog>
 
-      
       <Dialog
         open={finishAlert}
         onClose={handleCloseFinishAlert}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Alerta Realizada Correctamente"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Alerta Enviada"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Para visualizar su alerta debe esperar a que sea revisada por un moderador
+            Tu alerta ha sido enviada correctamente.
+            <br /><br />
+            Recibirás una notificación cuando sea revisada por nuestros moderadores.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -253,96 +283,224 @@ export default function ListDividers() {
         </DialogActions>
       </Dialog>
 
+      {/* Formulario */}
+      {localStorage.getItem('UW-logged-session') && (
+        <Paper sx={{ width: { xs: '95%', sm: '70%', md: '60%' }, justifyContent: 'center', margin: 4 }}>
+          {/* Sección de imagen */}
+          <Box sx={{ p: 2 }}>
+            <Typography sx={labelName}>EVIDENCIA FOTOGRÁFICA *</Typography>
+            <Box sx={{ 
+              border: `2px dashed ${errors.file ? 'red' : '#ccc'}`,
+              borderRadius: 2,
+              p: 3,
+              textAlign: 'center',
+              mb: 2,
+              backgroundColor: '#f9f9f9'
+            }}>
+              <CloudUploadIcon sx={{ fontSize: 50, color: errors.file ? 'red' : '#FB9678', mb: 1 }} />
+              <Typography variant="h6" sx={{ mb: 1 }}>Subir imagen del suceso</Typography>
+              <Typography variant="body2" sx={{ mb: 2, color: errors.file ? 'red' : 'text.secondary' }}>
+                Formatos aceptados: JPG, PNG (Máx. {MAX_FILE_SIZE_MB}MB)
+              </Typography>
+              
+              <Button
+                component="label"
+                variant="contained"
+                size="medium"
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  backgroundColor: errors.file ? 'red' : '#FB9678',
+                  '&:hover': { backgroundColor: errors.file ? '#d32f2f' : '#E87A5D' }
+                }}
+              >
+                Seleccionar archivo
+                <VisuallyHiddenInput 
+                  type="file" 
+                  onChange={handleFileChange}
+                  accept={VALID_FILE_TYPES.join(',')} 
+                />
+              </Button>
+            </Box>
 
-
-        <Box aria-label='archivo-subida'>
-          <Typography sx={labelName}> SUBIR ARCHIVO </Typography>
-          <Typography sx={{py:2}}> Solo formato JPG,PNG </Typography>
-          <Button
-            component="label"
-            role={undefined}
-            variant="outlined"
-            size="large"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-            sx={{mb:3}}
-          >
-            Subir archivo
-            <VisuallyHiddenInput type="file" onChange={handleFileChange} />
-          </Button>
-          <Grid>
             {file && (
-              <img src={file} alt="Archivo seleccionado" style={{ width: '40%', height: 'auto' }} />
-              )}
-          </Grid>
-        </Box>
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>Vista previa:</Typography>
+                <Box sx={{
+                  position: 'relative',
+                  width: '100%',
+                  maxWidth: 400,
+                  border: '1px solid #eee',
+                  borderRadius: 1,
+                  overflow: 'hidden'
+                }}>
+                  <img 
+                    src={file} 
+                    alt="Previsualización" 
+                    style={{ width: '100%', height: 'auto' }} 
+                  />
+                  <Button 
+                    onClick={() => {
+                      setFile(null);
+                      setTosendFile(null);
+                      setErrors({...errors, file: true});
+                    }}
+                    sx={{ position: 'absolute', top: 8, right: 8 }}
+                  >
+                    ✕
+                  </Button>
+                </Box>
+                <Typography variant="caption">
+                  {tosendFile?.name} - {(tosendFile?.size / 1024 / 1024).toFixed(2)}MB
+                </Typography>
+              </Box>
+            )}
+          </Box>
 
-        
-        <Box>
-
-          <Typography sx={labelName}> DESCRIPCION DEL CASO </Typography>
-          <Box sx={{flexGrow:1, p:3}}> 
-
-            <Grid container spacing={2} sx={{justifyContent:'left'}}>
-
-              <Grid item xs={12} md={6}>
-                <List aria-label='datos-caso-animal'>
-
-                  <FormControl sx={{width:'90%'}}>
-                    <Typography sx={{textAlign:'left', mb:2}}>Seleccionar animal</Typography>
+          {/* Sección de descripción */}
+          <Box sx={{ p: 2 }}>
+            <Typography sx={labelName}>DESCRIPCIÓN DEL CASO *</Typography>
+            <Box sx={{ flexGrow: 1, p: 3 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={errors.animal}>
+                    <Typography sx={{ textAlign: 'left', mb: 2 }}>Seleccionar animal *</Typography>
                     <Select
-                      labelId="category-select-label"
-                      id="category-select"
-                      value={cat}
-                      label=""
-                      onChange={handleChange}
-                      inputProps={{id:'category-input'}}
+                      value={selectedAnimal}
+                      onChange={(e) => {
+                        setSelectedAnimal(e.target.value);
+                        setErrors({...errors, animal: false});
+                      }}
+                      error={errors.animal}
                     >
-                      {animales.map((tipo, index) => (
-                        <MenuItem key={index} value={tipo.value}>
-                          {tipo.animal}
+                      <MenuItem value=""><em>Seleccione un animal</em></MenuItem>
+                      {ANIMAL_OPTIONS.map((animal) => (
+                        <MenuItem key={animal.id} value={animal.value}>
+                          {animal.animal}
                         </MenuItem>
                       ))}
                     </Select>
+                    {errors.animal && <Typography color="error" variant="caption">Este campo es requerido</Typography>}
                   </FormControl>
-                </List>
-              </Grid>
+                </Grid>
 
-              <Grid item xs ={11.5}>
-                <Typography sx={{textAlign:'left', mb:2}}>Describir el caso</Typography>
-                <TextField 
-                  id="hechos-descripcion"
-                  multiline
-                  rows={5}
-                  defaultValue=" "
-                  value={description}
-                  onChange = {(e) => {setDescrition(e.target.value)}}
-                  sx={{ width:'100%' }}
-                />
+                <Grid item xs={12}>
+                  <Typography sx={{ textAlign: 'left', mb: 2 }}>Describa el caso en detalle *</Typography>
+                  <TextField
+                    multiline
+                    rows={5}
+                    value={description}
+                    onChange={handleDescriptionChange}
+                    error={errors.description}
+                    helperText={
+                      errors.description 
+                        ? `Mínimo ${MIN_DESCRIPTION_LENGTH} caracteres (actual: ${description.length})` 
+                        : `${description.length}/${MAX_DESCRIPTION_LENGTH} caracteres`
+                    }
+                    fullWidth
+                  />
+                </Grid>
               </Grid>
-
-            </Grid>
+            </Box>
           </Box>
 
-        
-        <Box aria-label='marca-ubicacion'>
-          <Typography sx={labelName}>UBICACION</Typography>
-          <Box sx={{ width: "100%", height: "60vh" }}>
-            
-            <Mapa lat={setLatitud} long = {setLongitud}/>
-
+          {/* Sección de ubicación */}
+          <Box sx={{ p: 2 }}>
+            <Typography sx={labelName}>UBICACIÓN *</Typography>
+            <Box sx={{ width: "100%", height: "60vh", position: 'relative' }}>
+              <Mapa 
+                lat={setLatitud} 
+                long={setLongitud} 
+                onError={() => {
+                  setErrors({...errors, location: true});
+                  setAlertMessage('Debe seleccionar una ubicación dentro del territorio nacional');
+                  setOpenSnackbar(true);
+                }}
+              />
+              {errors.location && (
+                <Box sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'rgba(255,0,0,0.1)',
+                  p: 1,
+                  textAlign: 'center'
+                }}>
+                  <Typography color="error">Seleccione una ubicación válida</Typography>
+                </Box>
+              )}
+            </Box>
           </Box>
-        </Box>
 
-        <FormGroup>
-            <FormControlLabel control={<Checkbox defaultChecked />} sx={{p:3}} label="Subir de forma anónima" />
-        </FormGroup>
-        <Divider/>
-        <Button variant="contained" onClick = {handleSumbit} disabled={isButtonDisabled} sx={{m:4}}>Enviar</Button>   
-      </Box>
-      </Paper>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {/* Privacidad */}
+          <Box sx={{ p: 2 }}>
+            <Typography sx={labelName}>CONFIDENCIALIDAD</Typography>
+            <FormGroup sx={{ p: 3 }}>
+              <FormControlLabel 
+                control={
+                  <Checkbox 
+                    checked={isAnonymous}
+                    onChange={(e) => setIsAnonymous(e.target.checked)}
+                  />
+                } 
+                label={
+                  <>
+                    Enviar de forma anónima
+                    <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }}>
+                      {isAnonymous 
+                        ? 'Tu identidad no será revelada' 
+                        : 'Tu nombre será visible en la alerta'}
+                    </Typography>
+                  </>
+                } 
+              />
+            </FormGroup>
+          </Box>
+
+          {/* Envío */}
+          <Box sx={{ p: 2, textAlign: 'center' }}>
+            <Button 
+              variant="contained" 
+              onClick={handleSubmit} 
+              disabled={isButtonDisabled}
+              sx={{ 
+                m: 2,
+                minWidth: 200,
+                backgroundColor: '#FB9678',
+                '&:hover': { backgroundColor: '#E87A5D' }
+              }}
+            >
+              {isSubmitting ? (
+                <>
+                  <CircularProgress size={24} sx={{ color: 'white', mr: 1 }} />
+                  Enviando...
+                </>
+              ) : 'Enviar Alerta'}
+            </Button>
+            <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }}>
+              * Campos obligatorios
+            </Typography>
+            <Typography variant="caption" display="block" sx={{ color: 'text.secondary', mt: 2 }}>
+              Al enviar esta alerta aceptas nuestros términos y condiciones de uso.
+              <br />
+              Nos comprometemos a proteger tu privacidad y no almacenamos información sensible.
+            </Typography>
+          </Box>
+        </Paper>
+      )}
+
+      {/* Notificaciones */}
+      <Snackbar 
+        open={openSnackbar} 
+        autoHideDuration={6000} 
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setOpenSnackbar(false)} 
+          severity="error" 
+          sx={{ width: '100%' }}
+        >
           {alertMessage}
         </Alert>
       </Snackbar>

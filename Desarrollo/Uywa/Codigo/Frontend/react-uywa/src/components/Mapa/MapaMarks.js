@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { useGoogleMaps } from './GoogleMapsLoader';
 
@@ -8,7 +9,6 @@ const center = {
 };
 
 function MapaMarcadores({ markerData }) {
-  
   const { isLoaded } = useGoogleMaps();
   const [selectedMarker, setSelectedMarker] = useState(null);
 
@@ -19,11 +19,10 @@ function MapaMarcadores({ markerData }) {
 
   const handleMarkerClick = useCallback((marker) => {
     setSelectedMarker(marker);
-    console.log(marker);
   }, []);
 
   const handleMapClick = useCallback(() => {
-    setSelectedMarker(null); // Close InfoWindow when clicking on the map
+    setSelectedMarker(null);
   }, []);
 
   return isLoaded ? (
@@ -40,10 +39,10 @@ function MapaMarcadores({ markerData }) {
         />
       ))}
       {selectedMarker && (
-        <InfoWindow position={{ lat: selectedMarker.latitud, lng: selectedMarker.longitud }} >
+        <InfoWindow position={{ lat: selectedMarker.latitud, lng: selectedMarker.longitud }}>
           <div style={{ maxWidth: "200px", margin: "0", padding: "0" }}>
             <img src={selectedMarker.evidencia_imagen} alt={selectedMarker.animal_nombre} style={{ width: "100%" }} />
-            <h3 >{selectedMarker.animal_nombre}</h3>
+            <h3>{selectedMarker.animal_nombre}</h3>
             <p>{selectedMarker.descripcion}</p>
           </div>
         </InfoWindow>
@@ -51,5 +50,18 @@ function MapaMarcadores({ markerData }) {
     </GoogleMap>
   ) : <></>;
 }
+
+MapaMarcadores.propTypes = {
+  markerData: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      latitud: PropTypes.number.isRequired,
+      longitud: PropTypes.number.isRequired,
+      evidencia_imagen: PropTypes.string.isRequired,
+      animal_nombre: PropTypes.string.isRequired,
+      descripcion: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
 
 export default MapaMarcadores;

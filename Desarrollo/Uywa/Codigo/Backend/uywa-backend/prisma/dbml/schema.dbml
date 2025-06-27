@@ -13,6 +13,7 @@ Table usuario {
   estado String [not null]
   reporte reporte [not null]
   insignia String [not null]
+  es_moderador Boolean [not null, default: false]
 }
 
 Table reporte {
@@ -26,6 +27,7 @@ Table reporte {
   nombre_reportante String
   fecha_creacion DateTime [default: `now()`, not null]
   estado String [not null]
+  reporte_detallado String
   usuario usuario [not null]
 }
 

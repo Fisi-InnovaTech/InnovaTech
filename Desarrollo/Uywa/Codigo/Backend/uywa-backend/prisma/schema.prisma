@@ -24,6 +24,7 @@ model usuario {
   estado    String
   reporte   reporte[]
   insignia  String
+  es_moderador Boolean  @default(false)
 }
 
 model reporte {

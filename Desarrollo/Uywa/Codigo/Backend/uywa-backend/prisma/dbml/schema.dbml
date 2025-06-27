@@ -13,6 +13,7 @@ Table usuario {
   estado String [not null]
   reporte reporte [not null]
   insignia String [not null]
+  es_moderador Boolean [not null, default: false]
 }
 
 Table reporte {

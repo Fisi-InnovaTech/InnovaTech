@@ -4,100 +4,85 @@ import { hash } from 'bcrypt';
 import { UserRegisterAuthDto } from './dto/UserRegisterAuth.dto';
 import { UserLoginAuthDto } from './dto/UserLoginAuth.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
 import { ModeratorLoginAuthDto } from './dto/ModeratorLoginAuthDto';
 import { ModeratorRegisterAuthDto } from './dto/ModeratorRegisterAuthDto';
 
-let users = [];
 @Injectable()
 export class AuthUserService {
-
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService) {}
 
     async registerUser(user: UserRegisterAuthDto) {
-        const { password } = user;
-        const hashedPassword = await hash(password, 10);
-        user = { ...user, password: hashedPassword };
-        console.log(hashedPassword);
-
+        const hashedPassword = await hash(user.password, 10);
+        
         try {
-            return await this.prisma.$transaction(async (prisma) => {
-                const newUser = await prisma.usuario.create({
-                    data: {
-                        nombre: user.nombre,
-                        apellidos: user.apellidos,
-                        correo: user.correo,
-                        dni: user.dni,
-                        password: user.password,
-                        estado: user.estado as string,
-                        insignia: user.insignias || '1'
-                    }
-                });
-                return newUser;
+            return await this.prisma.usuario.create({
+                data: {
+                    nombre: user.nombre,
+                    apellidos: user.apellidos,
+                    correo: user.correo,
+                    dni: user.dni,
+                    password: hashedPassword,
+                    estado: 'activo',
+                    insignia: '1'
+                }
             });
         } catch (error) {
-            throw new BadRequestException('Error al registrar al usuario');
+            throw new BadRequestException('Error al registrar usuario');
         }
     }
 
     async registerModerator(moderator: ModeratorRegisterAuthDto) {
-        const { password } = moderator;
+        const hashedPassword = moderator.password.startsWith('$2b$') 
+            ? moderator.password 
+            : await hash(moderator.password, 10);
 
-        let hashedPassword;
-        // Para evitar que se vuelva a hashear la contraseña al promover un usuario a moderador
-        if (password.startsWith('$2b$')) {
-            hashedPassword = password;
-        } else {
-            hashedPassword = await hash(password, 10);
-        }
-
-        moderator = { ...moderator, password: hashedPassword };
         try {
             return await this.prisma.moderador.create({
                 data: {
                     nombre: moderator.nombre,
                     apellidos: moderator.apellidos,
                     correo: moderator.correo,
-                    password: moderator.password,
+                    password: hashedPassword,
                 }
             });
         } catch (error) {
-            throw new BadRequestException('Error al registrar al moderador');
+            throw new BadRequestException('Error al registrar moderador');
         }
     }
 
-
     async getUser(user: UserLoginAuthDto): Promise<usuario> {
-        return await this.prisma.usuario.findUnique({
-            where: {
-                correo: user.email
-            }
+        return this.prisma.usuario.findUnique({
+            where: { correo: user.email }
         });
     }
 
     async getModerator(moderator: ModeratorLoginAuthDto): Promise<moderador> {
-        return await this.prisma.moderador.findUnique({
-            where: {
-                correo: moderator.email
-            }
+        return this.prisma.moderador.findUnique({
+            where: { correo: moderator.email }
+        });
+    }
+
+    async getModeratorById(id: number): Promise<moderador> {
+        return this.prisma.moderador.findUnique({
+            where: { id }
         });
     }
 
     async upgradeUserToModerator(userId: number) {
-        const usuario = await this.prisma.usuario.findUnique({
+        const user = await this.prisma.usuario.findUnique({
             where: { id: Number(userId) }
         });
 
-        if (!usuario) throw new BadRequestException('Usuario no encontrado');
-
-        const newModerator = {
-            nombre: usuario.nombre,
-            apellidos: usuario.apellidos,
-            correo: usuario.correo,
-            password: usuario.password
+        if (!user) {
+            throw new BadRequestException('Usuario no encontrado');
         }
 
-        return newModerator;
+        return {
+            nombre: user.nombre,
+            apellidos: user.apellidos,
+            correo: user.correo,
+            password: user.password
+        };
     }
 
     async upgradeUser(userId: number) {
@@ -105,24 +90,19 @@ export class AuthUserService {
             where: { id: Number(userId) }
         });
 
-        if (!user) throw new BadRequestException('Usuario no encontrado');
+        if (!user) {
+            throw new BadRequestException('Usuario no encontrado');
+        }
 
-        const insigniaNumber = parseInt(user.insignia, 10);
-        if (isNaN(insigniaNumber)) throw new BadRequestException('Insignia no válida');
+        const newInsignia = String(parseInt(user.insignia, 10) + 1);
 
-        const newUser = await this.prisma.usuario.update({
+        return this.prisma.usuario.update({
             where: { id: Number(userId) },
-            data: {
-                insignia: String(insigniaNumber + 1)
-            }
+            data: { insignia: newInsignia }
         });
-
-        if (!newUser) throw new BadRequestException('No se pudo promover al usuario');
-
-        return newUser;
     }
 
     async getAllUsers() {
-        return await this.prisma.usuario.findMany();
+        return this.prisma.usuario.findMany();
     }
 }

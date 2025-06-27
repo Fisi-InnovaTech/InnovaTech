@@ -11,7 +11,7 @@ import Footer from './components/Footer/Footer';
 import Reportes from './pages/ReportesMod';
 import ModeradorPrincipal from './pages/Moderador';
 import Profile from './pages/Profile';
-import Report from './pages/google/EstadisticaAlertUI';
+import Report from './pages/EstadisticaAlertUI';
 import Promover from './pages/PromoverUsuario';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 

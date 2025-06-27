@@ -20,8 +20,8 @@ import { BarChart, LineChart } from '@mui/x-charts';
 import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { styles } from '../../components/Estadistica/StatisticsStyle.js';
-import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from '../RealizarAlerta.js';
+import { styles } from '../components/Estadistica/StatisticsStyle.js';
+import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from './RealizarAlerta.js';
 import dayjs from 'dayjs';
 
 export const MONTH_NAMES = [

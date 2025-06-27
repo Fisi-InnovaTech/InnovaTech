@@ -1,27 +1,30 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
+import { 
+  Box,
+  TextField,
+  MenuItem,
+  FormControl,
+  Select,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Paper,
+  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Alert,
+  CircularProgress,
+  Container, 
+  Snackbar, 
+  Typography,
+  styled 
+} from '@mui/material';
+import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import Mapa from '../components/Mapa/MapaVisualizar';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Alert, CircularProgress } from '@mui/material';
-import { Container, Snackbar, Typography } from '@mui/material';
-
 // Constantes de configuración
 const MAX_FILE_SIZE_MB = 5;
 const MAX_DESCRIPTION_LENGTH = 1000;
@@ -194,7 +197,7 @@ export default function AlertForm() {
 
     try {
       const userLogged = JSON.parse(localStorage.getItem('UW-logged-session'));
-      const selectedAnimalData = ANIMAL_OPTIONS.find(animal => animal.value === selectedAnimal);
+      const selectedAnimalData = ANIMAL_OPTIONS.find(animal => animal.value == selectedAnimal);
 
       let formData = new FormData();
       formData.append('user_id', isAnonymous ? '' : userLogged.id);

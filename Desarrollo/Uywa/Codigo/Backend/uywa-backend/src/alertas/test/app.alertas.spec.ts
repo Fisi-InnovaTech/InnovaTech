@@ -106,7 +106,7 @@ describe('AlertasController', () => {
   });
   describe('changeState', () => {
     it('should change the state of an alert', async () => {
-      const body = { id: 1, estado: 'new state' };
+      const body = { id: 1, estado: 'new state' , reporte_detalado: 'reporte'};
       const result = await controller.changeState(body);
       expect(result).toEqual({ id: 1, estado: 'new state' });
       expect(service.changeState).toHaveBeenCalledWith(1, 'new state');

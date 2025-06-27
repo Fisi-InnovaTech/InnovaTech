@@ -20,16 +20,16 @@ import { BarChart, LineChart } from '@mui/x-charts';
 import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { styles } from '../components/Estadistica/StatisticsStyle.js';
-import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from './RealizarAlerta.js';
+import { styles } from '../../components/Estadistica/StatisticsStyle.js';
+import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from '../RealizarAlerta.js';
 import dayjs from 'dayjs';
 
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",
   "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
 ];
 
-const CHARTERS = [
+export const CHARTERS = [
   { id: 'date', label: 'Reportes por Fechas' },
   { id: 'animal', label: 'Reportes por Animales' },
   { id: 'region', label: 'Reportes por Region' },

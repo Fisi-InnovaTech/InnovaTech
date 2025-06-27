@@ -133,45 +133,111 @@ function VerAlertaGoogle() {
         setError('Error al cargar los marcadores');
       }
     } catch (error) {
-      setError('Error de conexión al servidor');
+      console.error('Error en la operación:', error);
+      
+      let errorMessage = 'Error de conexión al servidor';
+      
+      if (error.name === 'AbortError') {
+        errorMessage = 'La solicitud fue cancelada';
+      } else if (error.response) {
+        errorMessage = `Error del servidor: ${error.response.status} - ${error.response.data?.message || 'Sin detalles'}`;
+      } else if (error.request) {
+        errorMessage = 'El servidor no respondió. Verifica tu conexión a internet';
+      } else if (error instanceof TypeError) {
+        errorMessage = 'Error de tipo en la aplicación';
+      } else if (error instanceof SyntaxError) {
+        errorMessage = 'Error en el formato de los datos';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+    
+      setError(errorMessage);
+      setOpenSnackbar(true);
+      
+      if (process.env.NODE_ENV === 'production') {
+        logErrorToService(error);
+      }
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
+      setIsButtonDisabled(false);
     }
   };
 
   // Handle search with filters
-  const handleSearch = async () => {
-    if (fechaIni > fechaFin) {
-      setError('La fecha inicial no puede ser mayor a la fecha final');
-      return;
-    }
+  // Extracted validation function
+const validateSearchParams = () => {
+  if (fechaIni > fechaFin) {
+    setError('La fecha inicial no puede ser mayor a la fecha final');
+    return false;
+  }
+  return true;
+};
 
-    setLoading(true);
-    setProgressStatus("Buscando alertas...");
-    const params = new URLSearchParams();
-    if (fechaIni) params.append('fecha_ini', fechaIni.format('YYYY-MM-DD'));
-    if (fechaFin) params.append('fecha_fin', fechaFin.format('YYYY-MM-DD'));
-    if (animal) params.append('animal', animal);
-    if (region) params.append('region', region);
+// Extracted parameter builder function
+const buildSearchParams = () => {
+  const params = new URLSearchParams();
+  if (fechaIni) params.append('fecha_ini', fechaIni.format('YYYY-MM-DD'));
+  if (fechaFin) params.append('fecha_fin', fechaFin.format('YYYY-MM-DD'));
+  if (animal) params.append('animal', animal);
+  if (region) params.append('region', region);
+  return params;
+};
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/alertas/search?${params.toString()}`);
-      if (response.ok) {
-        setProgressStatus("Filtrando resultados...");
-        const data = await response.json();
-        setMarkerData(data);
-        if (data.length === 0) {
-          setError('No se encontraron alertas con los filtros seleccionados');
-        }
-      } else {
-        setError('Error al buscar alertas');
-      }
-    } catch (error) {
-      setError('Error de conexión al servidor');
-    } finally {
-      setLoading(false);
-    }
-  };
+// Extracted response handler function
+const handleSearchResponse = async (response) => {
+  if (!response.ok) {
+    throw new Error('Error al buscar alertas');
+  }
+
+  const data = await response.json();
+  setMarkerData(data);
+  
+  if (data.length === 0) {
+    setError('No se encontraron alertas con los filtros seleccionados');
+  }
+};
+
+// Refactored main function
+const handleSearch = async () => {
+  if (!validateSearchParams()) return;
+
+  setLoading(true);
+  setProgressStatus("Buscando alertas...");
+
+  try {
+    const params = buildSearchParams();
+    const response = await fetch(`${API_BASE_URL}/alertas/search?${params.toString()}`);
+    await handleSearchResponse(response);
+  } catch (error) {
+    handleSearchError(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Extracted error handler (reusable for other API calls)
+const handleSearchError = (error) => {
+  console.error('Error en la operación:', error);
+  
+  let errorMessage = 'Error de conexión al servidor';
+  
+  if (error.name === 'AbortError') {
+    errorMessage = 'La solicitud fue cancelada';
+  } else if (error.response) {
+    errorMessage = `Error del servidor: ${error.response.status} - ${error.response.data?.message || 'Sin detalles'}`;
+  } else if (error.request) {
+    errorMessage = 'El servidor no respondió. Verifica tu conexión a internet';
+  } else if (error.message) {
+    errorMessage = error.message;
+  }
+
+  setError(errorMessage);
+  setOpenSnackbar(true);
+  
+  if (process.env.NODE_ENV === 'production') {
+    logErrorToService(error);
+  }
+};
 
   // Reset all filters
   const handleReset = async () => {

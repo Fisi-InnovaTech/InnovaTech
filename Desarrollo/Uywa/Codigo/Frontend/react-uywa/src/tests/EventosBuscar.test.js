@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Cuadro from './EventosBuscar';
+import Cuadro from '../pages/EventosBuscar';
 
 test('renders Cuadro component with search fields and button', () => {
   const { getByText, getByLabelText } = render(<Cuadro />);

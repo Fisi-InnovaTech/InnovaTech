@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: wasa
+      POSTGRES_PASSWORD: wasa
+      POSTGRES_DB: uywa
+    ports:
+      - '5499:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    # Agregar healthcheck para asegurar que la DB esté lista
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U wasa -d uywa']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

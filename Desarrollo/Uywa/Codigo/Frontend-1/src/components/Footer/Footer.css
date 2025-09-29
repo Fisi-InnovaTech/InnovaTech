@@ -1,0 +1,91 @@
+.footer-container {
+  padding: 20 px;
+  background-color: #212429;
+
+}
+
+.footer-logo {
+  margin: 5px 0 0 15px;
+  width: 150px;
+}
+
+.footer-section {
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.custom-link {
+  color: white;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.custom-link:hover {
+  opacity: 0.8;
+}
+
+.email-input {
+  background-color: white;
+  width: 100%;
+  min-width: 250px;
+  max-width: 350px;
+  margin-right: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.send-button {
+  border-radius: 0 8px 8px 0;
+  height: 56px;
+  background-color: #E52F60 !important;
+  color: white;
+  width: 100%;
+  max-width: 180px;
+  margin-top: 0;
+}
+
+.send-button:focus {
+  background-color: #E52F60 !important;
+}
+
+.send-button:active {
+  background-color: #F9C22E !important;
+}
+
+.letraBlanca {
+  color: rgb(168, 166, 166);
+  font-size: 6px;
+}
+
+.line {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #D9D9D9;
+  margin: 0;
+}
+
+.copy-right {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
+ 
+}
+
+.footer-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer-links a {
+  margin: 0 10px;
+  padding: 2px;
+  
+}
+
+.logo-svg {
+  width: 200px;
+  height: 200px;
+}
+

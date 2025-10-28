@@ -16,6 +16,12 @@ export class LoginAuthDto {
     minLength: 8,
   })
   email: string;
+  @ApiProperty({
+    example: 'SuperSecreto123',
+    description: 'Contraseña del usuario (mínimo 8 caracteres)',
+    minLength: 8,
+    required: true,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(8)

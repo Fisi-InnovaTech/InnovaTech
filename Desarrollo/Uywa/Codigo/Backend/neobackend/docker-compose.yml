@@ -19,5 +19,21 @@ services:
       timeout: 5s
       retries: 5
 
+  # nuevo servicio para el backend Nest
+  nest-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+    restart: always
 volumes:
   db_data:

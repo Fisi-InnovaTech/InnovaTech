@@ -9,6 +9,7 @@ import {
   ValidationPipe,
   HttpCode,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -17,8 +18,11 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiOperation,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ResponseAuthDto } from './dto/reponse-auth.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginAuthDto } from './dto/login-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -52,9 +56,33 @@ export class AuthController {
     }
   }
 
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  )
+  @HttpCode(200)
   @Post('login')
-  login() {
-    return 'Login endpoint';
+  @ApiOperation({ summary: 'Iniciar sesión' })
+  @ApiBody({ type: LoginAuthDto })
+  @ApiCreatedResponse({
+    description: 'Login exitoso',
+    type: LoginResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales inválidas',
+  })
+  @ApiBadRequestResponse({
+    description: 'Datos de entrada inválidos',
+  })
+  async login(@Body() loginAuthDto: LoginAuthDto): Promise<LoginResponseDto> {
+    try {
+      return await this.authService.login(loginAuthDto);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
   }
 
   @Get()

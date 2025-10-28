@@ -25,6 +25,8 @@ model Usuario {
   Alertas         Alertas[]
   rolId           Int       @default(1)
   rol             Roles     @relation(fields: [rolId], references: [id])
+
+  Reporte Reporte[]
 }
 
 model Roles {
@@ -41,4 +43,19 @@ model Alertas {
   fecha_creacion DateTime @default(now())
   usuarioId      Int
   usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Reporte {
+  id               Int      @id @default(autoincrement())
+  titulo           String
+  descripcion      String
+  fecha_creacion   DateTime @default(now())
+  usuarioId        Int
+  latitud          Float
+  longitud         Float
+  estado           String   @default("pendiente")
+  evidencia_imagen String?
+  animal_nombre    String
+  animal_especie   String?
+  usuario          Usuario  @relation(fields: [usuarioId], references: [id])
 }

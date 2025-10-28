@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
 
@@ -15,7 +19,9 @@ export class ReportesService {
       });
 
       if (!usuarioExists) {
-        throw new BadRequestException(`Usuario con ID ${createReporteDto.usuarioId} no existe`);
+        throw new BadRequestException(
+          `Usuario con ID ${createReporteDto.usuarioId} no existe`,
+        );
       }
 
       const reporte = await this.prisma.reporte.create({
@@ -140,9 +146,11 @@ export class ReportesService {
 
   async findByEstado(estado: string) {
     const estadosValidos = ['pendiente', 'en_proceso', 'resuelto', 'rechazado'];
-    
+
     if (!estadosValidos.includes(estado)) {
-      throw new BadRequestException(`Estado inválido. Debe ser uno de: ${estadosValidos.join(', ')}`);
+      throw new BadRequestException(
+        `Estado inválido. Debe ser uno de: ${estadosValidos.join(', ')}`,
+      );
     }
 
     const reportes = await this.prisma.reporte.findMany({

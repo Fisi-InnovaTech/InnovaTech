@@ -41,7 +41,8 @@ describe('InsigniasService', () => {
         password: 'password',
         fecha_nac: new Date(),
         estado: 'active',
-        insignia: '123'
+        insignia: '123',
+        es_moderador: false
       };
 
       jest.spyOn(prismaService.usuario, 'findUnique').mockResolvedValue(mockInsignia);
@@ -67,7 +68,8 @@ describe('InsigniasService', () => {
         password: 'password',
         fecha_nac: new Date(),
         estado: 'active',
-        insignia: '1'
+        insignia: '1',
+        es_moderador: false
       };
       const mockReportCount = 50;
 

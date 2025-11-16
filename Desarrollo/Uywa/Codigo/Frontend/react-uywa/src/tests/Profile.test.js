@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import Profile from './Profile';
+import Profile from '../pages/Profile';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const renderWithTheme = (component) => {

@@ -193,8 +193,7 @@ describe('AlertasService', () => {
       const filtro: AlertaFiltroDto = {
         fecha_ini: '2023-01-01',
         fecha_fin: '2023-12-31',
-        animal: 'Perro',
-        region: 'Loreto'
+        animal: 'Perro'
       };
       const alertas = [
         { id: 1, animal_nombre: 'Perro', fecha_creacion: new Date('2023-06-01'), evidencia_imagen: 'url', descripcion: 'desc', latitud: -12.0464, longitud: -77.0428 },
@@ -244,7 +243,7 @@ describe('AlertasService', () => {
             {
               address_components: [
                 {
-                  long_name: 'Lima',
+                  long_name: 'Loreto',
                   types: ['administrative_area_level_1'],
                 },
               ],

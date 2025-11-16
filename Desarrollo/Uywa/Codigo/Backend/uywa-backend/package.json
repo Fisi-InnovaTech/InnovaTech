@@ -28,7 +28,7 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/serve-static": "^5.0.4",
+    "@nestjs/serve-static": "^4.0.2",
     "@prisma/client": "^5.22.0",
     "@types/multer": "^2.0.0",
     "axios": "^1.7.2",
@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^10.3.9",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.3.1",
     "@types/passport-jwt": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^8.46.4",

@@ -9,7 +9,7 @@
     "@mui/lab": "^6.0.0-dev.240424162023-9968b4889d",
     "@mui/material": "^5.15.18",
     "@mui/x-charts": "^8.18.0",
-    "@mui/x-date-pickers": "^7.6.2",
+    "@mui/x-date-pickers": "^8.18.0",
     "@react-google-maps/api": "^2.19.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

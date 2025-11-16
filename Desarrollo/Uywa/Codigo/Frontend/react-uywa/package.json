@@ -6,7 +6,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.19",
-    "@mui/material": "^5.15.18",
+    "@mui/material": "^7.3.5",
     "@mui/x-charts": "^7.29.1",
     "@mui/x-date-pickers": "^7.29.4",
     "@react-google-maps/api": "^2.19.3",

@@ -197,7 +197,7 @@ export default function AlertForm() {
 
     try {
       const userLogged = JSON.parse(localStorage.getItem('UW-logged-session'));
-      const selectedAnimalData = ANIMAL_OPTIONS.find(animal => animal.value == selectedAnimal);
+      const selectedAnimalData = ANIMAL_OPTIONS.find(animal => animal.value === selectedAnimal);
 
       let formData = new FormData();
       formData.append('user_id', isAnonymous ? '' : userLogged.id);

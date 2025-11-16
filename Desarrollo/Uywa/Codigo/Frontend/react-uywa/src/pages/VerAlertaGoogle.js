@@ -99,6 +99,12 @@ function VerAlertaGoogle() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  // Helper function to log errors to a service in production
+  const logErrorToService = (error) => {
+    // This is a placeholder for actual error logging service
+    console.error('Error logged to service:', error);
+  };
+
   // Handler for animal selection
   const handleAnimal = (event) => {
     setAnimal(event.target.value);
@@ -117,6 +123,7 @@ function VerAlertaGoogle() {
     };
     checkAuth();
     cargarMarcadores();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Load all markers
@@ -152,14 +159,14 @@ function VerAlertaGoogle() {
       }
     
       setError(errorMessage);
-      setOpenSnackbar(true);
+      // setOpenSnackbar(true); // Using error state directly in Snackbar component
       
       if (process.env.NODE_ENV === 'production') {
         logErrorToService(error);
       }
     } finally {
-      setIsSubmitting(false);
-      setIsButtonDisabled(false);
+      // setIsSubmitting(false);
+      // setIsButtonDisabled(false);
     }
   };
 
@@ -232,7 +239,7 @@ const handleSearchError = (error) => {
   }
 
   setError(errorMessage);
-  setOpenSnackbar(true);
+  // setOpenSnackbar(true); // Using error state directly in Snackbar component
   
   if (process.env.NODE_ENV === 'production') {
     logErrorToService(error);

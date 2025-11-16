@@ -109,7 +109,7 @@ describe('AlertasController', () => {
       const body = { id: 1, estado: 'new state' , reporte_detalado: 'reporte'};
       const result = await controller.changeState(body);
       expect(result).toEqual({ id: 1, estado: 'new state' });
-      expect(service.changeState).toHaveBeenCalledWith(1, 'new state');
+      expect(service.changeState).toHaveBeenCalledWith(1, 'new state', null);
     });
   });
 });

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import AlertForm, { 
   MAX_FILE_SIZE_MB, 
   MAX_DESCRIPTION_LENGTH, 

@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^10.3.9",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.3.1",
     "@types/passport-jwt": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^8.46.4",

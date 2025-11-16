@@ -11,7 +11,7 @@
     "@mui/x-charts": "^8.18.0",
     "@mui/x-date-pickers": "^8.18.0",
     "@react-google-maps/api": "^2.19.3",
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.6.1",
     "axios": "^1.7.2",

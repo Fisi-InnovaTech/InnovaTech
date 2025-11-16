@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Blog from './InformacionTrafico';
+import Blog from '../pages/InformacionTrafico';
 
 test('renders Blog component with correct content', () => {
   const { getAllByAltText, getAllByText } = render(<Blog />);

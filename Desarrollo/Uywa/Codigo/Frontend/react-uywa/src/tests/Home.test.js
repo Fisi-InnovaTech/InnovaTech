@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import Home from './Home';
+import Home from '../pages/Home';
 
 describe('Home Component', () => {
   test('renders Home component correctly', () => {

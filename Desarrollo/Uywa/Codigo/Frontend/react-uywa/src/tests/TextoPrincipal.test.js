@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import TextoCarrusel from './TextoPrincipal';
+import TextoCarrusel from '../components/TextoPrincipal';
 
 describe('TextoCarrusel Component', () => {
   test('renders with correct image', () => {

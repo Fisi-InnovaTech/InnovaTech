@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import CardsInformation from './CardInfo';
+import CardsInformation from '../components/cards/CardInfo';
 import { Typography } from '@mui/material';
 
 describe('CardsInformation Component', () => {

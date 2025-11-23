@@ -9,8 +9,8 @@ import { UpdateReporteDto } from './dto/update-reporte.dto';
 
 @Injectable()
 export class ReportesService {
-  constructor(private readonly prisma: PrismaService) { }
-  
+  constructor(private readonly prisma: PrismaService) {}
+
   async getAllReport() {
     return this.prisma.reporte.findMany();
   }

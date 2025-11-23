@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -19,6 +20,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  //registrar usuario
   async register_user(user: RegisterAuthDto): Promise<ResponseAuthDto> {
     const { password } = user;
     const hashedPassword = await hash(password, 10);
@@ -52,6 +54,7 @@ export class AuthService {
     }
   }
 
+  //login con jwt
   async login(loginDto: LoginAuthDto): Promise<LoginResponseDto> {
     const { email, password } = loginDto;
 
@@ -93,15 +96,26 @@ export class AuthService {
     return response;
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  // ✅ NUEVO MÉTODO: Obtener usuario por ID
+  async getUserById(userId: number): Promise<ResponseAuthDto> {
+    const user = await this.prisma.usuario.findUnique({
+      where: { id: userId },
+      include: {
+        rol: true,
+      },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    const response: ResponseAuthDto = {
+      email: user.email,
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      // Puedes agregar más campos si los necesitas
+    };
+
+    return response;
   }
 }

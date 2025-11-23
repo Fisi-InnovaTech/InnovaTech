@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('reportes')
 export class ReportesController {
-  constructor(private readonly reportesService: ReportesService) { }
+  constructor(private readonly reportesService: ReportesService) {}
 
   @UseInterceptors(
     FileInterceptor('evidencia_imagen', UploadMiddleware.getMulterOptions()),

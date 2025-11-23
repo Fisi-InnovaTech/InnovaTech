@@ -38,7 +38,7 @@ export class UsuariosController {
   @Patch(':id/rol')
   changeUserRole(
     @Param('id') id: number,
-    @Body('rol') rolId: number,
+    @Body('rolId') rolId: number,
   ) {
     return this.usuariosService.changeUserRole(+id, rolId);
   }

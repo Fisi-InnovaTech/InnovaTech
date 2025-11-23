@@ -11,8 +11,8 @@ export class UsuariosService {
     return 'This action adds a new usuario';
   }
 
-  findAll() {
-    return `This action returns all usuarios`;
+  async findAll() {
+    return this.prisma.usuario.findMany();
   }
 
   findOne(id: number) {
@@ -32,7 +32,7 @@ export class UsuariosService {
   async changeUserRole(id: number, rolId: number) {
     return this.prisma.usuario.update({
       where: { id },
-      data: { rol: { connect: { id: rolId } } },
+      data: { rolId },
     });
   }
 }

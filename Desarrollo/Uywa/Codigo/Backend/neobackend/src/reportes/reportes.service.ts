@@ -9,11 +9,14 @@ import { UpdateReporteDto } from './dto/update-reporte.dto';
 
 @Injectable()
 export class ReportesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async create(createReporteDto: CreateReporteDto) {
+  /**
+   * Crea un reporte con soporte para archivo subido (evidencia_imagen)
+   */
+  async create(createReporteDto: CreateReporteDto, file?: Express.Multer.File) {
     try {
-      // Verificar que el usuario existe
+      // 1. Verificar que el usuario existe
       const usuarioExists = await this.prisma.usuario.findUnique({
         where: { id: createReporteDto.usuarioId },
       });
@@ -24,6 +27,27 @@ export class ReportesService {
         );
       }
 
+      // 2. Construir la URL de la imagen (si hay archivo)
+      let evidenciaImagen: string | undefined = undefined;
+
+      if (file) {
+        // Puedes mover esto a config/env
+        const baseUrl =
+          process.env.APP_BASE_URL || 'https://innovatech-ztzv.onrender.com';
+
+        // Normalizar path (por si viene con backslashes en Windows)
+        const normalizedPath = file.path.replace(/\\/g, '/');
+        const imagePath = normalizedPath.startsWith('/')
+          ? normalizedPath
+          : `/${normalizedPath}`;
+
+        evidenciaImagen = `${baseUrl}${imagePath}`;
+      } else if (createReporteDto.evidencia_imagen) {
+        // Si no se subió archivo pero llega un path/URL desde el body
+        evidenciaImagen = createReporteDto.evidencia_imagen;
+      }
+
+      // 3. Crear el reporte
       const reporte = await this.prisma.reporte.create({
         data: {
           titulo: createReporteDto.titulo,
@@ -31,7 +55,7 @@ export class ReportesService {
           latitud: createReporteDto.latitud,
           longitud: createReporteDto.longitud,
           estado: createReporteDto.estado || 'pendiente',
-          evidencia_imagen: createReporteDto.evidencia_imagen,
+          evidencia_imagen: evidenciaImagen,
           animal_nombre: createReporteDto.animal_nombre,
           animal_especie: createReporteDto.animal_especie,
           usuarioId: createReporteDto.usuarioId,
@@ -56,6 +80,7 @@ export class ReportesService {
       if (error instanceof BadRequestException) {
         throw error;
       }
+      console.error('Error al crear reporte:', error);
       throw new BadRequestException('Error al crear el reporte');
     }
   }
@@ -177,7 +202,11 @@ export class ReportesService {
     };
   }
 
-  async update(id: number, updateReporteDto: UpdateReporteDto) {
+  async update(
+    id: number,
+    updateReporteDto: UpdateReporteDto,
+    file?: Express.Multer.File,
+  ) {
     // Verificar que el reporte existe
     const reporteExists = await this.prisma.reporte.findUnique({
       where: { id },
@@ -187,10 +216,34 @@ export class ReportesService {
       throw new NotFoundException(`Reporte con ID ${id} no encontrado`);
     }
 
+    // Partimos de la evidencia actual de BD
+    let evidenciaImagen: string | null = reporteExists.evidencia_imagen;
+
+    // 1) Si viene string en el DTO, la usamos (ej: URL manual)
+    if (typeof updateReporteDto.evidencia_imagen === 'string') {
+      evidenciaImagen = updateReporteDto.evidencia_imagen;
+    }
+
+    // 2) Si viene archivo nuevo, generamos nueva URL
+    if (file) {
+      const baseUrl =
+        process.env.APP_BASE_URL || 'https://innovatech-ztzv.onrender.com';
+
+      const normalizedPath = file.path.replace(/\\/g, '/');
+      const imagePath = normalizedPath.startsWith('/')
+        ? normalizedPath
+        : `/${normalizedPath}`;
+
+      evidenciaImagen = `${baseUrl}${imagePath}`;
+    }
+
     try {
       const reporteActualizado = await this.prisma.reporte.update({
         where: { id },
-        data: updateReporteDto,
+        data: {
+          ...updateReporteDto,
+          evidencia_imagen: evidenciaImagen,
+        },
         include: {
           usuario: {
             select: {
@@ -208,6 +261,7 @@ export class ReportesService {
         data: reporteActualizado,
       };
     } catch (error) {
+      console.error('Error al actualizar reporte:', error);
       throw new BadRequestException('Error al actualizar el reporte');
     }
   }
@@ -232,6 +286,7 @@ export class ReportesService {
         data: { id },
       };
     } catch (error) {
+      console.error('Error al eliminar reporte:', error);
       throw new BadRequestException('Error al eliminar el reporte');
     }
   }

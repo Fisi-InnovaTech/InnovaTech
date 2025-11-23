@@ -10,19 +10,29 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ReportesService } from './reportes.service';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
+import { UploadMiddleware } from 'src/upload.middleware';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('reportes')
 export class ReportesController {
-  constructor(private readonly reportesService: ReportesService) {}
+  constructor(private readonly reportesService: ReportesService) { }
 
-  @Post()
+  @UseInterceptors(
+    FileInterceptor('evidencia_imagen', UploadMiddleware.getMulterOptions()),
+  )
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createReporteDto: CreateReporteDto) {
-    return this.reportesService.create(createReporteDto);
+  @Post()
+  create(
+    @Body() createReporteDto: CreateReporteDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.reportesService.create(createReporteDto, file);
   }
 
   @Get()
@@ -44,11 +54,15 @@ export class ReportesController {
   }
 
   @Patch(':id')
+  @UseInterceptors(
+    FileInterceptor('evidencia_imagen', UploadMiddleware.getMulterOptions()),
+  )
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateReporteDto: UpdateReporteDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.reportesService.update(id, updateReporteDto);
+    return this.reportesService.update(id, updateReporteDto, file);
   }
 
   @Delete(':id')

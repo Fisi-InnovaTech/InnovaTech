@@ -124,10 +124,8 @@ export default function AlertForm() {
   const urlAlertas = url + '/alertas/guardar';
 
   // Efectos
+  //corregir login
   useEffect(() => {
-    if (!localStorage.getItem('UW-logged-session')) {
-      setOpenAlert(true);
-    }
   }, []);
 
   // Validar formulario
@@ -283,8 +281,9 @@ export default function AlertForm() {
         </DialogActions>
       </Dialog>
 
-      {/* Formulario */}
-      {localStorage.getItem('UW-logged-session') && (
+      {/* Formulario  */}
+
+      { (
         <Paper sx={{ width: { xs: '95%', sm: '70%', md: '60%' }, justifyContent: 'center', margin: 4 }}>
           {/* Sección de imagen */}
           <Box sx={{ p: 2 }}>

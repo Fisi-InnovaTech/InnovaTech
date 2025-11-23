@@ -86,7 +86,9 @@ const API_BASE_URL = 'https://innovatech-ztzv.onrender.com';
 
 function VerAlertaGoogle() {
   // State management
-  const [markerData, setMarkerData] = useState([]);
+  const [markerData, setMarkerData] = useState([
+    
+  ]);
   const [animal, setAnimal] = useState("");
   const [region, setRegion] = useState("");
   const [fechaIni, setFechaIni] = useState(dayjs().subtract(1, 'month'));
@@ -111,16 +113,11 @@ function VerAlertaGoogle() {
 
   // Check authentication status
   useEffect(() => {
-    const checkAuth = () => {
-      const user = localStorage.getItem('UW-logged-session');
-      setUserRole(user ? 'user' : 'guest');
-    };
-    checkAuth();
-    cargarMarcadores();
+    //cargarMarcadores();
   }, []);
 
   // Load all markers
-  const cargarMarcadores = async () => {
+/*   const cargarMarcadores = async () => {
     setLoading(true);
     setProgressStatus("Obteniendo ubicaciones de alertas...");
     try {
@@ -161,7 +158,7 @@ function VerAlertaGoogle() {
       setIsSubmitting(false);
       setIsButtonDisabled(false);
     }
-  };
+  }; */
 
   // Handle search with filters
   // Extracted validation function
@@ -246,7 +243,7 @@ const handleSearchError = (error) => {
     setFechaIni(dayjs().subtract(1, 'month'));
     setFechaFin(dayjs());
     setError(null);
-    await cargarMarcadores();
+    //await cargarMarcadores();
   };
 
   // Handle marker click
@@ -400,7 +397,48 @@ const handleSearchError = (error) => {
       {/* Map Section */}
       <Box sx={mapMark}>
         <Mapa 
-          markerData={markerData} 
+          markerData={[
+  {
+    id: 1,
+    latitud: -12.0464,
+    longitud: -77.0428,
+    animal_nombre: "Anaconda",
+    descripcion: "Avistamiento cerca del río Amazonas, ejemplar adulto de aproximadamente 5 metros",
+    evidencia_imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=150&fit=crop"
+  },
+  {
+    id: 2,
+    latitud: -12.0564,
+    longitud: -77.0328,
+    animal_nombre: "Taricaya",
+    descripcion: "Nido de taricayas encontrado en playa del río Madre de Dios",
+    evidencia_imagen: "https://images.unsplash.com/photo-1558098329-a11cff621064?w=200&h=150&fit=crop"
+  },
+  {
+    id: 3,
+    latitud: -12.0364,
+    longitud: -77.0528,
+    animal_nombre: "Cotorra",
+    descripcion: "Grupo de cotorras en zona urbana, comportamiento normal",
+    evidencia_imagen: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=200&h=150&fit=crop"
+  },
+  {
+    id: 4,
+    latitud: -12.0664,
+    longitud: -77.0228,
+    animal_nombre: "Consenegro",
+    descripcion: "Avistamiento en zona boscosa, ejemplar adulto en mal estado",
+    evidencia_imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZGeajOiuB1wZ0aEQNWujutiHF9c1sN5fU7g&s"
+  },
+  {
+    id: 5,
+    latitud: -12.0264,
+    longitud: -77.0628,
+    animal_nombre: "Mono machín negro",
+    descripcion: "Grupo familiar de monos en zona de conservación",
+    evidencia_imagen: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?w=200&h=150&fit=crop"
+  }
+]} 
           onMarkerClick={handleMarkerClick}
           userRole={userRole}
         />

@@ -40,7 +40,7 @@ export class UsuariosController {
     @Param('id') id: number,
     @Body('rol') rolId: number,
   ) {
-    return this.usuariosService.changeUserRole(id, rolId);
+    return this.usuariosService.changeUserRole(+id, rolId);
   }
 
   @Delete(':id')

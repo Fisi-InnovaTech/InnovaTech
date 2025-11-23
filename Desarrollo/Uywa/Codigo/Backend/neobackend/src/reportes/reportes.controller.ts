@@ -36,6 +36,21 @@ export class ReportesController {
   }
 
   @Get()
+  getAllReport() {
+    return this.reportesService.getAllReport();
+  }
+
+  @Get(':id')
+  getReportById(@Param('id') id: string) {
+    return this.reportesService.getReportById(+id);
+  }
+
+  @Get('estado/:estado')
+  getReporteByEstado(@Param('estado') estado: string) {
+    return this.reportesService.findByEstado(estado);
+  }
+
+  @Get()
   findAll(@Query('estado') estado?: string) {
     if (estado) {
       return this.reportesService.findByEstado(estado);

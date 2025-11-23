@@ -30,6 +30,11 @@ export class InsigniasController {
     return this.insigniasService.findOne(+id);
   }
 
+  @Get('usuario/:id/badge')
+  getBadgeUsuario(@Param('id') id: string) {
+    return this.insigniasService.calcularBadge(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

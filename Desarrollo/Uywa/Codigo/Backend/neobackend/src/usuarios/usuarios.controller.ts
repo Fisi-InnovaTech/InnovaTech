@@ -35,6 +35,14 @@ export class UsuariosController {
     return this.usuariosService.update(+id, updateUsuarioDto);
   }
 
+  @Patch(':id/rol')
+  changeUserRole(
+    @Param('id') id: string,
+    @Body('rol') rol: string,
+  ) {
+    return this.usuariosService.changeUserRole(Number(id), rol);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuariosService.remove(+id);

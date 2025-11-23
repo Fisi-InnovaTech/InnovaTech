@@ -10,6 +10,22 @@ import { UpdateReporteDto } from './dto/update-reporte.dto';
 @Injectable()
 export class ReportesService {
   constructor(private readonly prisma: PrismaService) { }
+  
+  async getAllReport() {
+    return this.prisma.reporte.findMany();
+  }
+
+  async getReportById(id: number) {
+    return this.prisma.reporte.findUnique({
+      where: { id },
+    });
+  }
+
+  async getReporteByEstado(estado: string) {
+    return this.prisma.reporte.findMany({
+      where: { estado },
+    });
+  }
 
   /**
    * Crea un reporte con soporte para archivo subido (evidencia_imagen)

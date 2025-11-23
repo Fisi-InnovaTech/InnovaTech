@@ -29,10 +29,10 @@ export class UsuariosService {
     });
   }
 
-  async changeUserRole(id: number, rol: string) {
+  async changeUserRole(id: number, rolId: number) {
     return this.prisma.usuario.update({
       where: { id },
-      data: { rol },
+      data: { rolId },
     });
   }
   

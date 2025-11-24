@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
@@ -35,8 +36,8 @@ export class UsuariosController {
     return this.usuariosService.update(+id, updateUsuarioDto);
   }
 
-  @Patch(':id/rol')
-  changeUserRole(@Param('id') id: number, @Body('rolId') rolId: number) {
+  @Patch('rol/:id')
+  changeUserRole(@Param('id') id: number, @Query('rol') rolId: number) {
     return this.usuariosService.changeUserRole(+id, rolId);
   }
 

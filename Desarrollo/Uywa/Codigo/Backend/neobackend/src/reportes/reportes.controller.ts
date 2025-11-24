@@ -41,6 +41,14 @@ export class ReportesController {
     return this.reportesService.findByEstado(estado);
   }
 
+  @Patch('estado/:id')
+  updateReporteEstado(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('estado') estado: string,
+  ) {
+    return this.reportesService.updateState(id, estado);
+  }
+
   @Get()
   findAll(@Query('estado') estado?: string) {
     if (estado) {

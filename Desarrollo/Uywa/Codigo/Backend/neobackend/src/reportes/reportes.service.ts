@@ -239,6 +239,39 @@ export class ReportesService {
     };
   }
 
+  async updateState(id: number, estado: string) {
+    // Verificar que el reporte existe
+    const reporteExists = await this.prisma.reporte.findUnique({
+      where: { id },
+    });
+    if (!reporteExists) {
+      throw new NotFoundException(`Reporte con ID ${id} no encontrado`);
+    }
+    try {
+      const reporteActualizado = await this.prisma.reporte.update({
+        where: { id },
+        data: { estado },
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nombres: true,
+              apellidos: true,
+              email: true,
+            },
+          },
+        },
+      });
+      return {
+        message: 'Estado del reporte actualizado exitosamente',
+        data: reporteActualizado,
+      };
+    } catch (error) {
+      console.error('Error al actualizar estado del reporte:', error);
+      throw new BadRequestException('Error al actualizar el estado del reporte');
+    }
+  }
+
   async update(
     id: number,
     updateReporteDto: UpdateReporteDto,

@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -15,14 +16,17 @@ export class CreateReporteDto {
   @IsNotEmpty()
   descripcion: string;
 
+  @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
   usuarioId: number;
 
+  @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
   latitud: number;
 
+  @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
   longitud: number;

@@ -32,9 +32,23 @@ export class ReportesService {
    */
   async create(createReporteDto: CreateReporteDto, file?: Express.Multer.File) {
     try {
+      // 🔹 Asegurarnos de que los numéricos sean realmente number
+      const usuarioId = Number(createReporteDto.usuarioId);
+      const latitud = Number(createReporteDto.latitud);
+      const longitud = Number(createReporteDto.longitud);
+
+      if (Number.isNaN(usuarioId)) {
+        throw new BadRequestException('usuarioId debe ser un número');
+      }
+      if (Number.isNaN(latitud) || Number.isNaN(longitud)) {
+        throw new BadRequestException(
+          'latitud y longitud deben ser valores numéricos',
+        );
+      }
+
       // 1. Verificar que el usuario existe
       const usuarioExists = await this.prisma.usuario.findUnique({
-        where: { id: createReporteDto.usuarioId },
+        where: { id: usuarioId },
       });
 
       if (!usuarioExists) {
@@ -68,13 +82,13 @@ export class ReportesService {
         data: {
           titulo: createReporteDto.titulo,
           descripcion: createReporteDto.descripcion,
-          latitud: createReporteDto.latitud,
-          longitud: createReporteDto.longitud,
+          latitud: latitud,
+          longitud: longitud,
           estado: createReporteDto.estado || 'pendiente',
           evidencia_imagen: evidenciaImagen,
           animal_nombre: createReporteDto.animal_nombre,
           animal_especie: createReporteDto.animal_especie,
-          usuarioId: createReporteDto.usuarioId,
+          usuarioId: usuarioId,
         },
         include: {
           usuario: {

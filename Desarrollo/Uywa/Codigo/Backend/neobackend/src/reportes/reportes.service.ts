@@ -80,15 +80,14 @@ export class ReportesService {
       // 3. Crear el reporte
       const reporte = await this.prisma.reporte.create({
         data: {
-          titulo: createReporteDto.titulo,
           descripcion: createReporteDto.descripcion,
-          latitud: latitud,
-          longitud: longitud,
+          latitud,
+          longitud,
           estado: createReporteDto.estado || 'pendiente',
           evidencia_imagen: evidenciaImagen,
           animal_nombre: createReporteDto.animal_nombre,
-          animal_especie: createReporteDto.animal_especie,
-          usuarioId: usuarioId,
+          nombre_reportante: createReporteDto.nombre_reportante, // si lo usas en el DTO
+          usuarioId,
         },
         include: {
           usuario: {

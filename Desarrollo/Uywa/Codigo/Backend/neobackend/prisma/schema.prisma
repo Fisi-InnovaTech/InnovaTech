@@ -47,15 +47,17 @@ model Alertas {
 
 model Reporte {
   id               Int      @id @default(autoincrement())
-  titulo           String
-  descripcion      String
-  fecha_creacion   DateTime @default(now())
-  usuarioId        Int
-  latitud          Float
-  longitud         Float
-  estado           String   @default("pendiente")
+  usuarioId        Int      @map("user_id")
   evidencia_imagen String?
   animal_nombre    String
-  animal_especie   String?
+  descripcion      String
+  latitud          Float
+  longitud         Float
+  nombre_reportante String? @map("nombre_reportante")
+  fecha_creacion   DateTime @default(now())
+  estado           String   @default("pendiente")
+
   usuario          Usuario  @relation(fields: [usuarioId], references: [id])
+
+  @@map("reporte") // 👈 mapea al nombre real de la tabla
 }

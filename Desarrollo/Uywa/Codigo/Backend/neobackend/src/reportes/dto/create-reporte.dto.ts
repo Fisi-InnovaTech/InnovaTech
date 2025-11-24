@@ -10,11 +10,11 @@ import {
 export class CreateReporteDto {
   @IsString()
   @IsNotEmpty()
-  titulo: string;
+  descripcion: string;
 
   @IsString()
   @IsNotEmpty()
-  descripcion: string;
+  nombre_reportante: string;
 
   @Type(() => Number)
   @IsNumber()
@@ -43,8 +43,4 @@ export class CreateReporteDto {
   @IsString()
   @IsNotEmpty()
   animal_nombre: string;
-
-  @IsString()
-  @IsOptional()
-  animal_especie?: string;
 }

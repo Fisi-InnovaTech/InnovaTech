@@ -14,6 +14,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ReportesService } from './reportes.service';
+import { FindOneReporteDto } from './dto/find.one-reporte.dto';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
 import { UploadMiddleware } from 'src/upload.middleware';
@@ -34,17 +35,7 @@ export class ReportesController {
   ) {
     return this.reportesService.create(createReporteDto, file);
   }
-
-  @Get("/all")
-  getAllReport() {
-    return this.reportesService.getAllReport();
-  }
-
-  @Get(':id')
-  getReportById(@Param('id') id: string) {
-    return this.reportesService.getReportById(+id);
-  }
-
+  
   @Get('estado/:estado')
   getReporteByEstado(@Param('estado') estado: string) {
     return this.reportesService.findByEstado(estado);
@@ -64,8 +55,8 @@ export class ReportesController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.reportesService.findOne(id);
+  findOne(@Param() params: FindOneReporteDto) {
+    return this.reportesService.findOne(params.id);
   }
 
   @Patch(':id')

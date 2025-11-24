@@ -15,12 +15,6 @@ export class ReportesService {
     return this.prisma.reporte.findMany();
   }
 
-  async getReportById(id: number) {
-    return this.prisma.reporte.findUnique({
-      where: { id },
-    });
-  }
-
   async getReporteByEstado(estado: string) {
     return this.prisma.reporte.findMany({
       where: { estado },
@@ -152,6 +146,7 @@ export class ReportesService {
   }
 
   async findOne(id: number) {
+    console.log('ID RECIBIDO:', id, 'TIPO:', typeof id);
     const reporte = await this.prisma.reporte.findUnique({
       where: { id },
       include: {

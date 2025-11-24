@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Box,
   TextField,
@@ -25,12 +25,51 @@ import {
 } from '@mui/material';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import Mapa from '../components/Mapa/MapaVisualizar';
+import { useAuthStore } from '../auth/store/authStore';
 
 // CONSTANTES
 const MAX_FILE_SIZE_MB = 5;
 const MAX_DESCRIPTION_LENGTH = 1000;
 const MIN_DESCRIPTION_LENGTH = 30;
 const VALID_FILE_TYPES = ['image/jpeg', 'image/png'];
+
+// ✅ Objeto de usuario anónimo (solo para el payload, no afecta el store)
+const ANONYMOUS_USER = {
+  id: 3,
+  email: "anonimo@anonimo.com",
+  nombres: "anonimo",
+  apellidos: "anonimo",
+  rol: "user",
+  access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoiYW5vbmltb0Bhbm9uaW1vLmNvbSIsInJvbCI6InVzZXIiLCJpYXQiOjE3NjM5OTQzMDAsImV4cCI6MTc2NDA4MDcwMH0.7Gcclr3q0tt88aX1Gwas_EBcIPrntLM5DUcbaJnVPH0"
+};
+
+export const DEPARTMENT_OPTIONS = [
+  { id: 'dept-1', value: 1, departamento: "Amazonas" },
+  { id: 'dept-2', value: 2, departamento: "Ancash" },
+  { id: 'dept-3', value: 3, departamento: "Apurímac" },
+  { id: 'dept-4', value: 4, departamento: "Arequipa" },
+  { id: 'dept-5', value: 5, departamento: "Ayacucho" },
+  { id: 'dept-6', value: 6, departamento: "Cajamarca" },
+  { id: 'dept-7', value: 7, departamento: "Callao" },
+  { id: 'dept-8', value: 8, departamento: "Cusco" },
+  { id: 'dept-9', value: 9, departamento: "Huancavelica" },
+  { id: 'dept-10', value: 10, departamento: "Huanuco" },
+  { id: 'dept-11', value: 11, departamento: "Ica" },
+  { id: 'dept-12', value: 12, departamento: "Junín" },
+  { id: 'dept-13', value: 13, departamento: "La Libertad" },
+  { id: 'dept-14', value: 14, departamento: "Lambayeque" },
+  { id: 'dept-15', value: 15, departamento: "Lima" },
+  { id: 'dept-16', value: 16, departamento: "Loreto" },
+  { id: 'dept-17', value: 17, departamento: "Madre de Dios" },
+  { id: 'dept-18', value: 18, departamento: "Moquegua" },
+  { id: 'dept-19', value: 19, departamento: "Pasco" },
+  { id: 'dept-20', value: 20, departamento: "Piura" },
+  { id: 'dept-21', value: 21, departamento: "Puno" },
+  { id: 'dept-22', value: 22, departamento: "San Martín" },
+  { id: 'dept-23', value: 23, departamento: "Tacna" },
+  { id: 'dept-24', value: 24, departamento: "Tumbes" },
+  { id: 'dept-25', value: 25, departamento: "Ucayali" }
+];
 
 export const ANIMAL_OPTIONS = [
   { id: 'animal-1', value: 1, animal: "Anaconda" },
@@ -72,6 +111,8 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function AlertForm() {
+  // ✅ Zustand store
+  const { user, isAuthenticated } = useAuthStore();
 
   // ESTADOS
   const [selectedAnimal, setSelectedAnimal] = useState('');
@@ -81,7 +122,6 @@ export default function AlertForm() {
   const [description, setDescription] = useState('');
   const [latitud, setLatitud] = useState(null);
   const [longitud, setLongitud] = useState(null);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [file, setFile] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -90,18 +130,21 @@ export default function AlertForm() {
     animal: false,
     description: false,
     location: false,
-    file: false
+    file: false,
+    auth: false // ✅ Nuevo error para autenticación obligatoria
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const urlBackend = "https://localhost:3000/reportes";
+  const urlBackend = "http://localhost:3000/reportes";
 
+  // ✅ Validar formulario (ahora incluye auth si no es anónimo)
   const validateForm = () => {
     const newErrors = {
       animal: !selectedAnimal,
       description: description.length < MIN_DESCRIPTION_LENGTH,
       location: !latitud || !longitud,
-      file: !tosendFile
+      file: !tosendFile,
+      auth: !isAnonymous && !isAuthenticated(), // Obligatorio estar logueado si no es anónimo
     };
     setErrors(newErrors);
     return !Object.values(newErrors).some(e => e);
@@ -140,9 +183,17 @@ export default function AlertForm() {
     }
   };
 
+  // ✅ Manejar cambio de anónimo → asegurar consistencia de errores
+  const handleAnonymousChange = (e) => {
+    const checked = e.target.checked;
+    setIsAnonymous(checked);
+    if (checked) {
+      // Al activar anónimo, limpiar error de auth
+      setErrors(prev => ({ ...prev, auth: false }));
+    }
+  };
 
   const handleSubmit = async () => {
-
     if (!validateForm()) {
       setAlertMessage("Complete todos los campos obligatorios");
       setOpenSnackbar(true);
@@ -150,11 +201,8 @@ export default function AlertForm() {
     }
 
     setIsSubmitting(true);
-    setIsButtonDisabled(true);
 
     try {
-      const userLogged = JSON.parse(localStorage.getItem("UW-logged-session"));
-
       const selectedAnimalData = ANIMAL_OPTIONS.find(a => a.value == selectedAnimal);
 
       const formData = new FormData();
@@ -162,12 +210,20 @@ export default function AlertForm() {
       formData.append("descripcion", description);
       formData.append("latitud", latitud);
       formData.append("longitud", longitud);
-      formData.append("es_anonimo", isAnonymous);
       formData.append("estado", "pendiente");
 
-      // Si no es anónimo, se envía el user_id
-      formData.append("user_id", isAnonymous ? "" : userLogged?.id);
-      formData.append("nombre_reportante", isAnonymous ? "Anónimo" : userLogged?.nombre);
+      // ✅ Determinar qué usuario usar para el payload
+      let reportUser;
+      if (isAnonymous) {
+        reportUser = ANONYMOUS_USER;
+      } else {
+        // Aquí user está garantizado por validateForm (no auth error)
+        reportUser = user;
+      }
+
+      // ✅ Enviar campos según backend
+      formData.append("usuarioId", reportUser.id.toString());
+      formData.append("nombre_reportante", `${reportUser.nombres} ${reportUser.apellidos}`);
 
       // Imagen
       formData.append("evidencia_imagen", tosendFile);
@@ -179,7 +235,8 @@ export default function AlertForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Error en el servidor");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error en el servidor");
       }
 
       await response.json();
@@ -187,14 +244,12 @@ export default function AlertForm() {
 
     } catch (error) {
       console.error(error);
-      setAlertMessage("Error al enviar la alerta");
+      setAlertMessage(error.message || "Error al enviar la alerta");
       setOpenSnackbar(true);
     } finally {
       setIsSubmitting(false);
-      setIsButtonDisabled(false);
     }
   };
-
 
   const labelName = {
     py: 1.5,
@@ -251,6 +306,11 @@ export default function AlertForm() {
             value={description}
             onChange={handleDescriptionChange}
             error={errors.description}
+            helperText={
+              errors.description 
+                ? `Mínimo ${MIN_DESCRIPTION_LENGTH} caracteres` 
+                : `${description.length}/${MAX_DESCRIPTION_LENGTH}`
+            }
           />
         </Box>
 
@@ -261,6 +321,7 @@ export default function AlertForm() {
             <Select
               value={selectedAnimal}
               onChange={(e) => setSelectedAnimal(e.target.value)}
+              error={errors.animal}
             >
               <MenuItem value=""><em>Seleccione</em></MenuItem>
               {ANIMAL_OPTIONS.map(a => (
@@ -284,10 +345,19 @@ export default function AlertForm() {
           <FormGroup>
             <FormControlLabel 
               control={
-                <Checkbox checked={isAnonymous} onChange={(e)=>setIsAnonymous(e.target.checked)} />
+                <Checkbox 
+                  checked={isAnonymous} 
+                  onChange={handleAnonymousChange} 
+                />
               }
               label="Enviar reporte de forma anónima"
             />
+            {/* ✅ Mensaje de advertencia si intenta desactivar sin estar logueado */}
+            {!isAnonymous && !isAuthenticated() && (
+              <Typography color="error" variant="caption">
+                Debes iniciar sesión para enviar un reporte no anónimo.
+              </Typography>
+            )}
           </FormGroup>
         </Box>
 
@@ -297,8 +367,9 @@ export default function AlertForm() {
             variant="contained"
             onClick={handleSubmit}
             disabled={isSubmitting}
+            sx={{ minWidth: 200 }}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : "Enviar Reporte"}
+            {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Enviar Reporte"}
           </Button>
         </Box>
       </Paper>
@@ -309,7 +380,9 @@ export default function AlertForm() {
         autoHideDuration={5000}
         onClose={() => setOpenSnackbar(false)}
       >
-        <Alert severity="error">{alertMessage}</Alert>
+        <Alert severity="error" onClose={() => setOpenSnackbar(false)}>
+          {alertMessage}
+        </Alert>
       </Snackbar>
     </Container>
   );

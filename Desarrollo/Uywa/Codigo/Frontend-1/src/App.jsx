@@ -53,13 +53,13 @@ function App() {
               
               {/* Rutas protegidas - requieren autenticación */}
               <Route path="/perfil" element={
-                <RouteGuard requireAuth={true}>
+                <RouteGuard requireAuth={true} requiredRoles={["user", "moderador", "admin"]}>
                   <Profile/>
                 </RouteGuard>
               }/>
               
               {/* Rutas de moderador - requieren autenticación Y rol moderador */}
-              
+
               <Route path='/moderador' element={
                 <RouteGuard requireAuth={true} requiredRoles={['moderador']}>
                   <ModeradorPrincipal/>

@@ -7,12 +7,12 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 
 const AnimalCardInformation = ({ imgAnimal, textAlter, title, description }) => {
   return (
-    <Card sx={{ width: { xs: 300, sm: 500 }, height: 570, m: 2 }}>
+    <Card sx={{ width: { xs: 300, sm: 500 }, height: 450, m: 2 }}>
       <CardActionArea>
         <CardMedia
           component="img"
-          height="400"
-          width="150"
+          height="200"
+          width="100"
           image={imgAnimal}
           alt={textAlter}
         />
@@ -20,9 +20,7 @@ const AnimalCardInformation = ({ imgAnimal, textAlter, title, description }) => 
           <Typography gutterBottom variant="h5" component="div">
             {title}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {description}
-          </Typography>
+          
         </CardContent>
       </CardActionArea>
       <CardActions>

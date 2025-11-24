@@ -13,7 +13,8 @@ export const useAuthStore = create(
       setAuthChecked: (checked) => set({ authChecked: checked }),
       setToken: (token) => set({ token: token }),
 
-      login: (responseData) =>
+      login: (responseData) => {
+        console.log('Login data:', responseData);
         set({
           user: {
             email: responseData.email,
@@ -23,7 +24,8 @@ export const useAuthStore = create(
           },
           token: responseData.access_token,
           authChecked: true,
-        }),
+        });
+      },
 
       logout: () => set({ user: null, token: null, authChecked: true }),
 

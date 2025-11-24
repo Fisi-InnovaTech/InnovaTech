@@ -1,58 +1,43 @@
-import { useLocation, useNavigate } from "react-router";
+import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import { useEffect } from "react";
 
+export const RouteGuard = ({ children, requireAuth = true, requiredRoles = [] }) => {
+  const { user, authChecked } = useAuthStore();
 
-export const RouteGuard = ({
-    children,
-    requireAuth = true,
-    requiredRoles = []
+  // Esperar a que se verifique la autenticación
+  if (!authChecked) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh' 
+      }}>
+        <h1>Verificando autenticación...</h1>
+      </div>
+    );
+  }
 
-    }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const { isAuthenticated, getUserRole, authChecked } = useAuthStore();
+  // Si requiere autenticación y no hay usuario
+  if (requireAuth && !user) {
+    return <Navigate to="/iniciar-sesion" replace />;
+  }
 
-    useEffect(() => {
-        if (!authChecked) {
-            return;
-        }
+  // Si NO requiere autenticación pero SÍ hay usuario (ej: página de login)
+  if (!requireAuth && user) {
+    return <Navigate to="/" replace />;
+  }
 
-        const authenticated = isAuthenticated();
-        const userRole = getUserRole();
-        
-        if(requireAuth && !authenticated){
-            navigate('/iniciar-sesion', {state: { from: location }, replace: true});
-            return null;
-        };
-        
-        if (!requireAuth && authenticated) {
-            navigate('/', {replace: true});
-            return null;
-        }
-        
-        if(requireAuth && authenticated && authChecked && requiredRoles.length > 0){
-            const hasRequiredRole = requiredRoles.includes(userRole);
-            if(!hasRequiredRole){
-                navigate('/', {replace: true});
-                return null;
-           }
-        }
+  // Si hay roles requeridos, verificar que el usuario tenga uno de ellos
+  if (requiredRoles.length > 0 && user) {
+    // Verificar si el rol del usuario está en la lista de roles requeridos
+    const hasRequiredRole = requiredRoles.includes(user.rol);
     
-        if(!requireAuth && authenticated && userRole =="moderador"){
-            navigate('/moderador', {replace: true});
-            return null;
-        }
-    
-    }, [
-        authChecked,
-        isAuthenticated,
-        getUserRole,
-        requireAuth,
-        requiredRoles,
-        navigate,
-        location
-    ])
-    
-    return children;
-}
+    if (!hasRequiredRole) {
+      // Redirigir a home si no tiene el rol necesario
+      return <Navigate to="/" replace />;
+    }
+  }
+
+  return <>{children}</>;
+};

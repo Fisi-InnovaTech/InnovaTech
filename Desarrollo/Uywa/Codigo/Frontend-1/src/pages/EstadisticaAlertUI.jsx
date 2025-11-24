@@ -21,7 +21,7 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { styles } from '../components/Estadistica/StatisticsStyle';
-import { ANIMAL_OPTIONS, DEPARTMENT_OPTIONS } from './RealizarAlerta';
+import { ANIMAL_OPTIONS } from './RealizarAlerta';
 import dayjs from 'dayjs';
 
 export const MONTH_NAMES = [
@@ -29,113 +29,103 @@ export const MONTH_NAMES = [
   "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
 ];
 
+// ❌ Región eliminado del menú
 export const CHARTERS = [
   { id: 'date', label: 'Reportes por Fechas' },
   { id: 'animal', label: 'Reportes por Animales' },
-  { id: 'region', label: 'Reportes por Region' },
   { id: 'comparison', label: 'Comparación de Reportes' }
 ];
 
 const Reportes = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [chartX, setChartX] = useState(CHARTERS[0].id);
+
   const [reports, setReports] = useState([]);
   const [latestReports, setLatestReports] = useState([]);
+
   const [filteredData, setFilteredData] = useState([]);
   const [animalData, setAnimalData] = useState([]);
-  const [regionData, setRegionData] = useState([]);
   const [aprobadoData, setAprobadoData] = useState([]);
   const [rechazadoData, setRechazadoData] = useState([]);
+
   const navigate = useNavigate();
 
+  // -------------------------------
+  // FETCH DATA REAL DEL BACKEND
+  // -------------------------------
   useEffect(() => {
-    const fetchReports = async (selectedYear) => {
+    const fetchReports = async () => {
       try {
-        const response = await fetch(`https://innovatech-ztzv.onrender.com/alertas/alertsByYear?year=${selectedYear}`);
-        const data = await response.json();
-        setReports(data);
-      } catch (error) {
-        console.error('Error al conectarse al back:', error);
-      }
-    };
+        const res = await fetch("http://127.0.0.1:3000/reportes/");
+        const json = await res.json();
+        const all = json.data;
 
-    fetchReports(year);
-  }, [year]);
+        setReports(all);
 
-  useEffect(() => {
-    const fetchLatestReports = async () => {
-      try {
-        const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/latestAlerts');
-        const data = await response.json();
-        setLatestReports(data);
-      } catch (error) {
-        console.error('Error al conectarse al back:', error);
-      }
-    };
-
-    fetchLatestReports();
-  }, []);
-
-  useEffect(() => {
-    const groupByMonth = reports.reduce((acc, report) => {
-      const month = new Date(report.fecha_creacion).getMonth();
-      acc[month] = (acc[month] || 0) + 1;
-      return acc;
-    }, {});
-
-    const data = MONTH_NAMES.map((month, index) => ({
-      month,
-      count: groupByMonth[index] || 0,
-    }));
-
-    setFilteredData(data);
-  }, [reports]);
-
-  useEffect(() => {
-    const animalCounts = reports.reduce((acc, report) => {
-      const animal = report.animal_nombre;
-      acc[animal] = (acc[animal] || 0) + 1;
-      return acc;
-    }, {});
-
-    const data = ANIMAL_OPTIONS.map(({ animal }) => ({
-      animal,
-      count: animalCounts[animal] || 0,
-    }));
-
-    setAnimalData(data);
-  }, [reports]);
-
-  useEffect(() => {
-    const regionCounts = reports.reduce((acc, report) => {
-      const region = report.region;
-      acc[region] = (acc[region] || 0) + 1;
-      return acc;
-    }, {});
-
-    const data = DEPARTMENT_OPTIONS.map(({ departamento }) => ({
-      region: departamento,
-      count: regionCounts[departamento] || 0,
-    }));
-
-    setRegionData(data);
-  }, [reports]);
-
-  useEffect(() => {
-    const estadosCounts = (status) => {
-      return reports.reduce((acc, report) => {
-        if (report.estado === status) {
+        // -------------------------
+        // AGRUPAR POR MES
+        // -------------------------
+        const groupByMonth = all.reduce((acc, report) => {
           const month = new Date(report.fecha_creacion).getMonth();
           acc[month] = (acc[month] || 0) + 1;
-        }
-        return acc;
-      }, {});
+          return acc;
+        }, {});
+
+        const monthlyData = MONTH_NAMES.map((m, i) => ({
+          month: m,
+          count: groupByMonth[i] || 0,
+        }));
+
+        setFilteredData(monthlyData);
+
+        // -------------------------
+        // AGRUPAR POR ANIMAL
+        // -------------------------
+        const animalCounts = all.reduce((acc, report) => {
+          const animal = report.animal_nombre;
+          acc[animal] = (acc[animal] || 0) + 1;
+          return acc;
+        }, {});
+
+        const animalDataset = ANIMAL_OPTIONS.map(({ animal }) => ({
+          animal,
+          count: animalCounts[animal] || 0,
+        }));
+
+        setAnimalData(animalDataset);
+
+        // -------------------------
+        // APROBADOS VS RECHAZADOS
+        // -------------------------
+        const estadosCounts = (estado) =>
+          all.reduce((acc, report) => {
+            if (report.estado === estado) {
+              const m = new Date(report.fecha_creacion).getMonth();
+              acc[m] = (acc[m] || 0) + 1;
+            }
+            return acc;
+          }, {});
+
+        const aprob = estadosCounts("aprobado");
+        const rech = estadosCounts("rechazado");
+
+        setAprobadoData(Array.from({ length: 12 }, (_, i) => aprob[i] || 0));
+        setRechazadoData(Array.from({ length: 12 }, (_, i) => rech[i] || 0));
+
+        // -------------------------
+        // TABLA → ÚLTIMOS REPORTES
+        // -------------------------
+        setLatestReports(all.slice(-10).reverse());
+
+      } catch (err) {
+        console.error("Error al obtener reportes:", err);
+      }
     };
 
-    setAprobadoData(Array.from({ length: 12 }, (_, i) => estadosCounts('aprobado')[i] || 0));
-    setRechazadoData(Array.from({ length: 12 }, (_, i) => estadosCounts('rechazado')[i] || 0));
-  }, [reports]);
+    fetchReports();
+  }, []);
 
+  // ------------------------- HANDLERS -------------------------
   const handleYearChange = (newDate) => {
     setYear(new Date(newDate).getFullYear());
   };
@@ -144,9 +134,14 @@ const Reportes = () => {
     setChartX(event.target.value);
   };
 
+  // ------------------------------------------------------------
+  // RENDERIZADO
+  // ------------------------------------------------------------
   return (
     <Container maxWidth="lg" sx={styles.container}>
       <Box sx={styles.searchBox}>
+        
+        {/* SELECTOR DE GRÁFICOS */}
         <FormControl sx={styles.searchField}>
           <InputLabel id="category-select-label">Gráfico Estadístico</InputLabel>
           <Select
@@ -155,7 +150,6 @@ const Reportes = () => {
             value={chartX}
             label="Gráfico Estadístico"
             onChange={handleChartX}
-            sx={{ textAlign: "left" }}
           >
             {CHARTERS.map(({ id, label }) => (
               <MenuItem key={id} value={id}>
@@ -165,6 +159,7 @@ const Reportes = () => {
           </Select>
         </FormControl>
 
+        {/* SELECTOR DE AÑO */}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoItem sx={styles.searchField}>
             <DatePicker
@@ -177,39 +172,33 @@ const Reportes = () => {
         </LocalizationProvider>
       </Box>
 
+      {/* ------------------ GRÁFICOS ------------------ */}
       <Box style={{ width: "100%" }}>
         {chartX === 'date' && (
           <BarChart
             dataset={filteredData}
             xAxis={[{ scaleType: 'band', dataKey: 'month' }]}
-            series={[{ dataKey: 'count', label: 'Fechas Reports' }]}
+            series={[{ dataKey: 'count', label: 'Reportes por Mes' }]}
             height={500}
           />
         )}
+
         {chartX === 'animal' && (
           <BarChart
             dataset={animalData}
             yAxis={[{ scaleType: 'band', dataKey: 'animal' }]}
-            series={[{ dataKey: 'count', label: 'Animal Reports' }]}
+            series={[{ dataKey: 'count', label: 'Reportes por Animal' }]}
             layout="horizontal"
             height={500}
           />
         )}
-        {chartX === 'region' && (
-          <BarChart
-            dataset={regionData}
-            yAxis={[{ scaleType: 'band', dataKey: 'region' }]}
-            series={[{ dataKey: 'count', label: 'Region Reports' }]}
-            layout="horizontal"
-            height={500}
-          />
-        )}
+
         {chartX === 'comparison' && (
           <LineChart
             xAxis={[
               {
-                data: MONTH_NAMES.map((_, index) => index + 1),
-                valueFormatter: (value) => MONTH_NAMES[value - 1],
+                data: MONTH_NAMES.map((_, i) => i + 1),
+                valueFormatter: (v) => MONTH_NAMES[v - 1],
               },
             ]}
             series={[
@@ -217,11 +206,11 @@ const Reportes = () => {
               { data: rechazadoData, label: 'Rechazados' },
             ]}
             height={500}
-            sx={{ width: '100%' }}
           />
         )}
       </Box>
-      
+
+      {/* ------------------ TABLA ------------------ */}
       <TableContainer component={Paper} sx={{ marginY: "20px" }}>
         <Table>
           <TableHead>
@@ -255,6 +244,5 @@ const Reportes = () => {
     </Container>
   );
 };
-
 
 export default Reportes;

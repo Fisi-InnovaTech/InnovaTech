@@ -38,6 +38,8 @@ const rejectionReasons = [
   "Otro"
 ];
 
+const backendURL = "http://localhost:3000/reportes";
+
 const Reportes = () => {
   const [reports, setReports] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,15 +57,16 @@ const Reportes = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/allalerts');
+        const response = await fetch(backendURL);
         
         if (!response.ok) {
-          throw new Error('Error al obtener los reportes');
+          throw new Error("Error al obtener los reportes");
         }
 
         const data = await response.json();
         setReports(data);
         setFilteredReports(data);
+
       } catch (error) {
         showSnackbar(error.message, "error");
       }
@@ -80,25 +83,20 @@ const Reportes = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  const changeState = async (report) => {
+  const updateReportState = async (reportId, body) => {
     try {
-      const response = await fetch('https://innovatech-ztzv.onrender.com/alertas/changingState', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          id: report.id, 
-          estado: report.estado,
-          reporte_detallado: report.reporte_detallado
-        })
+      const response = await fetch(`${backendURL}/${reportId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
-        throw new Error('Error al cambiar el estado');
+        throw new Error("Error al actualizar el reporte");
       }
 
       return true;
+
     } catch (error) {
       showSnackbar(error.message, "error");
       return false;
@@ -191,48 +189,35 @@ const Reportes = () => {
         }
       }
 
-      const updatedReports = reports.map((report) => {
-        if (report.id === reportId) {
-          return { 
-            ...report, 
-            estado: newEstado,
-            reporte_detallado: newEstado === "rechazado" ? reporte_detallado : null
-          };
-        }
-        return report;
-      });
+      const success = await updateReportState(reportId, { estado: newEstado, reporte_detallado });
 
-      const reportToUpdate = updatedReports.find(report => report.id === reportId);
-
-      if (!reportToUpdate) {
-        showSnackbar("No se encontró el reporte a actualizar", "error");
-        return;
-      }
-
-      const success = await changeState(reportToUpdate);
       if (success) {
+        const updatedReports = reports.map((item) =>
+          item.id === reportId
+            ? { ...item, estado: newEstado, reporte_detallado }
+            : item
+        );
+
         setReports(updatedReports);
         setFilteredReports(updatedReports);
-        showSnackbar(`Estado cambiado a ${newEstado}`, "success");
+        showSnackbar("Estado actualizado correctamente", "success");
         closeRejectDialog();
+
       } else {
         showSnackbar("Error al cambiar el estado", "error");
       }
+
     } catch (error) {
-      showSnackbar(`Error al actualizar estado: ${error.message}`, "error");
+      showSnackbar("Error al actualizar estado", "error");
     }
   };
 
   const getEstadoColor = (estado) => {
     switch (estado) {
-      case 'aprobado':
-        return '#3AB795';
-      case 'rechazado':
-        return '#E52F60';
-      case 'pendiente':
-        return '#F9C22E';
-      default:
-        return '#DDE2E5';
+      case 'aprobado': return '#3AB795';
+      case 'rechazado': return '#E52F60';
+      case 'pendiente': return '#F9C22E';
+      default: return '#DDE2E5';
     }
   };
 
@@ -322,6 +307,7 @@ const Reportes = () => {
                         </Button>
                       </TableCell>
                     </TableRow>
+
                     {expandedReport === report.id && (
                       <TableRow>
                         <TableCell colSpan={5}>
@@ -344,11 +330,12 @@ const Reportes = () => {
                                     style={styles.image} 
                                     onError={(e) => {
                                       e.target.onerror = null; 
-                                      e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PC9zdmc+";
+                                      e.target.src = "";
                                     }}
                                   />
                                 )}
                               </Box>
+
                               <Box sx={{display:"flex", gap:"20px", mt: 2 }}>
                                 {report.estado === "pendiente" && (
                                   <>
@@ -359,6 +346,7 @@ const Reportes = () => {
                                     >
                                       Aceptar
                                     </Button>
+
                                     <Button 
                                       variant="contained" 
                                       sx={{ 
@@ -373,11 +361,13 @@ const Reportes = () => {
                                   </>
                                 )}
                               </Box>
+
                             </Container>
                           </Collapse>
                         </TableCell>
                       </TableRow>
                     )}
+
                   </React.Fragment>
                 ))}
               </TableBody>
@@ -386,9 +376,7 @@ const Reportes = () => {
 
           <Box sx={styles.paginationBox}>
             <Box sx={{display: "flex", alignItems:"center", gap:"10px"}}>
-              <Typography variant="body2">
-                Ir a la página:
-              </Typography>
+              <Typography variant="body2">Ir a la página:</Typography>
               <TextField 
                 value={goToPage} 
                 onChange={handleGoToPageChange} 
@@ -396,10 +384,9 @@ const Reportes = () => {
                 type="number"
                 inputProps={{ min: 1, max: pageCount }}
               />
-              <Button variant="contained" onClick={handleGoToPageClick}>
-                Ir
-              </Button>
+              <Button variant="contained" onClick={handleGoToPageClick}>Ir</Button>
             </Box>
+
             <Pagination 
               count={pageCount} 
               page={currentPage} 
@@ -436,6 +423,7 @@ const Reportes = () => {
               ))}
             </Select>
           </FormControl>
+
           {rejectDialog.reason === "Otro" && (
             <TextField
               autoFocus
@@ -450,6 +438,7 @@ const Reportes = () => {
             />
           )}
         </DialogContent>
+
         <DialogActions>
           <Button onClick={closeRejectDialog}>Cancelar</Button>
           <Button 

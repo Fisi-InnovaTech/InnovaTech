@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Box,
   TextField,
@@ -25,7 +25,8 @@ import {
 } from '@mui/material';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import Mapa from '../components/Mapa/MapaVisualizar';
-// Constantes de configuración
+
+// CONSTANTES
 const MAX_FILE_SIZE_MB = 5;
 const MAX_DESCRIPTION_LENGTH = 1000;
 const MIN_DESCRIPTION_LENGTH = 30;
@@ -58,34 +59,6 @@ export const ANIMAL_OPTIONS = [
   { id: 'animal-24', value: 24, animal: "Zorro costeño" }
 ];
 
-export const DEPARTMENT_OPTIONS = [
-  { id: 'dept-1', value: 1, departamento: "Amazonas" },
-  { id: 'dept-2', value: 2, departamento: "Ancash" },
-  { id: 'dept-3', value: 3, departamento: "Apurímac" },
-  { id: 'dept-4', value: 4, departamento: "Arequipa" },
-  { id: 'dept-5', value: 5, departamento: "Ayacucho" },
-  { id: 'dept-6', value: 6, departamento: "Cajamarca" },
-  { id: 'dept-7', value: 7, departamento: "Callao" },
-  { id: 'dept-8', value: 8, departamento: "Cusco" },
-  { id: 'dept-9', value: 9, departamento: "Huancavelica" },
-  { id: 'dept-10', value: 10, departamento: "Huanuco" },
-  { id: 'dept-11', value: 11, departamento: "Ica" },
-  { id: 'dept-12', value: 12, departamento: "Junín" },
-  { id: 'dept-13', value: 13, departamento: "La Libertad" },
-  { id: 'dept-14', value: 14, departamento: "Lambayeque" },
-  { id: 'dept-15', value: 15, departamento: "Lima" },
-  { id: 'dept-16', value: 16, departamento: "Loreto" },
-  { id: 'dept-17', value: 17, departamento: "Madre de Dios" },
-  { id: 'dept-18', value: 18, departamento: "Moquegua" },
-  { id: 'dept-19', value: 19, departamento: "Pasco" },
-  { id: 'dept-20', value: 20, departamento: "Piura" },
-  { id: 'dept-21', value: 21, departamento: "Puno" },
-  { id: 'dept-22', value: 22, departamento: "San Martín" },
-  { id: 'dept-23', value: 23, departamento: "Tacna" },
-  { id: 'dept-24', value: 24, departamento: "Tumbes" },
-  { id: 'dept-25', value: 25, departamento: "Ucayali" }
-];
-
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -99,7 +72,8 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function AlertForm() {
-  // Estados
+
+  // ESTADOS
   const [selectedAnimal, setSelectedAnimal] = useState('');
   const [finishAlert, setFinishAlert] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
@@ -120,15 +94,8 @@ export default function AlertForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const url = "https://innovatech-ztzv.onrender.com";
-  const urlAlertas = url + '/alertas/guardar';
+  const urlBackend = "https://localhost:3000/reportes";
 
-  // Efectos
-  //corregir login
-  useEffect(() => {
-  }, []);
-
-  // Validar formulario
   const validateForm = () => {
     const newErrors = {
       animal: !selectedAnimal,
@@ -137,55 +104,47 @@ export default function AlertForm() {
       file: !tosendFile
     };
     setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error);
+    return !Object.values(newErrors).some(e => e);
   };
 
-  // Manejo de cambios
+  // MANEJO DE IMAGEN
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
 
-    // Validar tipo de archivo
     if (!VALID_FILE_TYPES.includes(selectedFile.type)) {
-      setAlertMessage(`Formato no válido. Solo se permiten: ${VALID_FILE_TYPES.map(t => t.split('/')[1]).join(', ')}`);
+      setAlertMessage("Formato inválido. Solo JPG y PNG.");
       setOpenSnackbar(true);
       return;
     }
 
-    // Validar tamaño
-    const maxSize = MAX_FILE_SIZE_MB * 1024 * 1024;
-    if (selectedFile.size > maxSize) {
-      setAlertMessage(`El archivo es demasiado grande (Máx. ${MAX_FILE_SIZE_MB}MB)`);
+    if (selectedFile.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      setAlertMessage(`Máximo permitido: ${MAX_FILE_SIZE_MB}MB`);
       setOpenSnackbar(true);
       return;
     }
 
     setFile(URL.createObjectURL(selectedFile));
     setTosendFile(selectedFile);
-    setErrors({...errors, file: false});
+    setErrors({ ...errors, file: false });
   };
 
+  // DESCRIPCIÓN
   const handleDescriptionChange = (e) => {
     if (e.target.value.length <= MAX_DESCRIPTION_LENGTH) {
       setDescription(e.target.value);
-      setErrors({...errors, description: e.target.value.length < MIN_DESCRIPTION_LENGTH});
+      setErrors({
+        ...errors,
+        description: e.target.value.length < MIN_DESCRIPTION_LENGTH
+      });
     }
   };
 
-  const handleCloseAlert = () => {
-    setOpenAlert(false);
-    window.location.href = '/iniciar-sesion';
-  };
 
-  const handleCloseFinishAlert = () => {
-    setFinishAlert(false);
-    window.location.href = '/realizar-alerta';
-  };
-
-  // Envío del formulario
   const handleSubmit = async () => {
+
     if (!validateForm()) {
-      setAlertMessage('Por favor complete todos los campos requeridos');
+      setAlertMessage("Complete todos los campos obligatorios");
       setOpenSnackbar(true);
       return;
     }
@@ -194,33 +153,41 @@ export default function AlertForm() {
     setIsButtonDisabled(true);
 
     try {
-      const userLogged = JSON.parse(localStorage.getItem('UW-logged-session'));
-      const selectedAnimalData = ANIMAL_OPTIONS.find(animal => animal.value == selectedAnimal);
+      const userLogged = JSON.parse(localStorage.getItem("UW-logged-session"));
 
-      let formData = new FormData();
-      formData.append('user_id', isAnonymous ? '' : userLogged.id);
-      formData.append('animal_nombre', selectedAnimalData?.animal || '');
-      formData.append('nombre_reportante', isAnonymous ? 'Anónimo' : userLogged.nombre);
-      formData.append('fecha_creacion', new Date().toISOString());
-      formData.append('latitud', latitud);
-      formData.append('longitud', longitud);
-      formData.append('descripcion', description);
-      formData.append('estado', 'pendiente');
-      formData.append('evidencia_imagen', tosendFile);
-      formData.append('es_anonimo', isAnonymous);
+      const selectedAnimalData = ANIMAL_OPTIONS.find(a => a.value == selectedAnimal);
 
-      const response = await fetch(urlAlertas, {
-        method: 'POST',
+      const formData = new FormData();
+      formData.append("animal_nombre", selectedAnimalData?.animal || "");
+      formData.append("descripcion", description);
+      formData.append("latitud", latitud);
+      formData.append("longitud", longitud);
+      formData.append("es_anonimo", isAnonymous);
+      formData.append("estado", "pendiente");
+
+      // Si no es anónimo, se envía el user_id
+      formData.append("user_id", isAnonymous ? "" : userLogged?.id);
+      formData.append("nombre_reportante", isAnonymous ? "Anónimo" : userLogged?.nombre);
+
+      // Imagen
+      formData.append("evidencia_imagen", tosendFile);
+
+      // PETICIÓN AL BACKEND
+      const response = await fetch(urlBackend, {
+        method: "POST",
         body: formData
       });
 
-      if (!response.ok) throw new Error('Error en el servidor');
+      if (!response.ok) {
+        throw new Error("Error en el servidor");
+      }
 
       await response.json();
       setFinishAlert(true);
+
     } catch (error) {
-      console.error('Error:', error);
-      setAlertMessage('Error al enviar la alerta. Por favor intente nuevamente');
+      console.error(error);
+      setAlertMessage("Error al enviar la alerta");
       setOpenSnackbar(true);
     } finally {
       setIsSubmitting(false);
@@ -228,7 +195,7 @@ export default function AlertForm() {
     }
   };
 
-  // Componentes de UI
+
   const labelName = {
     py: 1.5,
     px: 2,
@@ -240,268 +207,109 @@ export default function AlertForm() {
 
   return (
     <Container sx={{ display: 'flex', minWidth: '100%', justifyContent: 'center', marginTop: '70px', backgroundColor: '#EDF1F5' }}>
-      {/* Diálogos */}
-      <Dialog
-        open={openAlert}
-        onClose={handleCloseAlert}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Acceso Requerido"}</DialogTitle>
+      {/* Diálogo éxito */}
+      <Dialog open={finishAlert}>
+        <DialogTitle>Alerta enviada</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Debes iniciar sesión para acceder a esta página. Serás redirigido a la página de inicio de sesión.
+          <DialogContentText>
+            Tu reporte ha sido enviado correctamente.
+            Nuestros moderadores lo revisarán pronto.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAlert} color="primary" autoFocus>
-            Entendido
-          </Button>
+          <Button onClick={() => window.location.href = "/realizar-alerta"}>Aceptar</Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={finishAlert}
-        onClose={handleCloseFinishAlert}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Alerta Enviada"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tu alerta ha sido enviada correctamente.
-            <br /><br />
-            Recibirás una notificación cuando sea revisada por nuestros moderadores.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseFinishAlert} color="primary" autoFocus>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Formulario  */}
-
-      { (
-        <Paper sx={{ width: { xs: '95%', sm: '70%', md: '60%' }, justifyContent: 'center', margin: 4 }}>
-          {/* Sección de imagen */}
-          <Box sx={{ p: 2 }}>
-            <Typography sx={labelName}>EVIDENCIA FOTOGRÁFICA *</Typography>
-            <Box sx={{ 
-              border: `2px dashed ${errors.file ? 'red' : '#ccc'}`,
-              borderRadius: 2,
-              p: 3,
-              textAlign: 'center',
-              mb: 2,
-              backgroundColor: '#f9f9f9'
-            }}>
-              <CloudUploadIcon sx={{ fontSize: 50, color: errors.file ? 'red' : '#FB9678', mb: 1 }} />
-              <Typography variant="h6" sx={{ mb: 1 }}>Subir imagen del suceso</Typography>
-              <Typography variant="body2" sx={{ mb: 2, color: errors.file ? 'red' : 'text.secondary' }}>
-                Formatos aceptados: JPG, PNG (Máx. {MAX_FILE_SIZE_MB}MB)
-              </Typography>
-              
-              <Button
-                component="label"
-                variant="contained"
-                size="medium"
-                startIcon={<CloudUploadIcon />}
-                sx={{
-                  backgroundColor: errors.file ? 'red' : '#FB9678',
-                  '&:hover': { backgroundColor: errors.file ? '#d32f2f' : '#E87A5D' }
-                }}
-              >
-                Seleccionar archivo
-                <VisuallyHiddenInput 
-                  type="file" 
-                  onChange={handleFileChange}
-                  accept={VALID_FILE_TYPES.join(',')} 
-                />
-              </Button>
-            </Box>
-
-            {file && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>Vista previa:</Typography>
-                <Box sx={{
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: 400,
-                  border: '1px solid #eee',
-                  borderRadius: 1,
-                  overflow: 'hidden'
-                }}>
-                  <img 
-                    src={file} 
-                    alt="Previsualización" 
-                    style={{ width: '100%', height: 'auto' }} 
-                  />
-                  <Button 
-                    onClick={() => {
-                      setFile(null);
-                      setTosendFile(null);
-                      setErrors({...errors, file: true});
-                    }}
-                    sx={{ position: 'absolute', top: 8, right: 8 }}
-                  >
-                    ✕
-                  </Button>
-                </Box>
-                <Typography variant="caption">
-                  {tosendFile?.name} - {(tosendFile?.size / 1024 / 1024).toFixed(2)}MB
-                </Typography>
-              </Box>
-            )}
-          </Box>
-
-          {/* Sección de descripción */}
-          <Box sx={{ p: 2 }}>
-            <Typography sx={labelName}>DESCRIPCIÓN DEL CASO *</Typography>
-            <Box sx={{ flexGrow: 1, p: 3 }}>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <FormControl fullWidth error={errors.animal}>
-                    <Typography sx={{ textAlign: 'left', mb: 2 }}>Seleccionar animal *</Typography>
-                    <Select
-                      value={selectedAnimal}
-                      onChange={(e) => {
-                        setSelectedAnimal(e.target.value);
-                        setErrors({...errors, animal: false});
-                      }}
-                      error={errors.animal}
-                    >
-                      <MenuItem value=""><em>Seleccione un animal</em></MenuItem>
-                      {ANIMAL_OPTIONS.map((animal) => (
-                        <MenuItem key={animal.id} value={animal.value}>
-                          {animal.animal}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.animal && <Typography color="error" variant="caption">Este campo es requerido</Typography>}
-                  </FormControl>
-                </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                  <Typography sx={{ textAlign: 'left', mb: 2 }}>Describa el caso en detalle *</Typography>
-                  <TextField
-                    multiline
-                    rows={5}
-                    value={description}
-                    onChange={handleDescriptionChange}
-                    error={errors.description}
-                    helperText={
-                      errors.description 
-                        ? `Mínimo ${MIN_DESCRIPTION_LENGTH} caracteres (actual: ${description.length})` 
-                        : `${description.length}/${MAX_DESCRIPTION_LENGTH} caracteres`
-                    }
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Box>
-
-          {/* Sección de ubicación */}
-          <Box sx={{ p: 2 }}>
-            <Typography sx={labelName}>UBICACIÓN *</Typography>
-            <Box sx={{ width: "100%", height: "60vh", position: 'relative' }}>
-              <Mapa 
-                lat={setLatitud} 
-                long={setLongitud} 
-                onError={() => {
-                  setErrors({...errors, location: true});
-                  setAlertMessage('Debe seleccionar una ubicación dentro del territorio nacional');
-                  setOpenSnackbar(true);
-                }}
-              />
-              {errors.location && (
-                <Box sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: 'rgba(255,0,0,0.1)',
-                  p: 1,
-                  textAlign: 'center'
-                }}>
-                  <Typography color="error">Seleccione una ubicación válida</Typography>
-                </Box>
-              )}
-            </Box>
-          </Box>
-
-          {/* Privacidad */}
-          <Box sx={{ p: 2 }}>
-            <Typography sx={labelName}>CONFIDENCIALIDAD</Typography>
-            <FormGroup sx={{ p: 3 }}>
-              <FormControlLabel 
-                control={
-                  <Checkbox 
-                    checked={isAnonymous}
-                    onChange={(e) => setIsAnonymous(e.target.checked)}
-                  />
-                } 
-                label={
-                  <>
-                    Enviar de forma anónima
-                    <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }}>
-                      {isAnonymous 
-                        ? 'Tu identidad no será revelada' 
-                        : 'Tu nombre será visible en la alerta'}
-                    </Typography>
-                  </>
-                } 
-              />
-            </FormGroup>
-          </Box>
-
-          {/* Envío */}
-          <Box sx={{ p: 2, textAlign: 'center' }}>
-            <Button 
-              variant="contained" 
-              onClick={handleSubmit} 
-              disabled={isButtonDisabled}
-              sx={{ 
-                m: 2,
-                minWidth: 200,
-                backgroundColor: '#FB9678',
-                '&:hover': { backgroundColor: '#E87A5D' }
-              }}
-            >
-              {isSubmitting ? (
-                <>
-                  <CircularProgress size={24} sx={{ color: 'white', mr: 1 }} />
-                  Enviando...
-                </>
-              ) : 'Enviar Alerta'}
+      {/* FORM */}
+      <Paper sx={{ width: '70%', margin: 4 }}>
+        {/* IMAGEN */}
+        <Box sx={{ p: 2 }}>
+          <Typography sx={labelName}>EVIDENCIA FOTOGRÁFICA *</Typography>
+          <Box sx={{ border: `2px dashed ${errors.file ? 'red' : '#ccc'}`, p: 3, textAlign: 'center' }}>
+            <Button component="label" variant="contained">
+              <CloudUploadIcon />
+              Subir Foto
+              <VisuallyHiddenInput type="file" onChange={handleFileChange} />
             </Button>
-            <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }}>
-              * Campos obligatorios
-            </Typography>
-            <Typography variant="caption" display="block" sx={{ color: 'text.secondary', mt: 2 }}>
-              Al enviar esta alerta aceptas nuestros términos y condiciones de uso.
-              <br />
-              Nos comprometemos a proteger tu privacidad y no almacenamos información sensible.
-            </Typography>
           </Box>
-        </Paper>
-      )}
+
+          {file && (
+            <Box sx={{ mt: 2 }}>
+              <img src={file} alt="preview" style={{ width: "300px" }} />
+            </Box>
+          )}
+        </Box>
+
+        {/* DESCRIPCIÓN */}
+        <Box sx={{ p: 2 }}>
+          <Typography sx={labelName}>DESCRIPCIÓN DEL CASO *</Typography>
+          <TextField
+            multiline
+            rows={5}
+            fullWidth
+            value={description}
+            onChange={handleDescriptionChange}
+            error={errors.description}
+          />
+        </Box>
+
+        {/* ANIMAL */}
+        <Box sx={{ p: 2 }}>
+          <FormControl fullWidth>
+            <Typography>Seleccionar Animal *</Typography>
+            <Select
+              value={selectedAnimal}
+              onChange={(e) => setSelectedAnimal(e.target.value)}
+            >
+              <MenuItem value=""><em>Seleccione</em></MenuItem>
+              {ANIMAL_OPTIONS.map(a => (
+                <MenuItem key={a.id} value={a.value}>{a.animal}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        {/* MAPA */}
+        <Box sx={{ p: 2 }}>
+          <Typography sx={labelName}>UBICACIÓN *</Typography>
+          <Box sx={{ width: "100%", height: "60vh" }}>
+            <Mapa lat={setLatitud} long={setLongitud} />
+          </Box>
+        </Box>
+
+        {/* PRIVACIDAD */}
+        <Box sx={{ p: 2 }}>
+          <Typography sx={labelName}>CONFIDENCIALIDAD</Typography>
+          <FormGroup>
+            <FormControlLabel 
+              control={
+                <Checkbox checked={isAnonymous} onChange={(e)=>setIsAnonymous(e.target.checked)} />
+              }
+              label="Enviar reporte de forma anónima"
+            />
+          </FormGroup>
+        </Box>
+
+        {/* BOTÓN ENVIAR */}
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Button 
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <CircularProgress size={24} /> : "Enviar Reporte"}
+          </Button>
+        </Box>
+      </Paper>
 
       {/* Notificaciones */}
       <Snackbar 
-        open={openSnackbar} 
-        autoHideDuration={6000} 
+        open={openSnackbar}
+        autoHideDuration={5000}
         onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={() => setOpenSnackbar(false)} 
-          severity="error" 
-          sx={{ width: '100%' }}
-        >
-          {alertMessage}
-        </Alert>
+        <Alert severity="error">{alertMessage}</Alert>
       </Snackbar>
     </Container>
   );

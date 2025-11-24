@@ -82,13 +82,11 @@ const DEPARTMENT_OPTIONS = [
   { id: 'dept-25', value: "Ucayali", departamento: "Ucayali" }
 ];
 
-const API_BASE_URL = 'https://innovatech-ztzv.onrender.com';
+const API_BASE_URL = 'http://127.0.0.1:3000';
 
 function VerAlertaGoogle() {
   // State management
-  const [markerData, setMarkerData] = useState([
-    
-  ]);
+  const [markerData, setMarkerData] = useState([]);
   const [animal, setAnimal] = useState("");
   const [region, setRegion] = useState("");
   const [fechaIni, setFechaIni] = useState(dayjs().subtract(1, 'month'));
@@ -111,130 +109,98 @@ function VerAlertaGoogle() {
     setRegion(event.target.value);
   };
 
-  // Check authentication status
+  // Load all markers on component mount
   useEffect(() => {
-    //cargarMarcadores();
+    cargarMarcadores();
   }, []);
 
   // Load all markers
-/*   const cargarMarcadores = async () => {
+  const cargarMarcadores = async () => {
     setLoading(true);
-    setProgressStatus("Obteniendo ubicaciones de alertas...");
+    setProgressStatus("Obteniendo ubicaciones de reportes...");
     try {
-      const response = await fetch(`${API_BASE_URL}/alertas/allmap`);
+      const response = await fetch(`${API_BASE_URL}/reportes/`);
       if (response.ok) {
         setProgressStatus("Procesando datos...");
         const data = await response.json();
-        setMarkerData(data);
+        setMarkerData(data.data || []);
       } else {
-        setError('Error al cargar los marcadores');
+        setError('Error al cargar los reportes');
       }
     } catch (error) {
       console.error('Error en la operación:', error);
-      
-      let errorMessage = 'Error de conexión al servidor';
-      
-      if (error.name === 'AbortError') {
-        errorMessage = 'La solicitud fue cancelada';
-      } else if (error.response) {
-        errorMessage = `Error del servidor: ${error.response.status} - ${error.response.data?.message || 'Sin detalles'}`;
-      } else if (error.request) {
-        errorMessage = 'El servidor no respondió. Verifica tu conexión a internet';
-      } else if (error instanceof TypeError) {
-        errorMessage = 'Error de tipo en la aplicación';
-      } else if (error instanceof SyntaxError) {
-        errorMessage = 'Error en el formato de los datos';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-    
-      setError(errorMessage);
-      setOpenSnackbar(true);
-      
-      if (process.env.NODE_ENV === 'production') {
-        logErrorToService(error);
-      }
+      setError('Error de conexión al servidor');
     } finally {
-      setIsSubmitting(false);
-      setIsButtonDisabled(false);
+      setLoading(false);
     }
-  }; */
+  };
 
-  // Handle search with filters
   // Extracted validation function
-const validateSearchParams = () => {
-  if (fechaIni > fechaFin) {
-    setError('La fecha inicial no puede ser mayor a la fecha final');
-    return false;
-  }
-  return true;
-};
+  const validateSearchParams = () => {
+    if (fechaIni > fechaFin) {
+      setError('La fecha inicial no puede ser mayor a la fecha final');
+      return false;
+    }
+    return true;
+  };
 
-// Extracted parameter builder function
-const buildSearchParams = () => {
-  const params = new URLSearchParams();
-  if (fechaIni) params.append('fecha_ini', fechaIni.format('YYYY-MM-DD'));
-  if (fechaFin) params.append('fecha_fin', fechaFin.format('YYYY-MM-DD'));
-  if (animal) params.append('animal', animal);
-  if (region) params.append('region', region);
-  return params;
-};
+  // Extracted parameter builder function
+  const buildSearchParams = () => {
+    const params = new URLSearchParams();
+    if (fechaIni) params.append('fecha_ini', fechaIni.format('YYYY-MM-DD'));
+    if (fechaFin) params.append('fecha_fin', fechaFin.format('YYYY-MM-DD'));
+    if (animal) params.append('animal', animal);
+    // Note: Region parameter is included but backend might ignore it
+    if (region) params.append('region', region);
+    return params;
+  };
 
-// Extracted response handler function
-const handleSearchResponse = async (response) => {
-  if (!response.ok) {
-    throw new Error('Error al buscar alertas');
-  }
+  // Extracted response handler function
+  const handleSearchResponse = async (response) => {
+    if (!response.ok) {
+      throw new Error('Error al buscar reportes');
+    }
 
-  const data = await response.json();
-  setMarkerData(data);
-  
-  if (data.length === 0) {
-    setError('No se encontraron alertas con los filtros seleccionados');
-  }
-};
+    const data = await response.json();
+    setMarkerData(data.data || []);
+    
+    if ((data.data || []).length === 0) {
+      setError('No se encontraron reportes con los filtros seleccionados');
+    }
+  };
 
-// Refactored main function
-const handleSearch = async () => {
-  if (!validateSearchParams()) return;
+  // Refactored main function
+  const handleSearch = async () => {
+    if (!validateSearchParams()) return;
 
-  setLoading(true);
-  setProgressStatus("Buscando alertas...");
+    setLoading(true);
+    setProgressStatus("Buscando reportes...");
 
-  try {
-    const params = buildSearchParams();
-    const response = await fetch(`${API_BASE_URL}/alertas/search?${params.toString()}`);
-    await handleSearchResponse(response);
-  } catch (error) {
-    handleSearchError(error);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const params = buildSearchParams();
+      const response = await fetch(`${API_BASE_URL}/reportes/search?${params.toString()}`);
+      await handleSearchResponse(response);
+    } catch (error) {
+      handleSearchError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-// Extracted error handler (reusable for other API calls)
-const handleSearchError = (error) => {
-  console.error('Error en la operación:', error);
-  
-  let errorMessage = 'Error de conexión al servidor';
-  
-  if (error.name === 'AbortError') {
-    errorMessage = 'La solicitud fue cancelada';
-  } else if (error.response) {
-    errorMessage = `Error del servidor: ${error.response.status} - ${error.response.data?.message || 'Sin detalles'}`;
-  } else if (error.request) {
-    errorMessage = 'El servidor no respondió. Verifica tu conexión a internet';
-  } else if (error.message) {
-    errorMessage = error.message;
-  }
+  // Extracted error handler
+  const handleSearchError = (error) => {
+    console.error('Error en la operación:', error);
+    
+    let errorMessage = 'Error de conexión al servidor';
+    
+    if (error.name === 'AbortError') {
+      errorMessage = 'La solicitud fue cancelada';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
 
-  setError(errorMessage);
-  setOpenSnackbar(true);
-  
-  if (process.env.NODE_ENV === 'production') {
-    logErrorToService(error);
-  }
-};
+    setError(errorMessage);
+  };
 
   // Reset all filters
   const handleReset = async () => {
@@ -243,7 +209,7 @@ const handleSearchError = (error) => {
     setFechaIni(dayjs().subtract(1, 'month'));
     setFechaFin(dayjs());
     setError(null);
-    //await cargarMarcadores();
+    await cargarMarcadores();
   };
 
   // Handle marker click
@@ -267,7 +233,7 @@ const handleSearchError = (error) => {
 
     return (
       <Dialog open={!!selectedAlert} onClose={handleCloseDialog} fullScreen={isMobile}>
-        <DialogTitle>Detalles de la Alerta</DialogTitle>
+        <DialogTitle>Detalles del Reporte</DialogTitle>
         <DialogContent>
           <Typography variant="h6" gutterBottom>
             {selectedAlert.animal_nombre || 'Animal no especificado'}
@@ -276,11 +242,8 @@ const handleSearchError = (error) => {
           <Box mb={2}>
             <Typography variant="subtitle2">Información básica:</Typography>
             <Typography>Fecha: {dayjs(selectedAlert.fecha_creacion).format('DD/MM/YYYY HH:mm')}</Typography>
-            <Typography>Región: {selectedAlert.region || 'No especificada'}</Typography>
+            <Typography>Reportado por: {selectedAlert.nombre_reportante || 'Anónimo'}</Typography>
             <Typography>Estado: {selectedAlert.estado || 'No especificado'}</Typography>
-            {userRole === 'user' && (
-              <Typography>Reportado por: {selectedAlert.nombre_reportante || 'Anónimo'}</Typography>
-            )}
           </Box>
 
           {selectedAlert.descripcion && (
@@ -294,7 +257,7 @@ const handleSearchError = (error) => {
             <Typography variant="subtitle2">Evidencia:</Typography>
             {selectedAlert.evidencia_imagen ? (
               <img 
-                src={`${API_BASE_URL}/uploads/${selectedAlert.evidencia_imagen}`} 
+                src={selectedAlert.evidencia_imagen} 
                 alt="Evidencia" 
                 style={{ 
                   maxWidth: '100%', 
@@ -397,48 +360,7 @@ const handleSearchError = (error) => {
       {/* Map Section */}
       <Box sx={mapMark}>
         <Mapa 
-          markerData={[
-  {
-    id: 1,
-    latitud: -12.0464,
-    longitud: -77.0428,
-    animal_nombre: "Anaconda",
-    descripcion: "Avistamiento cerca del río Amazonas, ejemplar adulto de aproximadamente 5 metros",
-    evidencia_imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=150&fit=crop"
-  },
-  {
-    id: 2,
-    latitud: -12.0564,
-    longitud: -77.0328,
-    animal_nombre: "Taricaya",
-    descripcion: "Nido de taricayas encontrado en playa del río Madre de Dios",
-    evidencia_imagen: "https://images.unsplash.com/photo-1558098329-a11cff621064?w=200&h=150&fit=crop"
-  },
-  {
-    id: 3,
-    latitud: -12.0364,
-    longitud: -77.0528,
-    animal_nombre: "Cotorra",
-    descripcion: "Grupo de cotorras en zona urbana, comportamiento normal",
-    evidencia_imagen: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=200&h=150&fit=crop"
-  },
-  {
-    id: 4,
-    latitud: -12.0664,
-    longitud: -77.0228,
-    animal_nombre: "Consenegro",
-    descripcion: "Avistamiento en zona boscosa, ejemplar adulto en mal estado",
-    evidencia_imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZGeajOiuB1wZ0aEQNWujutiHF9c1sN5fU7g&s"
-  },
-  {
-    id: 5,
-    latitud: -12.0264,
-    longitud: -77.0628,
-    animal_nombre: "Mono machín negro",
-    descripcion: "Grupo familiar de monos en zona de conservación",
-    evidencia_imagen: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?w=200&h=150&fit=crop"
-  }
-]} 
+          markerData={markerData}
           onMarkerClick={handleMarkerClick}
           userRole={userRole}
         />
@@ -452,7 +374,7 @@ const handleSearchError = (error) => {
         }}>
           <Box sx={mapSearchAlert}>
             <Typography variant="h6" sx={{ textAlign: "left", mb: 2 }}>
-              Buscar alertas
+              Buscar reportes
               {userRole === 'guest' && (
                 <Typography variant="caption" display="block" color="textSecondary">
                   (Algunas funciones limitadas para invitados)

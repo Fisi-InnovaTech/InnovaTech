@@ -38,43 +38,62 @@ const rejectionReasons = [
   "Otro"
 ];
 
-const backendURL = "http://localhost:3000/reportes";
+const backendURL = "http://127.0.0.1:3000/reportes";
 
 const Reportes = () => {
+
   const [reports, setReports] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [expandedReport, setExpandedReport] = useState(null);
-  const [goToPage, setGoToPage] = useState("");
   const [filteredReports, setFilteredReports] = useState([]);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-  const [rejectDialog, setRejectDialog] = useState({ open: false, reportId: null, reason: "", customReason: "" });
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("todos");
 
-  const reportsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [goToPage, setGoToPage] = useState("");
+
+  const [expandedReport, setExpandedReport] = useState(null);
+
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+
+  const [rejectDialog, setRejectDialog] = useState({
+    open: false,
+    reportId: null,
+    reason: "",
+    customReason: ""
+  });
+
   const navigate = useNavigate();
+  const reportsPerPage = 10;
+
+  // ================================
+  // FETCH PRINCIPAL
+  // ================================
+  const fetchReports = async () => {
+    try {
+      const response = await fetch(backendURL);
+
+      if (!response.ok) {
+        throw new Error("Error al obtener los reportes");
+      }
+
+      const json = await response.json();
+      const data = json.data;
+
+      setReports(data);
+      setFilteredReports(data);
+
+    } catch (error) {
+      showSnackbar(error.message, "error");
+    }
+  };
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const response = await fetch(backendURL);
-        
-        if (!response.ok) {
-          throw new Error("Error al obtener los reportes");
-        }
-
-        const data = await response.json();
-        setReports(data);
-        setFilteredReports(data);
-
-      } catch (error) {
-        showSnackbar(error.message, "error");
-      }
-    };
-
     fetchReports();
   }, []);
 
+  // ================================
+  // SNACKBAR
+  // ================================
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -83,163 +102,151 @@ const Reportes = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  const updateReportState = async (reportId, body) => {
+  // ================================
+  // PATCH → RECHAZAR REPORTE
+  // ================================
+  const rejectReport = async (id, motivo) => {
     try {
-      const response = await fetch(`${backendURL}/${reportId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const res = await fetch(
+        `${backendURL}/estado/${id}?estado=rechazado`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ motivo })
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Error al actualizar el reporte");
-      }
+      if (!res.ok) throw new Error("No se pudo rechazar el reporte");
 
-      return true;
+      showSnackbar("Reporte rechazado correctamente", "success");
+      await fetchReports(); // refrescar tabla
 
-    } catch (error) {
-      showSnackbar(error.message, "error");
-      return false;
+    } catch (err) {
+      showSnackbar(err.message, "error");
     }
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+  // ================================
+  // PATCH → APROBAR REPORTE
+  // ================================
+  const approveReport = async (id) => {
+    try {
+      const res = await fetch(
+        `${backendURL}/estado/${id}?estado=aprobado`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+
+      if (!res.ok) throw new Error("No se pudo aprobar el reporte");
+
+      showSnackbar("Reporte aprobado correctamente", "success");
+      await fetchReports(); // refrescar tabla
+
+    } catch (err) {
+      showSnackbar(err.message, "error");
+    }
   };
 
-  const handlePageChange = (_event, value) => {
-    setCurrentPage(value);
-  };
+  // ================================
+  // FILTRO Y BUSQUEDA EN TIEMPO REAL
+  // ================================
+  useEffect(() => {
+    let filtered = reports;
 
-  const handleGoToPageChange = (event) => {
-    setGoToPage(event.target.value);
-  };
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(report =>
+        report.usuario?.nombres?.toLowerCase().includes(term) ||
+        report.usuario?.apellidos?.toLowerCase().includes(term) ||
+        report.animal_nombre?.toLowerCase().includes(term) ||
+        report.descripcion?.toLowerCase().includes(term)
+      );
+    }
+
+    if (selectedFilter !== "todos") {
+      filtered = filtered.filter(r => r.estado === selectedFilter);
+    }
+
+    setFilteredReports(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, selectedFilter, reports]);
+
+  // ================================
+  // PAGINACIÓN
+  // ================================
+  const pageCount = Math.ceil(filteredReports.length / reportsPerPage);
+  const paginatedReports = filteredReports.slice((currentPage - 1) * reportsPerPage, currentPage * reportsPerPage);
 
   const handleGoToPageClick = () => {
     const pageNumber = parseInt(goToPage, 10);
-    if (pageNumber > 0 && pageNumber <= Math.ceil(filteredReports.length / reportsPerPage)) {
+    if (pageNumber > 0 && pageNumber <= pageCount) {
       setCurrentPage(pageNumber);
     } else {
       showSnackbar("Número de página inválido", "error");
     }
   };
 
-  const handleClick = () => {
-    let filtered = reports;
-    
-    if (searchTerm) {
-      filtered = filtered.filter(report =>
-        (report.usuario?.nombre?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (report.animal_nombre?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (report.descripcion?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (report.estado?.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    if (selectedFilter !== "todos") {
-      filtered = filtered.filter(report => report.estado === selectedFilter);
-    }
-
-    setFilteredReports(filtered);
-    setCurrentPage(1);
-    
-    if (filtered.length === 0) {
-      showSnackbar("No se encontraron reportes con los criterios seleccionados", "info");
-    }
+  // ================================
+  // EXPANDIR
+  // ================================
+  const toggleReport = (id) => {
+    setExpandedReport(expandedReport === id ? null : id);
   };
 
-  const handleFilterChange = (event) => {
-    setSelectedFilter(event.target.value);
-  };
-
-  const paginatedReports = filteredReports.slice((currentPage - 1) * reportsPerPage, currentPage * reportsPerPage);
-
-  const toggleReport = (reportId) => {
-    setExpandedReport(expandedReport === reportId ? null : reportId);
-  };
-
-  const openRejectDialog = (reportId) => {
-    setRejectDialog({ open: true, reportId, reason: "", customReason: "" });
+  // ================================
+  // DIALOGO RECHAZO
+  // ================================
+  const openRejectDialog = (id) => {
+    setRejectDialog({ open: true, reportId: id, reason: "", customReason: "" });
   };
 
   const closeRejectDialog = () => {
     setRejectDialog({ open: false, reportId: null, reason: "", customReason: "" });
   };
 
-  const handleRejectReasonChange = (event) => {
-    setRejectDialog({ ...rejectDialog, reason: event.target.value });
+  const confirmReject = async () => {
+    const motivo =
+      rejectDialog.reason === "Otro"
+        ? rejectDialog.customReason
+        : rejectDialog.reason;
+
+    await rejectReport(rejectDialog.reportId, motivo);
+    closeRejectDialog();
   };
 
-  const handleCustomReasonChange = (event) => {
-    setRejectDialog({ ...rejectDialog, customReason: event.target.value });
-  };
-
-  const handleState = async (reportId, newEstado) => {
-    try {
-      let reporte_detallado = null;
-      
-      if (newEstado === "rechazado") {
-        reporte_detallado = rejectDialog.reason === "Otro" 
-          ? rejectDialog.customReason 
-          : rejectDialog.reason;
-        
-        if (!reporte_detallado) {
-          showSnackbar("Debe proporcionar un motivo de rechazo", "error");
-          return;
-        }
-      }
-
-      const success = await updateReportState(reportId, { estado: newEstado, reporte_detallado });
-
-      if (success) {
-        const updatedReports = reports.map((item) =>
-          item.id === reportId
-            ? { ...item, estado: newEstado, reporte_detallado }
-            : item
-        );
-
-        setReports(updatedReports);
-        setFilteredReports(updatedReports);
-        showSnackbar("Estado actualizado correctamente", "success");
-        closeRejectDialog();
-
-      } else {
-        showSnackbar("Error al cambiar el estado", "error");
-      }
-
-    } catch (error) {
-      showSnackbar("Error al actualizar estado", "error");
-    }
-  };
-
+  // ================================
+  // COLOR ETIQUETA
+  // ================================
   const getEstadoColor = (estado) => {
     switch (estado) {
-      case 'aprobado': return '#3AB795';
-      case 'rechazado': return '#E52F60';
-      case 'pendiente': return '#F9C22E';
-      default: return '#DDE2E5';
+      case "aprobado": return "#3AB795";
+      case "rechazado": return "#E52F60";
+      case "pendiente": return "#F9C22E";
+      default: return "#DDE2E5";
     }
   };
-
-  const pageCount = Math.ceil(filteredReports.length / reportsPerPage);
 
   return (
     <Container maxWidth="lg" sx={styles.container}>
       <Box sx={styles.searchBox}>
+        
         <TextField
           label="Buscar"
           variant="outlined"
           value={searchTerm}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearchTerm(e.target.value)}
           sx={styles.searchField}
-          placeholder="Buscar por usuario, animal o descripción"
+          placeholder="Buscar por nombre, animal o descripción"
         />
+
         <FormControl sx={{ minWidth: 120 }}>
           <InputLabel>Estado</InputLabel>
           <Select
             value={selectedFilter}
             label="Estado"
-            onChange={handleFilterChange}
+            onChange={(e) => setSelectedFilter(e.target.value)}
           >
             <MenuItem value="todos">Todos</MenuItem>
             <MenuItem value="pendiente">Pendiente</MenuItem>
@@ -247,157 +254,152 @@ const Reportes = () => {
             <MenuItem value="rechazado">Rechazado</MenuItem>
           </Select>
         </FormControl>
-        <Button
-          variant="contained"
-          sx={styles.searchIcon}
-          onClick={handleClick}
-          startIcon={<SearchIcon/>}
-        >
+
+        <Button variant="contained" sx={styles.searchIcon} startIcon={<SearchIcon />}>
           Buscar
         </Button>
+
       </Box>
 
-      {filteredReports.length === 0 ? (
-        <Box sx={styles.noResults}>
-          <Typography variant="h6">No se encontraron reportes</Typography>
-          <Button variant="outlined" onClick={() => {
-            setSearchTerm("");
-            setSelectedFilter("todos");
-            setFilteredReports(reports);
-          }}>
-            Mostrar todos
+      {/* ===================================== */}
+      {/* TABLA */}
+      {/* ===================================== */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">ID</TableCell>
+              <TableCell align="center">Usuario</TableCell>
+              <TableCell align="center">Animal</TableCell>
+              <TableCell align="center">Estado</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {paginatedReports.map(report => (
+              <>
+
+                <TableRow key={report.id}>
+                  <TableCell align="center">{report.id}</TableCell>
+                  <TableCell align="center">
+                    {report.usuario?.nombres} {report.usuario?.apellidos}
+                  </TableCell>
+                  <TableCell align="center">{report.animal_nombre}</TableCell>
+
+                  <TableCell align="center">
+                    <Typography sx={{
+                      backgroundColor: getEstadoColor(report.estado),
+                      borderRadius: "15px",
+                      padding: "5px 15px",
+                      color: "white",
+                      display: "inline-block",
+                      width: "100px",
+                      textTransform: "capitalize",
+                      textAlign: "center"
+                    }}>
+                      {report.estado}
+                    </Typography>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <Button sx={styles.visibilityIcon} onClick={() => toggleReport(report.id)}>
+                      <VisibilitySharpIcon sx={{ color: "white" }} />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+
+                {/* EXPANDIDO */}
+                {expandedReport === report.id && (
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <Collapse in={true}>
+
+                        <Box sx={styles.expandedContent}>
+
+                          <Typography variant="h6" sx={{ mb: 2 }}>
+                            Detalles del Reporte
+                          </Typography>
+
+                          <Typography><b>Descripción:</b> {report.descripcion}</Typography>
+
+                          {report.reporte_detallado && (
+                            <Typography sx={{ mt: 2, color: "#E52F60" }}>
+                              <b>Motivo de rechazo:</b> {report.reporte_detallado}
+                            </Typography>
+                          )}
+
+                          {report.evidencia_imagen && (
+                            <img
+                              src={report.evidencia_imagen}
+                              alt={report.animal_nombre}
+                              style={styles.image}
+                            />
+                          )}
+
+                          {report.estado === "pendiente" && (
+                            <Box sx={{ display: "flex", gap: "20px", mt: 2 }}>
+
+                              <Button 
+                                variant="contained"
+                                sx={styles.actionButton}
+                                onClick={() => approveReport(report.id)}
+                              >
+                                Aprobar
+                              </Button>
+
+                              <Button 
+                                variant="contained" 
+                                sx={{ ...styles.actionButton, backgroundColor: "#E52F60" }}
+                                onClick={() => openRejectDialog(report.id)}
+                              >
+                                Rechazar
+                              </Button>
+
+                            </Box>
+                          )}
+
+                        </Box>
+
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+              </>
+            ))}
+          </TableBody>
+
+        </Table>
+      </TableContainer>
+
+      {/* PAGINATION */}
+      <Box sx={styles.paginationBox}>
+        
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Typography variant="body2">Ir a la página:</Typography>
+
+          <TextField
+            value={goToPage}
+            onChange={(e) => setGoToPage(e.target.value)}
+            type="number"
+            sx={styles.goToPageField}
+          />
+
+          <Button variant="contained" onClick={handleGoToPageClick}>
+            Ir
           </Button>
         </Box>
-      ) : (
-        <>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{textAlign: "center"}}>ID</TableCell>
-                  <TableCell sx={{textAlign: "center"}}>Usuario</TableCell>
-                  <TableCell sx={{textAlign: "center"}}>Animal</TableCell>
-                  <TableCell sx={{textAlign: "center"}}>Estado</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedReports.map((report) => (
-                  <React.Fragment key={report.id}>
-                    <TableRow>
-                      <TableCell sx={{textAlign: "center"}}>{report.id}</TableCell>
-                      <TableCell sx={{textAlign: "center"}}>{report.usuario?.nombre || "N/A"}</TableCell>
-                      <TableCell sx={{textAlign: "center"}}>{report.animal_nombre || "N/A"}</TableCell>
-                      <TableCell sx={{textAlign: "center"}}>
-                        <Typography variant="small" sx={{
-                          backgroundColor: getEstadoColor(report.estado), 
-                          borderRadius:"15px", 
-                          paddingY:"5px", 
-                          paddingX:"15px", 
-                          display: "inline-block", 
-                          width:"80px", 
-                          color:"white"
-                        }}>
-                          {report.estado}
-                        </Typography>
-                      </TableCell>
-                      <TableCell sx={{textAlign: "right"}}>
-                        <Button sx={styles.visibilityIcon} onClick={() => toggleReport(report.id)}>
-                          <VisibilitySharpIcon sx={{ color: 'white' }}/>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
 
-                    {expandedReport === report.id && (
-                      <TableRow>
-                        <TableCell colSpan={5}>
-                          <Collapse in={expandedReport === report.id}>
-                            <Container sx={styles.expandedContent}>
-                              <Box sx={styles.expandedBox}>
-                                <Typography variant="h6" sx={{ mb: 2 }}>Detalles del Reporte</Typography>
-                                <Typography sx={styles.description_report}>
-                                  <strong>Descripción:</strong> {report.descripcion || "No disponible"}
-                                </Typography>
-                                {report.reporte_detallado && (
-                                  <Typography sx={{ mt: 2, color: '#E52F60' }}>
-                                    <strong>Motivo de rechazo:</strong> {report.reporte_detallado}
-                                  </Typography>
-                                )}
-                                {report.evidencia_imagen && (
-                                  <img 
-                                    src={report.evidencia_imagen} 
-                                    alt={report.animal_nombre} 
-                                    style={styles.image} 
-                                    onError={(e) => {
-                                      e.target.onerror = null; 
-                                      e.target.src = "";
-                                    }}
-                                  />
-                                )}
-                              </Box>
-
-                              <Box sx={{display:"flex", gap:"20px", mt: 2 }}>
-                                {report.estado === "pendiente" && (
-                                  <>
-                                    <Button 
-                                      variant="contained" 
-                                      sx={styles.actionButton} 
-                                      onClick={() => handleState(report.id, "aprobado")}
-                                    >
-                                      Aceptar
-                                    </Button>
-
-                                    <Button 
-                                      variant="contained" 
-                                      sx={{ 
-                                        ...styles.actionButton,
-                                        backgroundColor: '#E52F60',
-                                        '&:hover': { backgroundColor: '#C6284D' }
-                                      }} 
-                                      onClick={() => openRejectDialog(report.id)}
-                                    >
-                                      Rechazar
-                                    </Button>
-                                  </>
-                                )}
-                              </Box>
-
-                            </Container>
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-                    )}
-
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          <Box sx={styles.paginationBox}>
-            <Box sx={{display: "flex", alignItems:"center", gap:"10px"}}>
-              <Typography variant="body2">Ir a la página:</Typography>
-              <TextField 
-                value={goToPage} 
-                onChange={handleGoToPageChange} 
-                sx={styles.goToPageField} 
-                type="number"
-                inputProps={{ min: 1, max: pageCount }}
-              />
-              <Button variant="contained" onClick={handleGoToPageClick}>Ir</Button>
-            </Box>
-
-            <Pagination 
-              count={pageCount} 
-              page={currentPage} 
-              onChange={handlePageChange} 
-              color="primary"
-              showFirstButton 
-              showLastButton
-            />
-          </Box>
-        </>
-      )}
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={(e, value) => setCurrentPage(value)}
+          color="primary"
+          showFirstButton
+          showLastButton
+        />
+      </Box>
 
       <Button 
         variant="contained" 
@@ -408,17 +410,22 @@ const Reportes = () => {
         Volver al panel
       </Button>
 
+      {/* DIALOGO RECHAZO */}
       <Dialog open={rejectDialog.open} onClose={closeRejectDialog}>
         <DialogTitle>Motivo de Rechazo</DialogTitle>
+
         <DialogContent>
+
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>Seleccione un motivo</InputLabel>
             <Select
               value={rejectDialog.reason}
               label="Seleccione un motivo"
-              onChange={handleRejectReasonChange}
+              onChange={(e) =>
+                setRejectDialog({ ...rejectDialog, reason: e.target.value })
+              }
             >
-              {rejectionReasons.map((reason) => (
+              {rejectionReasons.map(reason => (
                 <MenuItem key={reason} value={reason}>{reason}</MenuItem>
               ))}
             </Select>
@@ -429,38 +436,46 @@ const Reportes = () => {
               autoFocus
               margin="dense"
               label="Especifique el motivo"
-              type="text"
               fullWidth
               variant="outlined"
               value={rejectDialog.customReason}
-              onChange={handleCustomReasonChange}
+              onChange={(e) =>
+                setRejectDialog({ ...rejectDialog, customReason: e.target.value })
+              }
               sx={{ mt: 2 }}
             />
           )}
+
         </DialogContent>
 
         <DialogActions>
           <Button onClick={closeRejectDialog}>Cancelar</Button>
-          <Button 
-            onClick={() => handleState(rejectDialog.reportId, "rechazado")}
-            disabled={!rejectDialog.reason || (rejectDialog.reason === "Otro" && !rejectDialog.customReason)}
+
+          <Button
             color="error"
+            disabled={
+              !rejectDialog.reason ||
+              (rejectDialog.reason === "Otro" && !rejectDialog.customReason)
+            }
+            onClick={confirmReject}
           >
-            Confirmar Rechazo
+            Confirmar rechazo
           </Button>
         </DialogActions>
+
       </Dialog>
 
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar}>
           {snackbar.message}
         </Alert>
       </Snackbar>
+
     </Container>
   );
 };

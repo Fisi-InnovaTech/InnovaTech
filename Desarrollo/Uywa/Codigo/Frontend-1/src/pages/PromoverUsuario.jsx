@@ -12,199 +12,247 @@ import {
   Paper,
   Button,
   TextField,
-  Pagination
+  Pagination,
+  Snackbar,
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import { styles } from '../components/Promover/StylesPromover';
 
-const MiRango = [
-  { rango: 'Aprendiz de Naturaleza' },
-  { rango: 'Vigilante de la Vida Silvestre' },
-  { rango: 'Guardián del Medio Ambiente' },
-  { rango: 'Defensor del Ecosistema' },
-  { rango: 'Héroe de la Tierra' },
-];
+const backendURL = "http://127.0.0.1:3000/usuarios";
 
 const Reportes = () => {
-  const [reports, setReports] = useState([]);
+
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState("");
+
   const [currentPage, setCurrentPage] = useState(1);
   const [goToPage, setGoToPage] = useState("");
-  const [filteredReports, setFilteredReports] = useState([]);
 
-  const reportsPerPage = 10;
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+
   const navigate = useNavigate();
+  const usersPerPage = 10;
+
+  // ========================= FETCH USERS =========================
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch(backendURL);
+      if (!res.ok) throw new Error("Error al obtener los usuarios");
+
+      const json = await res.json();
+      const data = json.data || json; // el backend puede enviar "data" o array directo
+
+      setUsers(data);
+      setFilteredUsers(data);
+
+    } catch (error) {
+      showSnackbar(error.message, "error");
+    }
+  };
 
   useEffect(() => {
-    const cargarMarcadores = async () => {
-      try {
-        const reportes = await fetch('https://innovatech-ztzv.onrender.com/auth/allusers');
-        if (reportes.ok) {
-          const datas = await reportes.json();
-          const filteredData = datas.filter(report => Number(report.insignia) < 5);
-          setReports(filteredData);
-          setFilteredReports(filteredData);
-        } else {
-          console.log("Error al buscar back, status: ", reportes.status);
-        }
-      } catch (error) {
-        console.log("Error al conectarse con el back: ", error.message || "Error desconocido");
-      }
-    };
-
-    cargarMarcadores();
+    fetchUsers();
   }, []);
 
-  async function upgradeModerator(userId) {
+  // ========================= SNACKBAR =========================
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  // ========================= PATCH ROL =========================
+  const updateRole = async (id, newRoleId) => {
     try {
-      const response = await fetch(`https://innovatech-ztzv.onrender.com/auth/promoverUser/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+      const res = await fetch(
+        `${backendURL}/rol/${id}?rolId=${newRoleId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" }
         }
-      });
-      if (!response.ok) {
-        console.log("Error al buscar back, no se pudo cambiar el estado: ", response.status);
-      } else {
-        const updatedReports = reports.filter(report => report.id !== userId);
-        setReports(updatedReports);
-        setFilteredReports(updatedReports);
-      }
-    } catch (error) {
-      console.log("Error al conectarse con el back: ", error.message || "Error desconocido");
+      );
+
+      if (!res.ok) throw new Error("No se pudo actualizar el rol");
+
+      showSnackbar("Rol actualizado correctamente", "success");
+      await fetchUsers(); // actualizar tabla
+
+    } catch (err) {
+      showSnackbar(err.message, "error");
     }
-  }
-
- 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
-  const handlePageChange = (_event, value) => {
-    setCurrentPage(value);
-  };
+  // ========================= BUSQUEDA =========================
+  useEffect(() => {
+    const term = searchTerm.toLowerCase();
 
-  const handleGoToPageChange = (event) => {
-    setGoToPage(event.target.value);
-  };
+    const filtered = users.filter(u =>
+      u.nombres?.toLowerCase().includes(term) ||
+      u.apellidos?.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term)
+    );
+
+    setFilteredUsers(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, users]);
+
+  // ========================= PAGINACIÓN =========================
+  const pageCount = Math.ceil(filteredUsers.length / usersPerPage);
+  const paginatedUsers =
+    filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage);
 
   const handleGoToPageClick = () => {
     const pageNumber = parseInt(goToPage, 10);
-    if (pageNumber > 0 && pageNumber <= Math.ceil(filteredReports.length / reportsPerPage)) {
+    if (pageNumber > 0 && pageNumber <= pageCount) {
       setCurrentPage(pageNumber);
+    } else {
+      showSnackbar("Número de página inválido", "error");
     }
   };
 
-  const handleClick = () => {
-    const filteredReports = reports.filter(report =>
-      report.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.insignia.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredReports(filteredReports);
-    setCurrentPage(1);
-  }
-
-  const handleState = async (reportId) => {
-    try {
-      const updatedReports = await Promise.all(reports.map(async (report) => {
-        if (report.id === reportId) {
-          if (Number(report.insignia) === 4) {
-            await upgradeModerator(reportId);
-            return null;
-          }
-          await upgradeModerator(reportId);
-          const newInsignia = Number(report.insignia);
-          return { ...report, insignia: newInsignia.toString() };
-        }
-        return report;
-      }));
-
-      const filteredUpdatedReports = updatedReports.filter(report => report !== null);
-
-      setReports(filteredUpdatedReports);
-      setFilteredReports(filteredUpdatedReports);
-    } catch (error) {
-      console.log("Error al actualizar estado:", error.message);
+  // ========================= ROLES =========================
+  const getRoleName = (rolId) => {
+    switch (Number(rolId)) {
+      case 1: return "Usuario";
+      case 2: return "Moderador";
+      case 3: return "Administrador";
+      default: return "Desconocido";
     }
   };
 
-  const paginatedReports = filteredReports.slice((currentPage - 1) * reportsPerPage, currentPage * reportsPerPage);
-
-  const pageCount = Math.ceil(filteredReports.length / reportsPerPage);
+  const getRoleColor = (rolId) => {
+    switch (Number(rolId)) {
+      case 1: return "#3AB795"; // user
+      case 2: return "#F9C22E"; // mod
+      case 3: return "#E52F60"; // admin
+      default: return "#DDE2E5";
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={styles.container}>
+
+      {/* ========================= SEARCH ========================= */}
       <Box sx={styles.searchBox}>
+
         <TextField
-          label="Buscar"
+          label="Buscar usuario"
           variant="outlined"
           value={searchTerm}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearchTerm(e.target.value)}
           sx={styles.searchField}
+          placeholder="Buscar por nombre o correo"
         />
-        <Button
+
+        <Button 
           variant="contained"
-          className="send-button" 
           sx={styles.searchIcon}
-          onClick={handleClick}
+          startIcon={<SearchIcon />}
         >
-          <SearchIcon/>
+          Buscar
         </Button>
+
       </Box>
 
+      {/* ========================= TABLA ========================= */}
       <TableContainer component={Paper}>
         <Table>
-
           <TableHead>
             <TableRow>
-              <TableCell sx={{textAlign: "center"}}>ID</TableCell>
-              <TableCell sx={{textAlign: "center"}}>Usuario</TableCell>
-              <TableCell sx={{textAlign: "center"}}>Correo</TableCell>
-              <TableCell sx={{textAlign: "center"}}>Insignia</TableCell>
-              <TableCell></TableCell>
+              <TableCell align="center">ID</TableCell>
+              <TableCell align="center">Usuario</TableCell>
+              <TableCell align="center">Correo</TableCell>
+              <TableCell align="center">Rol</TableCell>
+              <TableCell align="center">Cambiar Rol</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {paginatedReports.map((report) => (
-              <React.Fragment key={report.id}>
-                <TableRow>
-                  <TableCell sx={{textAlign: "center"}}>{report.id}</TableCell>
-                  <TableCell sx={{textAlign: "center"}}>{report.nombre}</TableCell>
-                  <TableCell sx={{textAlign: "center"}}>{report.correo}</TableCell>
-                  <TableCell sx={{textAlign: "center"}}>
-                    <Typography variant="small" sx={{backgroundColor: '#3AB795', borderRadius:"15px", paddingY:"5px", paddingX:"15px", display: "inline-block", width:"100px", color:"white"}}>
-                      {MiRango[Number(report.insignia)-1].rango}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{textAlign: "right"}}>
-                    <Button sx={styles.visibilityIcon} onClick={() => handleState(report.id)}>
-                      Promover
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              </React.Fragment>
+            {paginatedUsers.map(user => (
+              <TableRow key={user.id}>
+                
+                <TableCell align="center">{user.id}</TableCell>
+
+                <TableCell align="center">
+                  {user.nombres} {user.apellidos}
+                </TableCell>
+
+                <TableCell align="center">{user.email}</TableCell>
+
+                {/* ROL */}
+                <TableCell align="center">
+                  <Typography sx={{
+                    backgroundColor: getRoleColor(user.rolId),
+                    borderRadius: "15px",
+                    padding: "5px 15px",
+                    color: "white",
+                    display: "inline-block",
+                    width: "140px",
+                    textAlign: "center"
+                  }}>
+                    {getRoleName(user.rolId)}
+                  </Typography>
+                </TableCell>
+
+                {/* SELECT PARA CAMBIAR ROL */}
+                <TableCell align="center">
+                  <FormControl size="small" sx={{ minWidth: 140 }}>
+                    <Select
+                      value={user.rolId}
+                      onChange={(e) => updateRole(user.id, e.target.value)}
+                    >
+                      <MenuItem value={1}>Usuario</MenuItem>
+                      <MenuItem value={2}>Moderador</MenuItem>
+                      <MenuItem value={3}>Administrador</MenuItem>
+                    </Select>
+                  </FormControl>
+                </TableCell>
+
+              </TableRow>
             ))}
           </TableBody>
+
         </Table>
       </TableContainer>
 
+      {/* ========================= PAGINACIÓN ========================= */}
       <Box sx={styles.paginationBox}>
-        <Box sx={{display: "flex", alignItems:"center", gap:"10px"}}>
-          <Typography variant="body2">
-            Ir a la página:
-          </Typography>
-          <TextField value={goToPage} onChange={handleGoToPageChange} sx={styles.goToPageField} />
-          <Button variant="contained" onClick={handleGoToPageClick} >
+        
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Typography variant="body2">Ir a la página:</Typography>
+
+          <TextField
+            value={goToPage}
+            onChange={(e) => setGoToPage(e.target.value)}
+            type="number"
+            sx={styles.goToPageField}
+          />
+
+          <Button variant="contained" onClick={handleGoToPageClick}>
             Ir
           </Button>
         </Box>
-        <Pagination count={pageCount} page={currentPage} onChange={handlePageChange} />
+
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={(e, value) => setCurrentPage(value)}
+          color="primary"
+          showFirstButton
+          showLastButton
+        />
       </Box>
 
+      {/* ========================= BOTÓN VOLVER ========================= */}
       <Button 
         variant="contained" 
         color="primary" 
@@ -213,6 +261,19 @@ const Reportes = () => {
       >
         Volver
       </Button>
+
+      {/* ========================= SNACKBAR ========================= */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
     </Container>
   );
 };

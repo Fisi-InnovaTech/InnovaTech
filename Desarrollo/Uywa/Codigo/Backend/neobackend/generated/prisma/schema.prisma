@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id              Int       @id @default(autoincrement())
+  nombres         String
+  apellidos       String
+  email           String    @unique
+  password        String
+  dni             Int       @unique
+  fechaNacimiento DateTime
+  Alertas         Alertas[]
+  rolId           Int       @default(1)
+  rol             Roles     @relation(fields: [rolId], references: [id])
+
+  Reporte Reporte[]
+}
+
+model Roles {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @unique
+  descripcion String?
+  Usuario     Usuario[]
+}
+
+model Alertas {
+  id             Int      @id @default(autoincrement())
+  mensaje        String
+  nivel          String
+  fecha_creacion DateTime @default(now())
+  usuarioId      Int
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Reporte {
+  id                Int      @id @default(autoincrement())
+  usuarioId         Int      @map("user_id")
+  evidencia_imagen  String?
+  animal_nombre     String
+  descripcion       String
+  latitud           Float
+  longitud          Float
+  nombre_reportante String?  @map("nombre_reportante")
+  fecha_creacion    DateTime @default(now())
+  estado            String   @default("pendiente")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@map("reporte") // 👈 mapea al nombre real de la tabla
+}

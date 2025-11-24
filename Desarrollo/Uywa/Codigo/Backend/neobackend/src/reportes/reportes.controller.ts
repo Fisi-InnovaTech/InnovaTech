@@ -35,7 +35,7 @@ export class ReportesController {
     return this.reportesService.create(createReporteDto, file);
   }
 
-  @Get()
+  @Get("/all")
   getAllReport() {
     return this.reportesService.getAllReport();
   }

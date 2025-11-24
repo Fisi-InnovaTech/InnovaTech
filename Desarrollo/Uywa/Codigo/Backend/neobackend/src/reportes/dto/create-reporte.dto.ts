@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsIn,
+  IsDateString,
 } from 'class-validator';
 
 export class CreateReporteDto {
@@ -43,4 +44,8 @@ export class CreateReporteDto {
   @IsString()
   @IsNotEmpty()
   animal_nombre: string;
+
+  @IsOptional()
+  @IsDateString()
+  fecha_creacion?: string;
 }

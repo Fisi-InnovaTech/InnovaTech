@@ -57,6 +57,18 @@ export class ReportesService {
         );
       }
 
+      // 🔹 fecha_creacion opcional
+      let fecha_creacion: Date | undefined = undefined;
+      if (createReporteDto.fecha_creacion) {
+        const parsed = new Date(createReporteDto.fecha_creacion);
+        if (Number.isNaN(parsed.getTime())) {
+          throw new BadRequestException(
+            'fecha_creacion debe ser una fecha válida (ISO string)',
+          );
+        }
+        fecha_creacion = parsed;
+      }
+
       // 2. Construir la URL de la imagen (si hay archivo)
       let evidenciaImagen: string | undefined = undefined;
 
@@ -88,6 +100,7 @@ export class ReportesService {
           animal_nombre: createReporteDto.animal_nombre,
           nombre_reportante: createReporteDto.nombre_reportante, // si lo usas en el DTO
           usuarioId,
+          ...(fecha_creacion && { fecha_creacion }),
         },
         include: {
           usuario: {

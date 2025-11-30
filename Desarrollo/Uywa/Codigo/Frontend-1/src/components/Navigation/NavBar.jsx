@@ -37,6 +37,7 @@ const userPages = [
   { id: 'report', path: '/realizar-alerta', name: 'Reportar', icon: <ReportIcon /> },
   { id: 'events', path: '/informacion-trafico-animales', name: 'Eventos', icon: <EventIcon /> },
   { id: 'alerts', path: '/ver-alerta', name: 'Ver Alertas', icon: <VisibilityIcon /> },
+  { id: 'animals', path: '/ver-animales', name: 'Animales', icon: <ReportIcon />}
 ];
 
 // Páginas para moderadores

@@ -1,7 +1,6 @@
 import './App.css';
 import React from "react";
 import ResponsiveAppBar from './components/Navigation/NavBar';
-import Home from "./pages/Home";
 import RealizarAlerta from "./pages/RealizarAlerta";
 import VerAlerta from "./pages/VerAlertaGoogle";
 import Blog from './pages/InformacionTrafico';
@@ -18,6 +17,7 @@ import { AuthProvider } from './auth/providers/authProvider';
 import { RouteGuard } from './auth/guards/authGuard';
 import Animals from './pages/Animals';
 import ReportesUsuario from './pages/ReportesUsuario';
+import { Home } from '@mui/icons-material';
 
 function App() {
   return (

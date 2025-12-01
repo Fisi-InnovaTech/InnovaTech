@@ -24,69 +24,15 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { alertaContainer, mapBotonBuscar, mapSearchAlert, mapMark } from "../components/Mapa/MapConstStyle";
+import { departamentos } from "../utils/Departamentos";
 
-// Animal Options
-const ANIMAL_OPTIONS = [
-  { id: 'animal-1', value: "Anaconda", animal: "Anaconda" },
-  { id: 'animal-2', value: "Boa", animal: "Boa" },
-  { id: 'animal-3', value: "Cotorra", animal: "Cotorra" },
-  { id: 'animal-4', value: "Escarabajo", animal: "Escarabajo" },
-  { id: 'animal-5', value: "Escarabajo arlequín", animal: "Escarabajo arlequín" },
-  { id: 'animal-6', value: "Gallinazo de cabeza negra", animal: "Gallinazo de cabeza negra" },
-  { id: 'animal-7', value: "Garza huaco", animal: "Garza huaco" },
-  { id: 'animal-8', value: "Gavilán acanelado", animal: "Gavilán acanelado" },
-  { id: 'animal-9', value: "Golondrina de mar acollarada", animal: "Golondrina de mar acollarada" },
-  { id: 'animal-10', value: "Golondrina de mar de Markham", animal: "Golondrina de mar de Markham" },
-  { id: 'animal-11', value: "Guanay", animal: "Guanay" },
-  { id: 'animal-12', value: "Lagartija", animal: "Lagartija" },
-  { id: 'animal-13', value: "Lobo marino chusco", animal: "Lobo marino chusco" },
-  { id: 'animal-14', value: "Mantona", animal: "Mantona" },
-  { id: 'animal-15', value: "Mono machín negro", animal: "Mono machín negro" },
-  { id: 'animal-16', value: "Pihuicho ala amarilla", animal: "Pihuicho ala amarilla" },
-  { id: 'animal-17', value: "Rana acuática", animal: "Rana acuática" },
-  { id: 'animal-18', value: "Rana del Titicaca", animal: "Rana del Titicaca" },
-  { id: 'animal-19', value: "Sapo", animal: "Sapo" },
-  { id: 'animal-20', value: "Sapo marino", animal: "Sapo marino" },
-  { id: 'animal-21', value: "Taricaya", animal: "Taricaya" },
-  { id: 'animal-22', value: "Tortuga motelo", animal: "Tortuga motelo" },
-  { id: 'animal-23', value: "Venado cola blanca", animal: "Venado cola blanca" },
-  { id: 'animal-24', value: "Zorro costeño", animal: "Zorro costeño" }
-];
-
-// Department Options
-const DEPARTMENT_OPTIONS = [
-  { id: 'dept-1', value: "Amazonas", departamento: "Amazonas" },
-  { id: 'dept-2', value: "Ancash", departamento: "Ancash" },
-  { id: 'dept-3', value: "Apurímac", departamento: "Apurímac" },
-  { id: 'dept-4', value: "Arequipa", departamento: "Arequipa" },
-  { id: 'dept-5', value: "Ayacucho", departamento: "Ayacucho" },
-  { id: 'dept-6', value: "Cajamarca", departamento: "Cajamarca" },
-  { id: 'dept-7', value: "Callao", departamento: "Callao" },
-  { id: 'dept-8', value: "Cusco", departamento: "Cusco" },
-  { id: 'dept-9', value: "Huancavelica", departamento: "Huancavelica" },
-  { id: 'dept-10', value: "Huanuco", departamento: "Huanuco" },
-  { id: 'dept-11', value: "Ica", departamento: "Ica" },
-  { id: 'dept-12', value: "Junín", departamento: "Junín" },
-  { id: 'dept-13', value: "La Libertad", departamento: "La Libertad" },
-  { id: 'dept-14', value: "Lambayeque", departamento: "Lambayeque" },
-  { id: 'dept-15', value: "Lima", departamento: "Lima" },
-  { id: 'dept-16', value: "Loreto", departamento: "Loreto" },
-  { id: 'dept-17', value: "Madre de Dios", departamento: "Madre de Dios" },
-  { id: 'dept-18', value: "Moquegua", departamento: "Moquegua" },
-  { id: 'dept-19', value: "Pasco", departamento: "Pasco" },
-  { id: 'dept-20', value: "Piura", departamento: "Piura" },
-  { id: 'dept-21', value: "Puno", departamento: "Puno" },
-  { id: 'dept-22', value: "San Martín", departamento: "San Martín" },
-  { id: 'dept-23', value: "Tacna", departamento: "Tacna" },
-  { id: 'dept-24', value: "Tumbes", departamento: "Tumbes" },
-  { id: 'dept-25', value: "Ucayali", departamento: "Ucayali" }
-];
-
-const API_BASE_URL = 'http://127.0.0.1:3000';
+const API_BASE_URL = 'http://localhost:3000';
 
 function VerAlertaGoogle() {
   // State management
   const [markerData, setMarkerData] = useState([]);
+  const [animalOptions, setAnimalOptions] = useState([]);
+  const [loadingAnimals, setLoadingAnimals] = useState(true);
   const [animal, setAnimal] = useState("");
   const [region, setRegion] = useState("");
   const [fechaIni, setFechaIni] = useState(dayjs().subtract(1, 'month'));
@@ -109,10 +55,52 @@ function VerAlertaGoogle() {
     setRegion(event.target.value);
   };
 
+  // Load animals from API
+  useEffect(() => {
+    const fetchAnimals = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/animal/list`);
+        if (!response.ok) throw new Error('Error al cargar animales');
+        
+        const data = await response.json();
+        setAnimalOptions(data.data || []);
+      } catch (error) {
+        console.error('Error cargando animales:', error);
+        setError('Error al cargar la lista de animales');
+      } finally {
+        setLoadingAnimals(false);
+      }
+    };
+
+    fetchAnimals();
+  }, []);
+
   // Load all markers on component mount
   useEffect(() => {
     cargarMarcadores();
   }, []);
+
+  // Transform API data to marker format
+  const transformReportToMarker = (report) => {
+    return {
+      id: report.id,
+      latitud: report.evidencia?.latitud,
+      longitud: report.evidencia?.longitud,
+      animal_nombre: report.animal?.nombre,
+      descripcion: report.evidencia?.descipcion, // Note: API uses "descipcion"
+      fecha_creacion: report.fecha_creacion,
+      estado: report.estado,
+      nombre_reportante: `${report.usuario?.nombres} ${report.usuario?.apellidos}`,
+      evidencia_imagen: report.evidencia?.imagen_url,
+      departamento: report.evidencia?.departamento?.nombre,
+      departamento_id: report.evidencia?.departamento_id,
+      animal_id: report.animal?.id,
+      // Additional data
+      animal_descripcion: report.animal?.descripcion,
+      animal_habitad: report.animal?.habitad,
+      animal_estado: report.animal?.estado,
+    };
+  };
 
   // Load all markers
   const cargarMarcadores = async () => {
@@ -123,7 +111,8 @@ function VerAlertaGoogle() {
       if (response.ok) {
         setProgressStatus("Procesando datos...");
         const data = await response.json();
-        setMarkerData(data.data || []);
+        const transformedData = (data.data || []).map(transformReportToMarker);
+        setMarkerData(transformedData);
       } else {
         setError('Error al cargar los reportes');
       }
@@ -149,9 +138,8 @@ function VerAlertaGoogle() {
     const params = new URLSearchParams();
     if (fechaIni) params.append('fecha_ini', fechaIni.format('YYYY-MM-DD'));
     if (fechaFin) params.append('fecha_fin', fechaFin.format('YYYY-MM-DD'));
-    if (animal) params.append('animal', animal);
-    // Note: Region parameter is included but backend might ignore it
-    if (region) params.append('region', region);
+    if (animal) params.append('animal_id', animal);
+    if (region) params.append('departamento_id', region);
     return params;
   };
 
@@ -162,9 +150,10 @@ function VerAlertaGoogle() {
     }
 
     const data = await response.json();
-    setMarkerData(data.data || []);
+    const transformedData = (data.data || []).map(transformReportToMarker);
+    setMarkerData(transformedData);
     
-    if ((data.data || []).length === 0) {
+    if (transformedData.length === 0) {
       setError('No se encontraron reportes con los filtros seleccionados');
     }
   };
@@ -244,11 +233,27 @@ function VerAlertaGoogle() {
             <Typography>Fecha: {dayjs(selectedAlert.fecha_creacion).format('DD/MM/YYYY HH:mm')}</Typography>
             <Typography>Reportado por: {selectedAlert.nombre_reportante || 'Anónimo'}</Typography>
             <Typography>Estado: {selectedAlert.estado || 'No especificado'}</Typography>
+            {selectedAlert.departamento && (
+              <Typography>Departamento: {selectedAlert.departamento}</Typography>
+            )}
           </Box>
+
+          {selectedAlert.animal_descripcion && (
+            <Box mb={2}>
+              <Typography variant="subtitle2">Sobre el animal:</Typography>
+              <Typography>{selectedAlert.animal_descripcion}</Typography>
+              {selectedAlert.animal_habitad && (
+                <Typography variant="body2">Hábitat: {selectedAlert.animal_habitad}</Typography>
+              )}
+              {selectedAlert.animal_estado && (
+                <Typography variant="body2">Estado de conservación: {selectedAlert.animal_estado}</Typography>
+              )}
+            </Box>
+          )}
 
           {selectedAlert.descripcion && (
             <Box mb={2}>
-              <Typography variant="subtitle2">Descripción:</Typography>
+              <Typography variant="subtitle2">Descripción del reporte:</Typography>
               <Typography>{selectedAlert.descripcion}</Typography>
             </Box>
           )}
@@ -409,23 +414,29 @@ function VerAlertaGoogle() {
 
             <FormControl fullWidth sx={{ marginBottom: 2 }}>
               <InputLabel id="animal-select-label">Animal</InputLabel>
-              <Select
-                labelId="animal-select-label"
-                id="animal-select"
-                value={animal}
-                label="Animal"
-                onChange={handleAnimal}
-                disabled={loading}
-              >
-                <MenuItem value="">
-                  <em>Todos los animales</em>
-                </MenuItem>
-                {ANIMAL_OPTIONS.map((animal) => (
-                  <MenuItem key={animal.id} value={animal.value}>
-                    {animal.animal}
+              {loadingAnimals ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                  <CircularProgress size={24} />
+                </Box>
+              ) : (
+                <Select
+                  labelId="animal-select-label"
+                  id="animal-select"
+                  value={animal}
+                  label="Animal"
+                  onChange={handleAnimal}
+                  disabled={loading}
+                >
+                  <MenuItem value="">
+                    <em>Todos los animales</em>
                   </MenuItem>
-                ))}
-              </Select>
+                  {animalOptions.map((animal) => (
+                    <MenuItem key={animal.id} value={animal.id}>
+                      {animal.nombre}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
             </FormControl>
 
             <FormControl fullWidth sx={{ marginBottom: 3 }}>
@@ -441,9 +452,9 @@ function VerAlertaGoogle() {
                 <MenuItem value="">
                   <em>Todas las regiones</em>
                 </MenuItem>
-                {DEPARTMENT_OPTIONS.map((dept) => (
-                  <MenuItem key={dept.id} value={dept.value}>
-                    {dept.departamento}
+                {departamentos.map((dept) => (
+                  <MenuItem key={dept.id} value={dept.id}>
+                    {dept.nombre}
                   </MenuItem>
                 ))}
               </Select>

@@ -32,71 +32,17 @@ const MAX_FILE_SIZE_MB = 5;
 const MAX_DESCRIPTION_LENGTH = 1000;
 const MIN_DESCRIPTION_LENGTH = 30;
 const VALID_FILE_TYPES = ['image/jpeg', 'image/png'];
+const API_BASE_URL = "http://localhost:3000";
 
-// ✅ Objeto de usuario anónimo (solo para el payload, no afecta el store)
+// Usuario anónimo
 const ANONYMOUS_USER = {
-  id: 3,
+  id: 19,
   email: "anonimo@anonimo.com",
   nombres: "anonimo",
   apellidos: "anonimo",
   rol: "user",
   access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoiYW5vbmltb0Bhbm9uaW1vLmNvbSIsInJvbCI6InVzZXIiLCJpYXQiOjE3NjM5OTQzMDAsImV4cCI6MTc2NDA4MDcwMH0.7Gcclr3q0tt88aX1Gwas_EBcIPrntLM5DUcbaJnVPH0"
 };
-
-export const DEPARTMENT_OPTIONS = [
-  { id: 'dept-1', value: 1, departamento: "Amazonas" },
-  { id: 'dept-2', value: 2, departamento: "Ancash" },
-  { id: 'dept-3', value: 3, departamento: "Apurímac" },
-  { id: 'dept-4', value: 4, departamento: "Arequipa" },
-  { id: 'dept-5', value: 5, departamento: "Ayacucho" },
-  { id: 'dept-6', value: 6, departamento: "Cajamarca" },
-  { id: 'dept-7', value: 7, departamento: "Callao" },
-  { id: 'dept-8', value: 8, departamento: "Cusco" },
-  { id: 'dept-9', value: 9, departamento: "Huancavelica" },
-  { id: 'dept-10', value: 10, departamento: "Huanuco" },
-  { id: 'dept-11', value: 11, departamento: "Ica" },
-  { id: 'dept-12', value: 12, departamento: "Junín" },
-  { id: 'dept-13', value: 13, departamento: "La Libertad" },
-  { id: 'dept-14', value: 14, departamento: "Lambayeque" },
-  { id: 'dept-15', value: 15, departamento: "Lima" },
-  { id: 'dept-16', value: 16, departamento: "Loreto" },
-  { id: 'dept-17', value: 17, departamento: "Madre de Dios" },
-  { id: 'dept-18', value: 18, departamento: "Moquegua" },
-  { id: 'dept-19', value: 19, departamento: "Pasco" },
-  { id: 'dept-20', value: 20, departamento: "Piura" },
-  { id: 'dept-21', value: 21, departamento: "Puno" },
-  { id: 'dept-22', value: 22, departamento: "San Martín" },
-  { id: 'dept-23', value: 23, departamento: "Tacna" },
-  { id: 'dept-24', value: 24, departamento: "Tumbes" },
-  { id: 'dept-25', value: 25, departamento: "Ucayali" }
-];
-
-export const ANIMAL_OPTIONS = [
-  { id: 'animal-1', value: 1, animal: "Anaconda" },
-  { id: 'animal-2', value: 2, animal: "Boa" },
-  { id: 'animal-3', value: 3, animal: "Cotorra" },
-  { id: 'animal-4', value: 4, animal: "Escarabajo" },
-  { id: 'animal-5', value: 5, animal: "Escarabajo arlequín" },
-  { id: 'animal-6', value: 6, animal: "Gallinazo de cabeza negra" },
-  { id: 'animal-7', value: 7, animal: "Garza huaco" },
-  { id: 'animal-8', value: 8, animal: "Gavilán acanelado" },
-  { id: 'animal-9', value: 9, animal: "Golondrina de mar acollarada" },
-  { id: 'animal-10', value: 10, animal: "Golondrina de mar de Markham" },
-  { id: 'animal-11', value: 11, animal: "Guanay" },
-  { id: 'animal-12', value: 12, animal: "Lagartija" },
-  { id: 'animal-13', value: 13, animal: "Lobo marino chusco" },
-  { id: 'animal-14', value: 14, animal: "Mantona" },
-  { id: 'animal-15', value: 15, animal: "Mono machín negro" },
-  { id: 'animal-16', value: 16, animal: "Pihuicho ala amarilla" },
-  { id: 'animal-17', value: 17, animal: "Rana acuática" },
-  { id: 'animal-18', value: 18, animal: "Rana del Titicaca" },
-  { id: 'animal-19', value: 19, animal: "Sapo" },
-  { id: 'animal-20', value: 20, animal: "Sapo marino" },
-  { id: 'animal-21', value: 21, animal: "Taricaya" },
-  { id: 'animal-22', value: 22, animal: "Tortuga motelo" },
-  { id: 'animal-23', value: 23, animal: "Venado cola blanca" },
-  { id: 'animal-24', value: 24, animal: "Zorro costeño" }
-];
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -111,13 +57,13 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function AlertForm() {
-  // ✅ Zustand store
   const { user, isAuthenticated } = useAuthStore();
 
   // ESTADOS
+  const [animalOptions, setAnimalOptions] = useState([]);
+  const [loadingAnimals, setLoadingAnimals] = useState(true);
   const [selectedAnimal, setSelectedAnimal] = useState('');
   const [finishAlert, setFinishAlert] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
   const [tosendFile, setTosendFile] = useState(null);
   const [description, setDescription] = useState('');
   const [latitud, setLatitud] = useState(null);
@@ -131,20 +77,39 @@ export default function AlertForm() {
     description: false,
     location: false,
     file: false,
-    auth: false // ✅ Nuevo error para autenticación obligatoria
+    auth: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const urlBackend = "http://localhost:3000/reportes";
+  // CARGAR LISTA DE ANIMALES
+  useEffect(() => {
+    const fetchAnimals = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/animal/list`);
+        if (!response.ok) throw new Error('Error al cargar animales');
+        
+        const data = await response.json();
+        setAnimalOptions(data.data || []);
+      } catch (error) {
+        console.error('Error cargando animales:', error);
+        setAlertMessage('Error al cargar la lista de animales');
+        setOpenSnackbar(true);
+      } finally {
+        setLoadingAnimals(false);
+      }
+    };
 
-  // ✅ Validar formulario (ahora incluye auth si no es anónimo)
+    fetchAnimals();
+  }, []);
+
+  // VALIDAR FORMULARIO
   const validateForm = () => {
     const newErrors = {
       animal: !selectedAnimal,
       description: description.length < MIN_DESCRIPTION_LENGTH,
       location: !latitud || !longitud,
       file: !tosendFile,
-      auth: !isAnonymous && !isAuthenticated(), // Obligatorio estar logueado si no es anónimo
+      auth: !isAnonymous && !isAuthenticated(),
     };
     setErrors(newErrors);
     return !Object.values(newErrors).some(e => e);
@@ -183,16 +148,16 @@ export default function AlertForm() {
     }
   };
 
-  // ✅ Manejar cambio de anónimo → asegurar consistencia de errores
+  // MANEJAR CAMBIO DE ANÓNIMO
   const handleAnonymousChange = (e) => {
     const checked = e.target.checked;
     setIsAnonymous(checked);
     if (checked) {
-      // Al activar anónimo, limpiar error de auth
       setErrors(prev => ({ ...prev, auth: false }));
     }
   };
 
+  // ENVIAR FORMULARIO
   const handleSubmit = async () => {
     if (!validateForm()) {
       setAlertMessage("Complete todos los campos obligatorios");
@@ -203,33 +168,20 @@ export default function AlertForm() {
     setIsSubmitting(true);
 
     try {
-      const selectedAnimalData = ANIMAL_OPTIONS.find(a => a.value == selectedAnimal);
+      // Determinar qué usuario usar
+      const reportUser = isAnonymous ? ANONYMOUS_USER : user;
 
       const formData = new FormData();
-      formData.append("animal_nombre", selectedAnimalData?.animal || "");
       formData.append("descripcion", description);
-      formData.append("latitud", latitud);
-      formData.append("longitud", longitud);
-      formData.append("estado", "pendiente");
-
-      // ✅ Determinar qué usuario usar para el payload
-      let reportUser;
-      if (isAnonymous) {
-        reportUser = ANONYMOUS_USER;
-      } else {
-        // Aquí user está garantizado por validateForm (no auth error)
-        reportUser = user;
-      }
-
-      // ✅ Enviar campos según backend
+      formData.append("latitud", latitud.toString());
+      formData.append("longitud", longitud.toString());
       formData.append("usuarioId", reportUser.id.toString());
-      formData.append("nombre_reportante", `${reportUser.nombres} ${reportUser.apellidos}`);
-
-      // Imagen
-      formData.append("evidencia_imagen", tosendFile);
+      formData.append("animal_id", selectedAnimal.toString());
+      formData.append("estado", "pendiente");
+      formData.append("imagen_url", tosendFile);
 
       // PETICIÓN AL BACKEND
-      const response = await fetch(urlBackend, {
+      const response = await fetch(`${API_BASE_URL}/reportes`, {
         method: "POST",
         body: formData
       });
@@ -317,26 +269,42 @@ export default function AlertForm() {
         {/* ANIMAL */}
         <Box sx={{ p: 2 }}>
           <FormControl fullWidth>
-            <Typography>Seleccionar Animal *</Typography>
-            <Select
-              value={selectedAnimal}
-              onChange={(e) => setSelectedAnimal(e.target.value)}
-              error={errors.animal}
-            >
-              <MenuItem value=""><em>Seleccione</em></MenuItem>
-              {ANIMAL_OPTIONS.map(a => (
-                <MenuItem key={a.id} value={a.value}>{a.animal}</MenuItem>
-              ))}
-            </Select>
+            <Typography sx={labelName}>SELECCIONAR ANIMAL *</Typography>
+            {loadingAnimals ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            ) : (
+              <Select
+                value={selectedAnimal}
+                onChange={(e) => {
+                  setSelectedAnimal(e.target.value);
+                  setErrors({ ...errors, animal: false });
+                }}
+                error={errors.animal}
+              >
+                <MenuItem value=""><em>Seleccione un animal</em></MenuItem>
+                {animalOptions.map(animal => (
+                  <MenuItem key={animal.id} value={animal.id}>
+                    {animal.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
           </FormControl>
         </Box>
 
         {/* MAPA */}
         <Box sx={{ p: 2 }}>
           <Typography sx={labelName}>UBICACIÓN *</Typography>
-          <Box sx={{ width: "100%", height: "60vh" }}>
+          <Box sx={{ width: "100%", height: "60vh", border: errors.location ? '2px solid red' : 'none' }}>
             <Mapa lat={setLatitud} long={setLongitud} />
           </Box>
+          {errors.location && (
+            <Typography color="error" variant="caption" sx={{ mt: 1 }}>
+              Debe seleccionar una ubicación en el mapa
+            </Typography>
+          )}
         </Box>
 
         {/* PRIVACIDAD */}
@@ -352,7 +320,6 @@ export default function AlertForm() {
               }
               label="Enviar reporte de forma anónima"
             />
-            {/* ✅ Mensaje de advertencia si intenta desactivar sin estar logueado */}
             {!isAnonymous && !isAuthenticated() && (
               <Typography color="error" variant="caption">
                 Debes iniciar sesión para enviar un reporte no anónimo.

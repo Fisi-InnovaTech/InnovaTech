@@ -21,8 +21,17 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { styles } from '../components/Estadistica/StatisticsStyle';
-import { ANIMAL_OPTIONS } from './RealizarAlerta';
 import dayjs from 'dayjs';
+export const ANIMAL_OPTIONS = [
+  { animal: 'Perro' },
+  { animal: 'Gato' },
+  { animal: 'Caballo' },
+  { animal: 'Vaca' },
+  { animal: 'Oveja' },
+  { animal: 'Cerdo' },
+  { animal: 'Gallina' },
+  { animal: 'Conejo' }
+];
 
 export const MONTH_NAMES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",

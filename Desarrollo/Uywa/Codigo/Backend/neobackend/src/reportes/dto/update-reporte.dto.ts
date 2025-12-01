@@ -1,22 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateReporteDto } from './create-reporte.dto';
-import {
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsIn,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsIn } from 'class-validator';
 
 export class UpdateReporteDto extends PartialType(CreateReporteDto) {
   @IsString()
   @IsOptional()
   descripcion?: string;
-
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  nombre_reportante: string;
 
   @IsNumber()
   @IsOptional()
@@ -33,9 +22,9 @@ export class UpdateReporteDto extends PartialType(CreateReporteDto) {
 
   @IsString()
   @IsOptional()
-  evidencia_imagen?: string;
+  imagen_url?: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  animal_nombre?: string;
+  animal_id?: number;
 }

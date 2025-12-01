@@ -6,33 +6,110 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
+import axios from 'axios';
 
 @Injectable()
 export class ReportesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllReport() {
-    return this.prisma.reporte.findMany();
+    return this.prisma.reporte.findMany({
+      include: {
+        usuario: {
+          select: {
+            id: true,
+            nombres: true,
+            apellidos: true,
+            email: true,
+          },
+        },
+        animal: true,
+        evidencia: {
+          include: {
+            departamento: true,
+          },
+        },
+      },
+    });
   }
 
   async getReporteByEstado(estado: string) {
     return this.prisma.reporte.findMany({
       where: { estado },
+      include: {
+        usuario: {
+          select: {
+            id: true,
+            nombres: true,
+            apellidos: true,
+            email: true,
+          },
+        },
+        animal: true,
+        evidencia: {
+          include: {
+            departamento: true,
+          },
+        },
+      },
     });
   }
 
   /**
-   * Crea un reporte con soporte para archivo subido (evidencia_imagen)
+   * Obtener departamento basado en latitud y longitud usando Nominatim
+   */
+  private async obtenerDepartamento(
+    latitud: number,
+    longitud: number,
+  ): Promise<string> {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitud}&lon=${longitud}&format=json`,
+      );
+
+      const address = response.data.address;
+      const departamento = address.state || address.region || address.county;
+
+      if (!departamento) {
+        throw new Error('No se pudo determinar el departamento');
+      }
+
+      // Buscar o crear el departamento en la base de datos
+      let departamentoDb = await this.prisma.departamento.findFirst({
+        where: { nombre: departamento },
+      });
+
+      if (!departamentoDb) {
+        departamentoDb = await this.prisma.departamento.create({
+          data: { nombre: departamento },
+        });
+      }
+
+      return departamentoDb.id;
+    } catch (error) {
+      console.error('Error al obtener departamento:', error);
+      throw new BadRequestException(
+        'No se pudo determinar el departamento desde las coordenadas',
+      );
+    }
+  }
+
+  /**
+   * Crear un reporte con evidencia separada
    */
   async create(createReporteDto: CreateReporteDto, file?: Express.Multer.File) {
     try {
-      // 🔹 Asegurarnos de que los numéricos sean realmente number
+      // 🔹 Validar y convertir valores numéricos
       const usuarioId = Number(createReporteDto.usuarioId);
+      const animal_id = Number(createReporteDto.animal_id);
       const latitud = Number(createReporteDto.latitud);
       const longitud = Number(createReporteDto.longitud);
 
       if (Number.isNaN(usuarioId)) {
         throw new BadRequestException('usuarioId debe ser un número');
+      }
+      if (Number.isNaN(animal_id)) {
+        throw new BadRequestException('animal_id debe ser un número');
       }
       if (Number.isNaN(latitud) || Number.isNaN(longitud)) {
         throw new BadRequestException(
@@ -46,10 +123,50 @@ export class ReportesService {
       });
 
       if (!usuarioExists) {
+        throw new BadRequestException(`Usuario con ID ${usuarioId} no existe`);
+      }
+
+      // 2. Verificar que el animal existe
+      const animalExists = await this.prisma.animal.findUnique({
+        where: { id: animal_id },
+      });
+
+      if (!animalExists) {
+        throw new BadRequestException(`Animal con ID ${animal_id} no existe`);
+      }
+
+      // 3. Obtener departamento desde las coordenadas
+      const departamentoId = await this.obtenerDepartamento(latitud, longitud);
+
+      // 4. Construir la URL de la imagen
+      let imagen_url: string | undefined = undefined;
+
+      if (file) {
+        const baseUrl =
+          process.env.APP_BASE_URL || 'https://innovatech-ztzv.onrender.com';
+        const normalizedPath = file.path.replace(/\\/g, '/');
+        const imagePath = normalizedPath.startsWith('/')
+          ? normalizedPath
+          : `/${normalizedPath}`;
+        imagen_url = `${baseUrl}${imagePath}`;
+      } else if (createReporteDto.imagen_url) {
+        imagen_url = createReporteDto.imagen_url;
+      } else {
         throw new BadRequestException(
-          `Usuario con ID ${createReporteDto.usuarioId} no existe`,
+          'Se requiere una imagen para la evidencia',
         );
       }
+
+      // 5. Crear la evidencia primero
+      const evidencia = await this.prisma.evidencia.create({
+        data: {
+          descipcion: createReporteDto.descripcion,
+          imagen_url: imagen_url,
+          latitud,
+          longitud,
+          departamento_id: departamentoId,
+        },
+      });
 
       // 🔹 fecha_creacion opcional
       let fecha_creacion: Date | undefined = undefined;
@@ -63,37 +180,13 @@ export class ReportesService {
         fecha_creacion = parsed;
       }
 
-      // 2. Construir la URL de la imagen (si hay archivo)
-      let evidenciaImagen: string | undefined = undefined;
-
-      if (file) {
-        // Puedes mover esto a config/env
-        const baseUrl =
-          process.env.APP_BASE_URL || 'https://innovatech-ztzv.onrender.com';
-
-        // Normalizar path (por si viene con backslashes en Windows)
-        const normalizedPath = file.path.replace(/\\/g, '/');
-        const imagePath = normalizedPath.startsWith('/')
-          ? normalizedPath
-          : `/${normalizedPath}`;
-
-        evidenciaImagen = `${baseUrl}${imagePath}`;
-      } else if (createReporteDto.evidencia_imagen) {
-        // Si no se subió archivo pero llega un path/URL desde el body
-        evidenciaImagen = createReporteDto.evidencia_imagen;
-      }
-
-      // 3. Crear el reporte
+      // 6. Crear el reporte vinculado a la evidencia
       const reporte = await this.prisma.reporte.create({
         data: {
-          descripcion: createReporteDto.descripcion,
-          latitud,
-          longitud,
           estado: createReporteDto.estado || 'pendiente',
-          evidencia_imagen: evidenciaImagen,
-          animal_nombre: createReporteDto.animal_nombre,
-          nombre_reportante: createReporteDto.nombre_reportante, // si lo usas en el DTO
-          usuarioId,
+          animal_id,
+          evidencia_id: evidencia.id,
+          usuario_id: usuarioId,
           ...(fecha_creacion && { fecha_creacion }),
         },
         include: {
@@ -103,6 +196,12 @@ export class ReportesService {
               nombres: true,
               apellidos: true,
               email: true,
+            },
+          },
+          animal: true,
+          evidencia: {
+            include: {
+              departamento: true,
             },
           },
         },
@@ -132,6 +231,12 @@ export class ReportesService {
             email: true,
           },
         },
+        animal: true,
+        evidencia: {
+          include: {
+            departamento: true,
+          },
+        },
       },
       orderBy: {
         fecha_creacion: 'desc',
@@ -159,6 +264,12 @@ export class ReportesService {
             dni: true,
           },
         },
+        animal: true,
+        evidencia: {
+          include: {
+            departamento: true,
+          },
+        },
       },
     });
 
@@ -183,7 +294,7 @@ export class ReportesService {
     }
 
     const reportes = await this.prisma.reporte.findMany({
-      where: { usuarioId },
+      where: { usuario_id: usuarioId },
       include: {
         usuario: {
           select: {
@@ -191,6 +302,12 @@ export class ReportesService {
             nombres: true,
             apellidos: true,
             email: true,
+          },
+        },
+        animal: true,
+        evidencia: {
+          include: {
+            departamento: true,
           },
         },
       },
@@ -226,6 +343,12 @@ export class ReportesService {
             email: true,
           },
         },
+        animal: true,
+        evidencia: {
+          include: {
+            departamento: true,
+          },
+        },
       },
       orderBy: {
         fecha_creacion: 'desc',
@@ -247,6 +370,7 @@ export class ReportesService {
     if (!reporteExists) {
       throw new NotFoundException(`Reporte con ID ${id} no encontrado`);
     }
+
     try {
       const reporteActualizado = await this.prisma.reporte.update({
         where: { id },
@@ -260,6 +384,12 @@ export class ReportesService {
               email: true,
             },
           },
+          animal: true,
+          evidencia: {
+            include: {
+              departamento: true,
+            },
+          },
         },
       });
       return {
@@ -268,7 +398,9 @@ export class ReportesService {
       };
     } catch (error) {
       console.error('Error al actualizar estado del reporte:', error);
-      throw new BadRequestException('Error al actualizar el estado del reporte');
+      throw new BadRequestException(
+        'Error al actualizar el estado del reporte',
+      );
     }
   }
 
@@ -280,51 +412,124 @@ export class ReportesService {
     // Verificar que el reporte existe
     const reporteExists = await this.prisma.reporte.findUnique({
       where: { id },
+      include: {
+        evidencia: true,
+      },
     });
 
     if (!reporteExists) {
       throw new NotFoundException(`Reporte con ID ${id} no encontrado`);
     }
 
-    // Partimos de la evidencia actual de BD
-    let evidenciaImagen: string | null = reporteExists.evidencia_imagen;
+    // Datos para actualizar el reporte
+    const reporteUpdateData: any = {};
 
-    // 1) Si viene string en el DTO, la usamos (ej: URL manual)
-    if (typeof updateReporteDto.evidencia_imagen === 'string') {
-      evidenciaImagen = updateReporteDto.evidencia_imagen;
+    if (updateReporteDto.estado) {
+      reporteUpdateData.estado = updateReporteDto.estado;
     }
 
-    // 2) Si viene archivo nuevo, generamos nueva URL
+    if (updateReporteDto.animal_id) {
+      // Verificar que el animal existe
+      const animalExists = await this.prisma.animal.findUnique({
+        where: { id: updateReporteDto.animal_id },
+      });
+
+      if (!animalExists) {
+        throw new BadRequestException(
+          `Animal con ID ${updateReporteDto.animal_id} no existe`,
+        );
+      }
+
+      reporteUpdateData.animal_id = updateReporteDto.animal_id;
+    }
+
+    // Datos para actualizar la evidencia
+    const evidenciaUpdateData: any = {};
+
+    if (updateReporteDto.descripcion) {
+      evidenciaUpdateData.descipcion = updateReporteDto.descripcion;
+    }
+
+    // Manejo de imagen
     if (file) {
       const baseUrl =
         process.env.APP_BASE_URL || 'https://innovatech-ztzv.onrender.com';
-
       const normalizedPath = file.path.replace(/\\/g, '/');
       const imagePath = normalizedPath.startsWith('/')
         ? normalizedPath
         : `/${normalizedPath}`;
+      evidenciaUpdateData.imagen_url = `${baseUrl}${imagePath}`;
+    } else if (updateReporteDto.imagen_url) {
+      evidenciaUpdateData.imagen_url = updateReporteDto.imagen_url;
+    }
 
-      evidenciaImagen = `${baseUrl}${imagePath}`;
+    // Manejo de coordenadas y departamento
+    if (
+      updateReporteDto.latitud !== undefined ||
+      updateReporteDto.longitud !== undefined
+    ) {
+      const latitud =
+        updateReporteDto.latitud !== undefined
+          ? Number(updateReporteDto.latitud)
+          : reporteExists.evidencia.latitud;
+
+      const longitud =
+        updateReporteDto.longitud !== undefined
+          ? Number(updateReporteDto.longitud)
+          : reporteExists.evidencia.longitud;
+
+      if (Number.isNaN(latitud) || Number.isNaN(longitud)) {
+        throw new BadRequestException(
+          'latitud y longitud deben ser valores numéricos',
+        );
+      }
+
+      evidenciaUpdateData.latitud = latitud;
+      evidenciaUpdateData.longitud = longitud;
+
+      // Recalcular departamento si cambian las coordenadas
+      if (
+        updateReporteDto.latitud !== undefined ||
+        updateReporteDto.longitud !== undefined
+      ) {
+        const departamentoId = await this.obtenerDepartamento(
+          latitud,
+          longitud,
+        );
+        evidenciaUpdateData.departamento_id = departamentoId;
+      }
     }
 
     try {
-      const reporteActualizado = await this.prisma.reporte.update({
-        where: { id },
-        data: {
-          ...updateReporteDto,
-          evidencia_imagen: evidenciaImagen,
-        },
-        include: {
-          usuario: {
-            select: {
-              id: true,
-              nombres: true,
-              apellidos: true,
-              email: true,
+      // Actualizar en transacción para asegurar consistencia
+      const [reporteActualizado] = await this.prisma.$transaction([
+        // Actualizar evidencia
+        this.prisma.evidencia.update({
+          where: { id: reporteExists.evidencia_id },
+          data: evidenciaUpdateData,
+        }),
+        // Actualizar reporte
+        this.prisma.reporte.update({
+          where: { id },
+          data: reporteUpdateData,
+          include: {
+            usuario: {
+              select: {
+                id: true,
+                nombres: true,
+                apellidos: true,
+                email: true,
+              },
+            },
+            animal: true,
+            evidencia: {
+              include: {
+                departamento: true,
+              },
             },
           },
-        },
-      });
+        }),
+      ]);
 
       return {
         message: 'Reporte actualizado exitosamente',
@@ -340,6 +545,9 @@ export class ReportesService {
     // Verificar que el reporte existe
     const reporteExists = await this.prisma.reporte.findUnique({
       where: { id },
+      include: {
+        evidencia: true,
+      },
     });
 
     if (!reporteExists) {
@@ -347,9 +555,15 @@ export class ReportesService {
     }
 
     try {
-      await this.prisma.reporte.delete({
-        where: { id },
-      });
+      // Eliminar en transacción: primero el reporte, luego la evidencia
+      await this.prisma.$transaction([
+        this.prisma.reporte.delete({
+          where: { id },
+        }),
+        this.prisma.evidencia.delete({
+          where: { id: reporteExists.evidencia_id },
+        }),
+      ]);
 
       return {
         message: 'Reporte eliminado exitosamente',

@@ -13,10 +13,6 @@ export class CreateReporteDto {
   @IsNotEmpty()
   descripcion: string;
 
-  @IsString()
-  @IsNotEmpty()
-  nombre_reportante: string;
-
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
@@ -39,11 +35,12 @@ export class CreateReporteDto {
 
   @IsString()
   @IsOptional()
-  evidencia_imagen?: string;
+  imagen_url?: string;
 
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  animal_nombre: string;
+  animal_id: number;
 
   @IsOptional()
   @IsDateString()

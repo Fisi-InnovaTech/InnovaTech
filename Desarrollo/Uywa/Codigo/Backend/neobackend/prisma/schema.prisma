@@ -88,9 +88,3 @@ model Evento {
   usuario        Usuario  @relation(fields: [user_id], references: [id])
   fecha_creacion DateTime @default(now())
 }
-
-model Evento_Categhporia {
-  id          Int    @id @default(autoincrement())
-  nombre      String @unique
-  descripcion String?
-}

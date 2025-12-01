@@ -14,18 +14,18 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ReportesService } from './reportes.service';
-import { FindOneReporteDto } from './dto/find.one-reporte.dto';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
 import { UploadMiddleware } from 'src/upload.middleware';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FindOneReporteDto } from './dto/find.one-reporte.dto';
 
 @Controller('reportes')
 export class ReportesController {
   constructor(private readonly reportesService: ReportesService) {}
 
   @UseInterceptors(
-    FileInterceptor('evidencia_imagen', UploadMiddleware.getMulterOptions()),
+    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()),
   )
   @HttpCode(HttpStatus.CREATED)
   @Post()
@@ -35,7 +35,7 @@ export class ReportesController {
   ) {
     return this.reportesService.create(createReporteDto, file);
   }
-  
+
   @Get('estado/:estado')
   getReporteByEstado(@Param('estado') estado: string) {
     return this.reportesService.findByEstado(estado);
@@ -67,10 +67,10 @@ export class ReportesController {
     return this.reportesService.findOne(params.id);
   }
 
-  @Patch(':id')
   @UseInterceptors(
-    FileInterceptor('evidencia_imagen', UploadMiddleware.getMulterOptions()),
+    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()),
   )
+  @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateReporteDto: UpdateReporteDto,

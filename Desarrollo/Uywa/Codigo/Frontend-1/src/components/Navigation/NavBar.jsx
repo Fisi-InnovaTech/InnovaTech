@@ -35,9 +35,10 @@ import { useAuthStore } from '../../auth/store/authStore';
 const userPages = [
   { id: 'home', path: '/', name: 'Inicio', icon: <HomeIcon /> },
   { id: 'report', path: '/realizar-alerta', name: 'Reportar', icon: <ReportIcon /> },
-  { id: 'events', path: '/informacion-trafico-animales', name: 'Eventos', icon: <EventIcon /> },
   { id: 'alerts', path: '/ver-alerta', name: 'Ver Alertas', icon: <VisibilityIcon /> },
-  { id: 'animals', path: '/ver-animales', name: 'Animales', icon: <ReportIcon />}
+  { id: 'events', path: '/informacion-trafico-animales', name: 'Eventos', icon: <EventIcon /> },
+  { id: 'animals', path: '/ver-animales', name: 'Animales', icon: <ReportIcon />},
+  { id: 'mis_reportes', path: '/mis_reportes', name: 'Mis Reportes', icon: <PersonIcon />}
 ];
 
 // Páginas para moderadores
@@ -47,6 +48,7 @@ const moderatorPages = [
   { id: 'reports', path: '/moderador-reportes', name: 'Reportes', icon: <AssessmentIcon /> },
   { id: 'statistics', path: '/estadistica', name: 'Estadísticas', icon: <BarChartIcon /> },
   { id: 'events', path: '/informacion-trafico-animales', name: 'Eventos', icon: <EventIcon /> },
+  { id: 'animals', path: '/ver-animales', name: 'Animales', icon: <ReportIcon />}
 ];
 
 function ResponsiveAppBar() {

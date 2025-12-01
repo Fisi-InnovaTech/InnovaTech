@@ -17,6 +17,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom
 import { AuthProvider } from './auth/providers/authProvider';
 import { RouteGuard } from './auth/guards/authGuard';
 import Animals from './pages/Animals';
+import ReportesUsuario from './pages/ReportesUsuario';
 
 function App() {
   return (
@@ -77,6 +78,13 @@ function App() {
               <Route path="/estadistica" element={
                 <RouteGuard requireAuth={true} requiredRoles={['moderador']}>
                   <Report/>
+                </RouteGuard>
+              }/>
+
+              
+              <Route path="/mis_reportes" element={
+                <RouteGuard requireAuth={true} requiredRoles={['usuario']}>
+                  <ReportesUsuario/>
                 </RouteGuard>
               }/>
               

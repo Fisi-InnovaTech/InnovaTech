@@ -30,15 +30,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
 import { styles } from '../components/Reportes/ReportesStyle';
 
-const rejectionReasons = [
-  "Información insuficiente",
-  "Imagen no válida",
-  "Datos incorrectos",
-  "Animal no encontrado",
-  "Otro"
-];
-
-const backendURL = "http://127.0.0.1:3000/reportes";
+const backendURL = "http://localhost:3000/reportes";
 
 const Reportes = () => {
 
@@ -55,11 +47,9 @@ const Reportes = () => {
 
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-  const [rejectDialog, setRejectDialog] = useState({
+  const [deleteDialog, setDeleteDialog] = useState({
     open: false,
-    reportId: null,
-    reason: "",
-    customReason: ""
+    reportId: null
   });
 
   const navigate = useNavigate();
@@ -103,22 +93,18 @@ const Reportes = () => {
   };
 
   // ================================
-  // PATCH → RECHAZAR REPORTE
+  // DELETE → ELIMINAR REPORTE
   // ================================
-  const rejectReport = async (id, motivo) => {
+  const deleteReport = async (id) => {
     try {
-      const res = await fetch(
-        `${backendURL}/estado/${id}?estado=rechazado`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ motivo })
-        }
-      );
+      const res = await fetch(`${backendURL}/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+      });
 
-      if (!res.ok) throw new Error("No se pudo rechazar el reporte");
+      if (!res.ok) throw new Error("No se pudo eliminar el reporte");
 
-      showSnackbar("Reporte rechazado correctamente", "success");
+      showSnackbar("Reporte eliminado correctamente", "success");
       await fetchReports(); // refrescar tabla
 
     } catch (err) {
@@ -160,8 +146,8 @@ const Reportes = () => {
       filtered = filtered.filter(report =>
         report.usuario?.nombres?.toLowerCase().includes(term) ||
         report.usuario?.apellidos?.toLowerCase().includes(term) ||
-        report.animal_nombre?.toLowerCase().includes(term) ||
-        report.descripcion?.toLowerCase().includes(term)
+        report.animal?.nombre?.toLowerCase().includes(term) ||
+        report.evidencia?.descipcion?.toLowerCase().includes(term)
       );
     }
 
@@ -196,24 +182,19 @@ const Reportes = () => {
   };
 
   // ================================
-  // DIALOGO RECHAZO
+  // DIALOGO ELIMINAR
   // ================================
-  const openRejectDialog = (id) => {
-    setRejectDialog({ open: true, reportId: id, reason: "", customReason: "" });
+  const openDeleteDialog = (id) => {
+    setDeleteDialog({ open: true, reportId: id });
   };
 
-  const closeRejectDialog = () => {
-    setRejectDialog({ open: false, reportId: null, reason: "", customReason: "" });
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ open: false, reportId: null });
   };
 
-  const confirmReject = async () => {
-    const motivo =
-      rejectDialog.reason === "Otro"
-        ? rejectDialog.customReason
-        : rejectDialog.reason;
-
-    await rejectReport(rejectDialog.reportId, motivo);
-    closeRejectDialog();
+  const confirmDelete = async () => {
+    await deleteReport(deleteDialog.reportId);
+    closeDeleteDialog();
   };
 
   // ================================
@@ -285,7 +266,7 @@ const Reportes = () => {
                   <TableCell align="center">
                     {report.usuario?.nombres} {report.usuario?.apellidos}
                   </TableCell>
-                  <TableCell align="center">{report.animal_nombre}</TableCell>
+                  <TableCell align="center">{report.animal?.nombre}</TableCell>
 
                   <TableCell align="center">
                     <Typography sx={{
@@ -321,18 +302,20 @@ const Reportes = () => {
                             Detalles del Reporte
                           </Typography>
 
-                          <Typography><b>Descripción:</b> {report.descripcion}</Typography>
+                          <Typography><b>Descripción:</b> {report.evidencia?.descipcion}</Typography>
 
-                          {report.reporte_detallado && (
-                            <Typography sx={{ mt: 2, color: "#E52F60" }}>
-                              <b>Motivo de rechazo:</b> {report.reporte_detallado}
-                            </Typography>
-                          )}
+                          <Typography sx={{ mt: 1 }}>
+                            <b>Ubicación:</b> {report.evidencia?.departamento?.nombre}
+                          </Typography>
 
-                          {report.evidencia_imagen && (
+                          <Typography sx={{ mt: 1 }}>
+                            <b>Fecha:</b> {new Date(report.fecha_creacion).toLocaleDateString()}
+                          </Typography>
+
+                          {report.evidencia?.imagen_url && (
                             <img
-                              src={report.evidencia_imagen}
-                              alt={report.animal_nombre}
+                              src={report.evidencia.imagen_url}
+                              alt={report.animal?.nombre}
                               style={styles.image}
                             />
                           )}
@@ -351,9 +334,9 @@ const Reportes = () => {
                               <Button 
                                 variant="contained" 
                                 sx={{ ...styles.actionButton, backgroundColor: "#E52F60" }}
-                                onClick={() => openRejectDialog(report.id)}
+                                onClick={() => openDeleteDialog(report.id)}
                               >
-                                Rechazar
+                                Eliminar
                               </Button>
 
                             </Box>
@@ -410,56 +393,25 @@ const Reportes = () => {
         Volver al panel
       </Button>
 
-      {/* DIALOGO RECHAZO */}
-      <Dialog open={rejectDialog.open} onClose={closeRejectDialog}>
-        <DialogTitle>Motivo de Rechazo</DialogTitle>
+      {/* DIALOGO ELIMINAR */}
+      <Dialog open={deleteDialog.open} onClose={closeDeleteDialog}>
+        <DialogTitle>Confirmar Eliminación</DialogTitle>
 
         <DialogContent>
-
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>Seleccione un motivo</InputLabel>
-            <Select
-              value={rejectDialog.reason}
-              label="Seleccione un motivo"
-              onChange={(e) =>
-                setRejectDialog({ ...rejectDialog, reason: e.target.value })
-              }
-            >
-              {rejectionReasons.map(reason => (
-                <MenuItem key={reason} value={reason}>{reason}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {rejectDialog.reason === "Otro" && (
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Especifique el motivo"
-              fullWidth
-              variant="outlined"
-              value={rejectDialog.customReason}
-              onChange={(e) =>
-                setRejectDialog({ ...rejectDialog, customReason: e.target.value })
-              }
-              sx={{ mt: 2 }}
-            />
-          )}
-
+          <Typography>
+            ¿Está seguro que desea eliminar este reporte? Esta acción no se puede deshacer.
+          </Typography>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={closeRejectDialog}>Cancelar</Button>
+          <Button onClick={closeDeleteDialog}>Cancelar</Button>
 
           <Button
             color="error"
-            disabled={
-              !rejectDialog.reason ||
-              (rejectDialog.reason === "Otro" && !rejectDialog.customReason)
-            }
-            onClick={confirmReject}
+            variant="contained"
+            onClick={confirmDelete}
           >
-            Confirmar rechazo
+            Eliminar
           </Button>
         </DialogActions>
 

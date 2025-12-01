@@ -18,24 +18,32 @@ import {
   Select,
   MenuItem,
   FormControl,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { styles } from '../components/Promover/StylesPromover';
 
 const backendURL = "http://127.0.0.1:3000/usuarios";
 
 const Reportes = () => {
-
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-
   const [searchTerm, setSearchTerm] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
   const [goToPage, setGoToPage] = useState("");
-
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  
+  // Estados para el modal de confirmación de eliminación
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const navigate = useNavigate();
   const usersPerPage = 10;
@@ -68,6 +76,46 @@ const Reportes = () => {
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
+  };
+
+  // ========================= ELIMINAR USUARIO =========================
+  const handleOpenDeleteDialog = (user) => {
+    setUserToDelete(user);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setUserToDelete(null);
+  };
+
+  const deleteUser = async () => {
+    if (!userToDelete) return;
+    
+    try {
+      setDeleting(true);
+      const res = await fetch(`${backendURL}/${userToDelete.id}`, {
+        method: "DELETE"
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error al eliminar el usuario: ${res.status} ${res.statusText}`);
+      }
+
+      showSnackbar("Usuario eliminado correctamente", "success");
+      
+      // Actualizar la lista de usuarios
+      await fetchUsers();
+      
+      // Cerrar el diálogo
+      handleCloseDeleteDialog();
+
+    } catch (err) {
+      showSnackbar(err.message, "error");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   // ========================= PATCH ROL =========================
@@ -173,6 +221,7 @@ const Reportes = () => {
               <TableCell align="center">Correo</TableCell>
               <TableCell align="center">Rol</TableCell>
               <TableCell align="center">Cambiar Rol</TableCell>
+              <TableCell align="center">Eliminar</TableCell>
             </TableRow>
           </TableHead>
 
@@ -215,6 +264,18 @@ const Reportes = () => {
                       <MenuItem value={3}>Administrador</MenuItem>
                     </Select>
                   </FormControl>
+                </TableCell>
+
+                {/* BOTÓN ELIMINAR */}
+                <TableCell align="center">
+                  <IconButton
+                    color="error"
+                    onClick={() => handleOpenDeleteDialog(user)}
+                    title="Eliminar usuario"
+                    disabled={user.rolId === 3} // Opcional: deshabilitar si es admin
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
 
               </TableRow>
@@ -261,6 +322,45 @@ const Reportes = () => {
       >
         Volver
       </Button>
+
+      {/* ========================= MODAL DE CONFIRMACIÓN PARA ELIMINAR ========================= */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Confirmar Eliminación
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            ¿Estás seguro de que deseas eliminar al usuario <strong>{userToDelete?.nombres} {userToDelete?.apellidos}</strong> ({userToDelete?.email})?
+            <br />
+            <br />
+            <strong>Esta acción no se puede deshacer.</strong>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={handleCloseDeleteDialog} 
+            disabled={deleting}
+            color="primary"
+          >
+            Cancelar
+          </Button>
+          <Button 
+            onClick={deleteUser} 
+            disabled={deleting}
+            color="error"
+            variant="contained"
+            autoFocus
+            startIcon={<DeleteIcon />}
+          >
+            {deleting ? "Eliminando..." : "Eliminar"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* ========================= SNACKBAR ========================= */}
       <Snackbar

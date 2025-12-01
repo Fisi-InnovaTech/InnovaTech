@@ -1,7 +1,6 @@
 import './App.css';
 import React from "react";
-import ResponsiveAppBar from './components/Navigation/NavBar';
-import Blog from './pages/InformacionTrafico';
+import ResponsiveAppBar from './components/Navigation/NavBar';¿
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
@@ -18,6 +17,7 @@ import ReportesUsuario from './pages/ReportesUsuario';
 import { Home } from '@mui/icons-material';
 import VerAlertaGoogle from './components/pages/VerAlertaGoogle';
 import AlertForm from './components/pages/RealizarAlerta';
+import Blog from './components/pages/InformacionTrafico';
 
 function App() {
   return (

@@ -25,6 +25,6 @@ export class CreateAnimalDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  imagen_url?: string; // ✅ Igual que en reportes: para URLs manuales (opcional)  
+  imagen_url?: string; // ✅ Igual que en reportes: para URLs manuales (opcional)
   // Nota: video_url será ignorado como solicitaste
 }

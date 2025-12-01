@@ -2,15 +2,11 @@ import { useState, useEffect } from 'react';
 import { 
   Box,
   TextField,
-  MenuItem,
-  FormControl,
-  Select,
   FormGroup,
   FormControlLabel,
   Checkbox,
   Button,
   Paper,
-  Grid,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,7 +17,8 @@ import {
   Container, 
   Snackbar, 
   Typography,
-  styled 
+  styled,
+  Autocomplete
 } from '@mui/material';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import Mapa from '../components/Mapa/MapaVisualizar';
@@ -36,7 +33,7 @@ const API_BASE_URL = "http://localhost:3000";
 
 // Usuario anónimo
 const ANONYMOUS_USER = {
-  id: 19,
+  id: 3,
   email: "anonimo@anonimo.com",
   nombres: "anonimo",
   apellidos: "anonimo",
@@ -58,11 +55,14 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function AlertForm() {
   const { user, isAuthenticated } = useAuthStore();
+  
+  console.log("Usuario en formulario:", user);
+  console.log("¿Tiene ID?:", user?.id);
 
   // ESTADOS
   const [animalOptions, setAnimalOptions] = useState([]);
   const [loadingAnimals, setLoadingAnimals] = useState(true);
-  const [selectedAnimal, setSelectedAnimal] = useState('');
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [finishAlert, setFinishAlert] = useState(false);
   const [tosendFile, setTosendFile] = useState(null);
   const [description, setDescription] = useState('');
@@ -102,15 +102,51 @@ export default function AlertForm() {
     fetchAnimals();
   }, []);
 
+  // Función para obtener el ID del usuario autenticado
+  const getAuthenticatedUserId = async () => {
+    try {
+      // Obtener token del localStorage
+      const authStorage = localStorage.getItem('auth-storage');
+      if (!authStorage) throw new Error('No hay sesión activa');
+      
+      const parsed = JSON.parse(authStorage);
+      const token = parsed?.state?.token;
+      
+      if (!token) throw new Error('Token no disponible');
+      
+      // Verificar token para obtener el ID
+      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Token inválido');
+      }
+      
+      const data = await response.json();
+      if (data.valid && data.user?.id) {
+        return data.user.id;
+      } else {
+        throw new Error('Usuario no válido');
+      }
+    } catch (error) {
+      console.error('Error obteniendo ID de usuario:', error);
+      throw error;
+    }
+  };
+
   // VALIDAR FORMULARIO
   const validateForm = () => {
     const newErrors = {
-      animal: !selectedAnimal,
+      animal: !selectedAnimal || !selectedAnimal.id,
       description: description.length < MIN_DESCRIPTION_LENGTH,
       location: !latitud || !longitud,
       file: !tosendFile,
       auth: !isAnonymous && !isAuthenticated(),
     };
+    
     setErrors(newErrors);
     return !Object.values(newErrors).some(e => e);
   };
@@ -154,13 +190,35 @@ export default function AlertForm() {
     setIsAnonymous(checked);
     if (checked) {
       setErrors(prev => ({ ...prev, auth: false }));
+    } else if (!isAuthenticated()) {
+      setErrors(prev => ({ ...prev, auth: true }));
     }
+  };
+
+  // MANEJAR CAMBIO DE ANIMAL
+  const handleAnimalChange = (event, newValue) => {
+    console.log("Animal seleccionado:", newValue);
+    setSelectedAnimal(newValue);
+    setErrors(prev => ({
+      ...prev,
+      animal: !newValue || !newValue.id
+    }));
   };
 
   // ENVIAR FORMULARIO
   const handleSubmit = async () => {
+    console.log("=== INICIANDO ENVÍO ===");
+    
+    // Validar formulario
     if (!validateForm()) {
       setAlertMessage("Complete todos los campos obligatorios");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Validación adicional del animal
+    if (!selectedAnimal || !selectedAnimal.id) {
+      setAlertMessage("Debe seleccionar un animal válido");
       setOpenSnackbar(true);
       return;
     }
@@ -168,19 +226,52 @@ export default function AlertForm() {
     setIsSubmitting(true);
 
     try {
-      // Determinar qué usuario usar
-      const reportUser = isAnonymous ? ANONYMOUS_USER : user;
+      // Obtener ID de usuario
+      let userId;
+      
+      if (isAnonymous) {
+        // Usuario anónimo
+        userId = ANONYMOUS_USER.id;
+        console.log("Usando usuario anónimo:", userId);
+      } else {
+        // Usuario autenticado
+        try {
+          userId = await getAuthenticatedUserId();
+          console.log("ID de usuario autenticado obtenido:", userId);
+        } catch (error) {
+          console.error("Error obteniendo ID de usuario autenticado:", error);
+          setAlertMessage("Error de autenticación. Por favor, inicie sesión nuevamente.");
+          setOpenSnackbar(true);
+          setIsSubmitting(false);
+          return;
+        }
+      }
 
+      // Validar que el ID sea válido
+      if (!userId) {
+        throw new Error("No se pudo obtener un ID de usuario válido");
+      }
+
+      // Preparar FormData
       const formData = new FormData();
-      formData.append("descripcion", description);
+      formData.append("descripcion", description.trim());
       formData.append("latitud", latitud.toString());
       formData.append("longitud", longitud.toString());
-      formData.append("usuarioId", reportUser.id.toString());
-      formData.append("animal_id", selectedAnimal.toString());
+      formData.append("usuarioId", userId.toString());
+      formData.append("animal_id", selectedAnimal.id.toString());
       formData.append("estado", "pendiente");
       formData.append("imagen_url", tosendFile);
 
-      // PETICIÓN AL BACKEND
+      console.log("Datos a enviar:", {
+        descripcion: description.trim(),
+        latitud,
+        longitud,
+        usuarioId: userId,
+        animal_id: selectedAnimal.id,
+        imagen: tosendFile.name
+      });
+
+      // Enviar al backend
       const response = await fetch(`${API_BASE_URL}/reportes`, {
         method: "POST",
         body: formData
@@ -191,11 +282,11 @@ export default function AlertForm() {
         throw new Error(errorData.message || "Error en el servidor");
       }
 
-      await response.json();
+      // Éxito
       setFinishAlert(true);
 
     } catch (error) {
-      console.error(error);
+      console.error("Error al enviar el reporte:", error);
       setAlertMessage(error.message || "Error al enviar la alerta");
       setOpenSnackbar(true);
     } finally {
@@ -268,30 +359,48 @@ export default function AlertForm() {
 
         {/* ANIMAL */}
         <Box sx={{ p: 2 }}>
-          <FormControl fullWidth>
-            <Typography sx={labelName}>SELECCIONAR ANIMAL *</Typography>
-            {loadingAnimals ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-                <CircularProgress size={24} />
-              </Box>
-            ) : (
-              <Select
-                value={selectedAnimal}
-                onChange={(e) => {
-                  setSelectedAnimal(e.target.value);
-                  setErrors({ ...errors, animal: false });
-                }}
-                error={errors.animal}
-              >
-                <MenuItem value=""><em>Seleccione un animal</em></MenuItem>
-                {animalOptions.map(animal => (
-                  <MenuItem key={animal.id} value={animal.id}>
-                    {animal.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          </FormControl>
+          <Typography sx={{...labelName, mb:2}}>SELECCIONAR ANIMAL *</Typography>
+          {loadingAnimals ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+              <CircularProgress size={24} />
+            </Box>
+          ) : (
+            <Autocomplete
+              id="animal-autocomplete"
+              options={animalOptions}
+              getOptionLabel={(option) => option?.nombre || ""}
+              value={selectedAnimal}
+              onChange={handleAnimalChange}
+              renderInput={(params) => (
+                <TextField 
+                  {...params} 
+                  label="Buscar Animal" 
+                  placeholder="Escribe para buscar..."
+                  variant="outlined"
+                  error={errors.animal}
+                  helperText={errors.animal ? "Debe seleccionar un animal" : ""}
+                  fullWidth
+                />
+              )}
+              noOptionsText="No se encontraron animales"
+              isOptionEqualToValue={(option, value) => {
+                if (!option || !value) return false;
+                return option.id === value.id;
+              }}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  <Box>
+                    <Typography variant="body1">{option.nombre}</Typography>
+                    {option.descripcion && (
+                      <Typography variant="caption" color="textSecondary">
+                        {option.descripcion.substring(0, 60)}...
+                      </Typography>
+                    )}
+                  </Box>
+                </li>
+              )}
+            />
+          )}
         </Box>
 
         {/* MAPA */}

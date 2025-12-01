@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useAuthStore } from "../store/authStore";
 
 export const AuthProvider = ({ children }) => {
-  const { user, token, setAuthChecked, clearUser, setUser } = useAuthStore();
+  const { user, token, setAuthChecked, clearUser, setUser, updateUserWithId } = useAuthStore();
   const [loading, setLoading] = useState(true);
   const hasChecked = useRef(false);
 
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         // Verificar el token con el servidor
-        const response = await fetch("http://localhost:3000/api/auth/verify", {
+        const response = await fetch("http://localhost:3000/auth/verify", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -31,10 +31,26 @@ export const AuthProvider = ({ children }) => {
           // Token inválido, limpiar estado
           clearUser();
         } else {
-          // Token válido, actualizar datos del usuario si no existen
-          if (!user) {
-            const userData = await response.json();
-            setUser(userData);
+          const data = await response.json();
+          
+          if (data.valid) {
+            // Token válido
+            const userData = data.user; // { id, email, rol }
+            
+            if (!user) {
+              // Si no hay usuario, establecer uno básico
+              setUser({
+                email: userData.email,
+                nombres: "", // No vienen en la verificación
+                apellidos: "", // No vienen en la verificación
+                rol: userData.rol,
+              });
+            }
+            
+            // Actualizar el usuario con el ID
+            updateUserWithId(userData);
+          } else {
+            clearUser();
           }
         }
       } catch (error) {
@@ -47,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
-  }, []); // Array vacío para ejecutar solo una vez
+  }, [token, user, setAuthChecked, clearUser, setUser, updateUserWithId]);
 
   if (loading) {
     return (

@@ -4,7 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsIn,
+  IsIn, // ✅ Asegúrate de tener esta importación
   IsDateString,
 } from 'class-validator';
 
@@ -35,7 +35,7 @@ export class CreateReporteDto {
 
   @IsString()
   @IsOptional()
-  imagen_url?: string;
+  imagen_url?: string; // ✅ Para URLs manuales (sin archivo)
 
   @Type(() => Number)
   @IsNumber()

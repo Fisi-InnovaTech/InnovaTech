@@ -24,8 +24,9 @@ import { FindOneReporteDto } from './dto/find.one-reporte.dto';
 export class ReportesController {
   constructor(private readonly reportesService: ReportesService) {}
 
+  // Para crear
   @UseInterceptors(
-    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()),
+    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()), // ✅ Usar 'imagen_url'
   )
   @HttpCode(HttpStatus.CREATED)
   @Post()
@@ -67,8 +68,9 @@ export class ReportesController {
     return this.reportesService.findOne(params.id);
   }
 
+  // Para actualizar
   @UseInterceptors(
-    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()),
+    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()), // ✅ Usar 'imagen_url'
   )
   @Patch(':id')
   update(

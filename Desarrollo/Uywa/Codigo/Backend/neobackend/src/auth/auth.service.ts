@@ -50,6 +50,7 @@ export class AuthService {
           'El correo ya está registrado, prueba con otro.',
         );
       }
+      console.error('Error registering user:', error);
       throw new BadRequestException('User registration failed');
     }
   }

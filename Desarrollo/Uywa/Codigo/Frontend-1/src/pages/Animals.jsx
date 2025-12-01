@@ -9,17 +9,21 @@ import {
   IconButton,
   Grid,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Button,
+  MenuItem
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 
-const animalsData = [
+// ---------------------------------
+// DATA
+// ---------------------------------
+const initialAnimals = [
   {
     id: 1,
-    name: "Oso nnnnde Anteojos",
-    image:
-      "./Captura de pantalla_2025-04-14_20-55-50.png",
+    name: "Oso de Anteojos",
+    image: "./Captura de pantalla_2025-04-14_20-55-50.png",
     description:
       "Mamífero sudamericano conocido por las manchas claras alrededor de sus ojos.",
     habitat: "Bosques andinos húmedos",
@@ -56,23 +60,70 @@ const animalsData = [
 ];
 
 export default function Animals() {
+  const [animals, setAnimals] = useState(initialAnimals);
   const [query, setQuery] = useState("");
   const [selectedAnimal, setSelectedAnimal] = useState(null);
+
+  // ------------------------
+  // MODALES NUEVOS
+  // ------------------------
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    image: "",
+    description: "",
+    habitat: "",
+    danger: ""
+  });
+
+  const [animalToDelete, setAnimalToDelete] = useState("");
 
   const handleOpen = (animal) => setSelectedAnimal(animal);
   const handleClose = () => setSelectedAnimal(null);
 
+  // ------------------------
+  // GUARDAR ANIMAL (MODAL)
+  // ------------------------
+  const guardarAnimal = () => {
+    const nuevo = {
+      id: animals.length + 1,
+      ...form
+    };
+
+    setAnimals([...animals, nuevo]);
+    setOpenAdd(false);
+
+    setForm({
+      name: "",
+      image: "",
+      description: "",
+      habitat: "",
+      danger: ""
+    });
+  };
+
+  // ------------------------
+  // ELIMINAR ANIMAL (MODAL)
+  // ------------------------
+  const confirmarEliminar = () => {
+    setAnimals(animals.filter((a) => a.id !== Number(animalToDelete)));
+    setOpenDelete(false);
+    setAnimalToDelete("");
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return animalsData;
-    return animalsData.filter((a) => {
+    if (!q) return animals;
+    return animals.filter((a) => {
       return (
         a.name.toLowerCase().includes(q) ||
         a.description.toLowerCase().includes(q) ||
         a.habitat.toLowerCase().includes(q)
       );
     });
-  }, [query]);
+  }, [query, animals]);
 
   return (
     <Box
@@ -96,8 +147,8 @@ export default function Animals() {
         Animales del Perú
       </Typography>
 
-      {/* SEARCH */}
-      <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+      {/* BUSCADOR */}
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
         <TextField
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -120,6 +171,50 @@ export default function Animals() {
         />
       </Box>
 
+      {/* BOTONES */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 2,
+          mb: 4
+        }}
+      >
+        <Button
+          onClick={() => setOpenAdd(true)}
+          variant="contained"
+          sx={{
+            background: "#3AB795",
+            borderRadius: "12px",
+            textTransform: "none",
+            fontWeight: 600,
+            boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
+            ":hover": { background: "#34a786" }
+          }}
+        >
+          Agregar
+        </Button>
+
+        <Button
+          onClick={() => setOpenDelete(true)}
+          variant="outlined"
+          sx={{
+            borderColor: "#d9534f",
+            color: "#d9534f",
+            borderRadius: "12px",
+            textTransform: "none",
+            fontWeight: 600,
+            ":hover": {
+              borderColor: "#b43c39",
+              color: "#b43c39"
+            }
+          }}
+        >
+          Eliminar
+        </Button>
+      </Box>
+
+      {/* GRID */}
       <Grid container spacing={4} justifyContent="center">
         {filtered.map((animal) => (
           <Grid item xs={12} sm={6} md={4} key={animal.id}>
@@ -135,13 +230,12 @@ export default function Animals() {
                   boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
                 },
 
-                height: "300px", 
+                height: "300px",
                 display: "flex",
                 flexDirection: "column",
                 overflow: "hidden"
               }}
             >
-   
               <CardMedia
                 component="img"
                 image={animal.image}
@@ -192,6 +286,7 @@ export default function Animals() {
         )}
       </Grid>
 
+      {/* MODAL DETALLE */}
       <Modal open={Boolean(selectedAnimal)} onClose={handleClose}>
         <Box
           sx={{
@@ -247,6 +342,118 @@ export default function Animals() {
               </Typography>
             </>
           )}
+        </Box>
+      </Modal>
+
+      {/* MODAL AGREGAR */}
+      <Modal open={openAdd} onClose={() => setOpenAdd(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "92%", sm: "480px" },
+            bgcolor: "white",
+            p: 3,
+            borderRadius: "16px",
+            boxShadow: 24
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
+            Agregar Animal
+          </Typography>
+
+          <TextField
+            label="Nombre"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+          <TextField
+            label="URL de Imagen"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={form.image}
+            onChange={(e) => setForm({ ...form, image: e.target.value })}
+          />
+          <TextField
+            label="Descripción"
+            fullWidth
+            multiline
+            sx={{ mb: 2 }}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+          <TextField
+            label="Hábitat"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={form.habitat}
+            onChange={(e) => setForm({ ...form, habitat: e.target.value })}
+          />
+          <TextField
+            label="Peligro"
+            fullWidth
+            sx={{ mb: 3 }}
+            value={form.danger}
+            onChange={(e) => setForm({ ...form, danger: e.target.value })}
+          />
+
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ background: "#3AB795" }}
+            onClick={guardarAnimal}
+          >
+            Guardar
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* MODAL ELIMINAR */}
+      <Modal open={openDelete} onClose={() => setOpenDelete(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "92%", sm: "420px" },
+            bgcolor: "white",
+            p: 3,
+            borderRadius: "16px",
+            boxShadow: 24
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
+            Eliminar Animal
+          </Typography>
+
+          <TextField
+            select
+            label="Seleccionar animal"
+            fullWidth
+            value={animalToDelete}
+            sx={{ mb: 3 }}
+            onChange={(e) => setAnimalToDelete(e.target.value)}
+          >
+            {animals.map((a) => (
+              <MenuItem key={a.id} value={a.id}>
+                {a.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ background: "#d9534f" }}
+            onClick={confirmarEliminar}
+          >
+            Eliminar
+          </Button>
         </Box>
       </Modal>
     </Box>

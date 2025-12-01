@@ -23,7 +23,7 @@ const initialAnimals = [
   {
     id: 1,
     name: "Oso de Anteojos",
-    image: "./Captura de pantalla_2025-04-14_20-55-50.png",
+    image: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg",
     description:
       "Mamífero sudamericano conocido por las manchas claras alrededor de sus ojos.",
     habitat: "Bosques andinos húmedos",
@@ -33,7 +33,7 @@ const initialAnimals = [
     id: 2,
     name: "Cóndor Andino",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Condor_andino_%28Vultur_gryphus%29%2C_parque_nacional_Torres_del_Paine%2C_Chile%2C_2020-02-08%2C_DD_25.jpg/800px-Condor_andino_%28Vultur_gryphus%29%2C_parque_nacional_Torres_del_Paine%2C_Chile%2C_2020-02-08%2C_DD_25.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg",
     description:
       "Una de las aves voladoras más grandes del mundo, símbolo de los Andes.",
     habitat: "Cordillera de los Andes",
@@ -42,7 +42,7 @@ const initialAnimals = [
   {
     id: 3,
     name: "Rana del Titicaca",
-    image: "https://upload.wikimedia.org/wikipedia/commons/3/31/Titicaca_Frog.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg",
     description:
       "Anfibio endémico del Lago Titicaca con piel arrugada característica.",
     habitat: "Lago Titicaca",
@@ -52,7 +52,7 @@ const initialAnimals = [
     id: 4,
     name: "Gallito de las Rocas",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/2/24/Rupicola_peruvianus_-Haute_Matoury%2C_Georges-Gabriel_Gu%C3%A9rin_Reserve%2C_French_Guiana-8.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg",
     description: "Ave nacional del Perú, vistoso y de pecho anaranjado.",
     habitat: "Selva alta y bosques húmedos",
     danger: "Preocupación menor"
@@ -377,6 +377,8 @@ export default function Animals() {
             sx={{ mb: 2 }}
             value={form.image}
             onChange={(e) => setForm({ ...form, image: e.target.value })}
+            content="ttps://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg"
+
           />
           <TextField
             label="Descripción"

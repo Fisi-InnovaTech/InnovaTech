@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AnimalService } from './animal.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
@@ -17,6 +25,11 @@ export class AnimalController {
   @Get()
   findAll() {
     return this.animalService.findAll();
+  }
+
+  @Get('/list')
+  listAll() {
+    return this.animalService.listAll();
   }
 
   @Get(':id')

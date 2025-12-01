@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
@@ -20,7 +24,9 @@ export class AnimalService {
     });
 
     if (animalExistente) {
-      throw new BadRequestException(`El animal con nombre '${createAnimalDto.nombre}' ya existe.`);
+      throw new BadRequestException(
+        `El animal con nombre '${createAnimalDto.nombre}' ya existe.`,
+      );
     }
 
     const animal = await this.prisma.animal.create({ data: createAnimalDto });
@@ -32,9 +38,20 @@ export class AnimalService {
     return { message: 'Animales encontrados correctamente', data: animales };
   }
 
+  async listAll() {
+    const animales = await this.prisma.animal.findMany({
+      select: {
+        id: true,
+        nombre: true,
+      },
+    });
+    return { message: 'Animales encontrados correctamente', data: animales };
+  }
+
   async findOne(id: number) {
     const animal = await this.prisma.animal.findUnique({ where: { id } });
-    if (!animal) throw new NotFoundException(`Animal con ID ${id} no encontrado`);
+    if (!animal)
+      throw new NotFoundException(`Animal con ID ${id} no encontrado`);
     return { message: 'Animal encontrado correctamente', data: animal };
   }
 

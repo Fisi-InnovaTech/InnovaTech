@@ -19,10 +19,21 @@ import { UpdateReporteDto } from './dto/update-reporte.dto';
 import { UploadMiddleware } from 'src/upload.middleware';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FindOneReporteDto } from './dto/find.one-reporte.dto';
+import { SearchReporteDto } from './dto/search-reporte.dto';
 
 @Controller('reportes')
 export class ReportesController {
   constructor(private readonly reportesService: ReportesService) {}
+
+  @Get('search')
+  searchReportes(@Query() searchDto: SearchReporteDto) {
+    return this.reportesService.searchReportes(
+      searchDto.fecha_ini,
+      searchDto.fecha_fin,
+      searchDto.animal_id ? Number(searchDto.animal_id) : undefined,
+      searchDto.departamento_id,
+    );
+  }
 
   // Para crear
   @UseInterceptors(

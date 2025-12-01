@@ -36,7 +36,128 @@ export class ReportesService {
       },
     });
   }
+  async searchReportes(
+    fecha_ini?: string,
+    fecha_fin?: string,
+    animal_id?: number,
+    departamento_id?: string,
+  ) {
+    try {
+      // Construir el objeto where dinámicamente
+      const whereCondition: any = {};
 
+      // Filtro por rango de fechas
+      if (fecha_ini || fecha_fin) {
+        whereCondition.fecha_creacion = {};
+
+        if (fecha_ini) {
+          const fechaInicio = new Date(fecha_ini);
+          if (isNaN(fechaInicio.getTime())) {
+            throw new BadRequestException(
+              'fecha_ini debe ser una fecha válida (formato: YYYY-MM-DD)',
+            );
+          }
+          // Establecer la hora al inicio del día
+          fechaInicio.setHours(0, 0, 0, 0);
+          whereCondition.fecha_creacion.gte = fechaInicio;
+        }
+
+        if (fecha_fin) {
+          const fechaFin = new Date(fecha_fin);
+          if (isNaN(fechaFin.getTime())) {
+            throw new BadRequestException(
+              'fecha_fin debe ser una fecha válida (formato: YYYY-MM-DD)',
+            );
+          }
+          // Establecer la hora al final del día
+          fechaFin.setHours(23, 59, 59, 999);
+          whereCondition.fecha_creacion.lte = fechaFin;
+        }
+      }
+
+      // Filtro por animal
+      if (animal_id) {
+        const animalIdNum = Number(animal_id);
+        if (isNaN(animalIdNum)) {
+          throw new BadRequestException('animal_id debe ser un número válido');
+        }
+
+        // Verificar que el animal existe
+        const animalExists = await this.prisma.animal.findUnique({
+          where: { id: animalIdNum },
+        });
+
+        if (!animalExists) {
+          throw new BadRequestException(
+            `Animal con ID ${animalIdNum} no existe`,
+          );
+        }
+
+        whereCondition.animal_id = animalIdNum;
+      }
+
+      // 🔴 NUEVO: Filtro por departamento
+      if (departamento_id) {
+        // Verificar que el departamento existe
+        const departamentoExists = await this.prisma.departamento.findUnique({
+          where: { id: departamento_id },
+        });
+
+        if (!departamentoExists) {
+          throw new BadRequestException(
+            `Departamento con ID ${departamento_id} no existe`,
+          );
+        }
+
+        // Filtrar por departamento a través de la relación con evidencia
+        whereCondition.evidencia = {
+          departamento_id: departamento_id,
+        };
+      }
+
+      // Realizar la búsqueda
+      const reportes = await this.prisma.reporte.findMany({
+        where: whereCondition,
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nombres: true,
+              apellidos: true,
+              email: true,
+            },
+          },
+          animal: true,
+          evidencia: {
+            include: {
+              departamento: true,
+            },
+          },
+        },
+        orderBy: {
+          fecha_creacion: 'desc',
+        },
+      });
+
+      return {
+        message: 'Búsqueda realizada exitosamente',
+        data: reportes,
+        total: reportes.length,
+        filtros: {
+          fecha_ini: fecha_ini || null,
+          fecha_fin: fecha_fin || null,
+          animal_id: animal_id || null,
+          departamento_id: departamento_id || null,
+        },
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error('Error al buscar reportes:', error);
+      throw new BadRequestException('Error al realizar la búsqueda');
+    }
+  }
   async getReporteByEstado(estado: string) {
     return this.prisma.reporte.findMany({
       where: { estado },

@@ -16,9 +16,6 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 
-// ---------------------------------
-// DATA — EVENTOS (FALSA, PERO COMPLETA)
-// ---------------------------------
 const initialEvents = [
   {
     id: 1,
@@ -88,6 +85,7 @@ export default function Blog() {
   // ------------------------
   const [openAdd, setOpenAdd] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
 
   const [form, setForm] = useState({
     titulo: "",
@@ -102,12 +100,13 @@ export default function Blog() {
   });
 
   const [eventToDelete, setEventToDelete] = useState("");
+  const [eventToUpdate, setEventToUpdate] = useState("");
 
   const handleOpen = (ev) => setSelectedEvent(ev);
   const handleClose = () => setSelectedEvent(null);
 
   // ------------------------
-  // GUARDAR NUEVO EVENTO
+  // AGREGAR
   // ------------------------
   const guardarEvento = () => {
     const nuevo = {
@@ -116,8 +115,8 @@ export default function Blog() {
     };
 
     setEventos([...eventos, nuevo]);
-
     setOpenAdd(false);
+
     setForm({
       titulo: "",
       descripcion: "",
@@ -132,12 +131,45 @@ export default function Blog() {
   };
 
   // ------------------------
-  // ELIMINAR EVENTO
+  // ELIMINAR
   // ------------------------
   const confirmarEliminar = () => {
-    setEventos(eventos.filter((e) => e.id !== Number(eventToDelete)));
+    setEventos(eventos.filter((ev) => ev.id !== Number(eventToDelete)));
     setOpenDelete(false);
     setEventToDelete("");
+  };
+
+  // ------------------------
+  // ACTUALIZAR (NUEVO)
+  // ------------------------
+  const cargarEventoActualizar = (id) => {
+    const ev = eventos.find((e) => e.id === Number(id));
+    if (ev) {
+      setForm({ ...ev });
+    }
+  };
+
+  const guardarActualizacion = () => {
+    setEventos(
+      eventos.map((ev) =>
+        ev.id === Number(eventToUpdate) ? { ...form, id: ev.id } : ev
+      )
+    );
+
+    setOpenUpdate(false);
+    setEventToUpdate("");
+
+    setForm({
+      titulo: "",
+      descripcion: "",
+      fecha: "",
+      imagen_url: "",
+      user_id: "",
+      categoria: "",
+      lugar: "",
+      usuario: "",
+      fecha_creacion: ""
+    });
   };
 
   // ------------------------
@@ -147,36 +179,20 @@ export default function Blog() {
     const q = query.trim().toLowerCase();
     if (!q) return eventos;
 
-    return eventos.filter((e) => {
-      return (
-        e.titulo.toLowerCase().includes(q) ||
-        e.descripcion.toLowerCase().includes(q) ||
-        e.categoria.toLowerCase().includes(q) ||
-        e.lugar.toLowerCase().includes(q)
-      );
-    });
+    return eventos.filter((ev) =>
+      `${ev.titulo} ${ev.descripcion} ${ev.categoria} ${ev.lugar}`
+        .toLowerCase()
+        .includes(q)
+    );
   }, [query, eventos]);
 
   return (
-    <Box
-      sx={{
-        pt: "95px",
-        pb: 6,
-        px: { xs: 2, sm: 4, md: 6 },
-        maxWidth: "1200px",
-        margin: "0 auto"
-      }}
-    >
+    <Box sx={{ pt: "95px", pb: 6, px: { xs: 2, sm: 4, md: 6 } }}>
       <Typography
         variant="h4"
-        sx={{
-          fontWeight: "700",
-          color: "#3AB795",
-          textAlign: "center",
-          mb: 3
-        }}
+        sx={{ fontWeight: "700", color: "#3AB795", textAlign: "center", mb: 3 }}
       >
-        Eventos del Perú
+        Blog de Eventos
       </Typography>
 
       {/* BUSCADOR */}
@@ -184,7 +200,7 @@ export default function Blog() {
         <TextField
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar por título, descripción, categoría o lugar..."
+          placeholder="Buscar eventos..."
           variant="outlined"
           size="small"
           sx={{
@@ -204,25 +220,11 @@ export default function Blog() {
       </Box>
 
       {/* BOTONES */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-          mb: 4
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 4 }}>
         <Button
           onClick={() => setOpenAdd(true)}
           variant="contained"
-          sx={{
-            background: "#3AB795",
-            borderRadius: "12px",
-            textTransform: "none",
-            fontWeight: 600,
-            boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
-            ":hover": { background: "#34a786" }
-          }}
+          sx={{ background: "#3AB795", borderRadius: "12px", fontWeight: 600 }}
         >
           Agregar
         </Button>
@@ -234,15 +236,23 @@ export default function Blog() {
             borderColor: "#d9534f",
             color: "#d9534f",
             borderRadius: "12px",
-            textTransform: "none",
-            fontWeight: 600,
-            ":hover": {
-              borderColor: "#b43c39",
-              color: "#b43c39"
-            }
+            fontWeight: 600
           }}
         >
           Eliminar
+        </Button>
+
+        <Button
+          onClick={() => setOpenUpdate(true)}
+          variant="outlined"
+          sx={{
+            borderColor: "#3A6FB7",
+            color: "#3A6FB7",
+            borderRadius: "12px",
+            fontWeight: 600
+          }}
+        >
+          Actualizar
         </Button>
       </Box>
 
@@ -256,48 +266,30 @@ export default function Blog() {
                 cursor: "pointer",
                 borderRadius: "14px",
                 boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
-                transition: "transform .18s ease, box-shadow .18s ease",
-                "&:hover": {
-                  transform: "translateY(-6px)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
-                },
-
+                transition: "transform .18s",
+                "&:hover": { transform: "translateY(-6px)" },
                 height: "300px",
                 display: "flex",
-                flexDirection: "column",
-                overflow: "hidden"
+                flexDirection: "column"
               }}
             >
               <CardMedia
                 component="img"
                 image={ev.imagen_url}
-                alt={ev.titulo}
-                sx={{
-                  height: "160px",
-                  objectFit: "cover"
-                }}
+                sx={{ height: "160px", objectFit: "cover" }}
               />
-
               <CardContent
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center"
-                }}
+                sx={{ flex: 1, display: "flex", alignItems: "center" }}
               >
                 <Typography
                   variant="h6"
                   sx={{
-                    fontWeight: 600,
-                    color: "#212429",
                     textAlign: "center",
-                    lineHeight: "1.25",
+                    fontWeight: 600,
                     overflow: "hidden",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    wordBreak: "break-word"
+                    WebkitBoxOrient: "vertical"
                   }}
                 >
                   {ev.titulo}
@@ -306,16 +298,6 @@ export default function Blog() {
             </Card>
           </Grid>
         ))}
-
-        {filtered.length === 0 && (
-          <Grid item xs={12}>
-            <Box sx={{ textAlign: "center", mt: 2 }}>
-              <Typography sx={{ color: "#666" }}>
-                No se encontraron eventos para tu búsqueda.
-              </Typography>
-            </Box>
-          </Grid>
-        )}
       </Grid>
 
       {/* MODAL DETALLE */}
@@ -327,15 +309,14 @@ export default function Blog() {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: { xs: "92%", sm: "500px" },
-            bgcolor: "background.paper",
-            borderRadius: "16px",
-            boxShadow: 24,
-            p: 3
+            bgcolor: "white",
+            p: 3,
+            borderRadius: "16px"
           }}
         >
           <IconButton
             onClick={handleClose}
-            sx={{ position: "absolute", right: 8, top: 8, color: "#666" }}
+            sx={{ position: "absolute", right: 8, top: 8 }}
           >
             <CloseIcon />
           </IconButton>
@@ -345,41 +326,27 @@ export default function Blog() {
               <CardMedia
                 component="img"
                 image={selectedEvent.imagen_url}
-                alt={selectedEvent.titulo}
-                sx={{
-                  borderRadius: "12px",
-                  height: 220,
-                  objectFit: "cover",
-                  mb: 2
-                }}
+                sx={{ borderRadius: "12px", height: 220, mb: 2 }}
               />
 
-              <Typography variant="h5" sx={{ fontWeight: 700, color: "#3AB795", mb: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: "#3AB795" }}>
                 {selectedEvent.titulo}
               </Typography>
 
-              <Typography sx={{ mb: 1 }}>
+              <Typography sx={{ mt: 1 }}>
                 <strong>Descripción:</strong> {selectedEvent.descripcion}
               </Typography>
 
-              <Typography sx={{ mb: 1 }}>
-                <strong>Categoría:</strong> {selectedEvent.categoria}
-              </Typography>
-
-              <Typography sx={{ mb: 1 }}>
-                <strong>Lugar:</strong> {selectedEvent.lugar}
-              </Typography>
-
-              <Typography sx={{ mb: 1 }}>
+              <Typography sx={{ mt: 1 }}>
                 <strong>Fecha:</strong> {selectedEvent.fecha}
               </Typography>
 
-              <Typography sx={{ mb: 1 }}>
-                <strong>Publicado por:</strong> {selectedEvent.usuario}
+              <Typography sx={{ mt: 1 }}>
+                <strong>Lugar:</strong> {selectedEvent.lugar}
               </Typography>
 
-              <Typography sx={{ mb: 1 }}>
-                <strong>Fecha de creación:</strong> {selectedEvent.fecha_creacion}
+              <Typography sx={{ mt: 1 }}>
+                <strong>Categoría:</strong> {selectedEvent.categoria}
               </Typography>
             </>
           )}
@@ -397,88 +364,33 @@ export default function Blog() {
             width: { xs: "92%", sm: "480px" },
             bgcolor: "white",
             p: 3,
-            borderRadius: "16px",
-            boxShadow: 24
+            borderRadius: "16px"
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
             Agregar Evento
           </Typography>
 
-          <TextField
-            label="Título"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.titulo}
-            onChange={(e) => setForm({ ...form, titulo: e.target.value })}
-          />
-
-          <TextField
-            label="Descripción"
-            fullWidth
-            multiline
-            sx={{ mb: 2 }}
-            value={form.descripcion}
-            onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-          />
-
-          <TextField
-            label="Fecha"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.fecha}
-            onChange={(e) => setForm({ ...form, fecha: e.target.value })}
-          />
-
-          <TextField
-            label="URL de Imagen"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.imagen_url}
-            onChange={(e) => setForm({ ...form, imagen_url: e.target.value })}
-          />
-
-          <TextField
-            label="Categoría"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.categoria}
-            onChange={(e) => setForm({ ...form, categoria: e.target.value })}
-          />
-
-          <TextField
-            label="Lugar"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.lugar}
-            onChange={(e) => setForm({ ...form, lugar: e.target.value })}
-          />
-
-          <TextField
-            label="Usuario"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.usuario}
-            onChange={(e) => setForm({ ...form, usuario: e.target.value })}
-          />
-
-          <TextField
-            label="User ID"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={form.user_id}
-            onChange={(e) => setForm({ ...form, user_id: e.target.value })}
-          />
-
-          <TextField
-            label="Fecha de Creación"
-            fullWidth
-            sx={{ mb: 3 }}
-            value={form.fecha_creacion}
-            onChange={(e) =>
-              setForm({ ...form, fecha_creacion: e.target.value })
-            }
-          />
+          {[
+            ["titulo", "Título"],
+            ["descripcion", "Descripción"],
+            ["fecha", "Fecha"],
+            ["imagen_url", "URL Imagen"],
+            ["user_id", "User ID"],
+            ["categoria", "Categoría"],
+            ["lugar", "Lugar"],
+            ["usuario", "Usuario"],
+            ["fecha_creacion", "Fecha Creación"]
+          ].map(([key, label]) => (
+            <TextField
+              key={key}
+              label={label}
+              fullWidth
+              sx={{ mb: 2 }}
+              value={form[key]}
+              onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+            />
+          ))}
 
           <Button
             fullWidth
@@ -502,8 +414,7 @@ export default function Blog() {
             width: { xs: "92%", sm: "420px" },
             bgcolor: "white",
             p: 3,
-            borderRadius: "16px",
-            boxShadow: 24
+            borderRadius: "16px"
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
@@ -514,13 +425,13 @@ export default function Blog() {
             select
             label="Seleccionar evento"
             fullWidth
-            value={eventToDelete}
             sx={{ mb: 3 }}
+            value={eventToDelete}
             onChange={(e) => setEventToDelete(e.target.value)}
           >
-            {eventos.map((e) => (
-              <MenuItem key={e.id} value={e.id}>
-                {e.titulo}
+            {eventos.map((ev) => (
+              <MenuItem key={ev.id} value={ev.id}>
+                {ev.titulo}
               </MenuItem>
             ))}
           </TextField>
@@ -533,6 +444,82 @@ export default function Blog() {
           >
             Eliminar
           </Button>
+        </Box>
+      </Modal>
+
+      {/* MODAL ACTUALIZAR — COMPLETO */}
+      <Modal open={openUpdate} onClose={() => setOpenUpdate(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "92%", sm: "480px" },
+            bgcolor: "white",
+            p: 3,
+            borderRadius: "16px"
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
+            Actualizar Evento
+          </Typography>
+
+          {/* Selector de evento */}
+          <TextField
+            select
+            label="Seleccionar evento"
+            fullWidth
+            sx={{ mb: 3 }}
+            value={eventToUpdate}
+            onChange={(e) => {
+              setEventToUpdate(e.target.value);
+              cargarEventoActualizar(e.target.value);
+            }}
+          >
+            {eventos.map((ev) => (
+              <MenuItem key={ev.id} value={ev.id}>
+                {ev.titulo}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* Formulario si hay evento elegido */}
+          {eventToUpdate && (
+            <>
+              {[
+                ["titulo", "Título"],
+                ["descripcion", "Descripción"],
+                ["fecha", "Fecha"],
+                ["imagen_url", "URL Imagen"],
+                ["user_id", "User ID"],
+                ["categoria", "Categoría"],
+                ["lugar", "Lugar"],
+                ["usuario", "Usuario"],
+                ["fecha_creacion", "Fecha Creación"]
+              ].map(([key, label]) => (
+                <TextField
+                  key={key}
+                  label={label}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  value={form[key]}
+                  onChange={(e) =>
+                    setForm({ ...form, [key]: e.target.value })
+                  }
+                />
+              ))}
+
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ background: "#3A6FB7" }}
+                onClick={guardarActualizacion}
+              >
+                Guardar Cambios
+              </Button>
+            </>
+          )}
         </Box>
       </Modal>
     </Box>

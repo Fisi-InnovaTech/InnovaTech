@@ -65,10 +65,11 @@ export default function Animals() {
   const [selectedAnimal, setSelectedAnimal] = useState(null);
 
   // ------------------------
-  // MODALES NUEVOS
+  // MODALES
   // ------------------------
   const [openAdd, setOpenAdd] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -79,12 +80,13 @@ export default function Animals() {
   });
 
   const [animalToDelete, setAnimalToDelete] = useState("");
+  const [animalToUpdate, setAnimalToUpdate] = useState("");
 
   const handleOpen = (animal) => setSelectedAnimal(animal);
   const handleClose = () => setSelectedAnimal(null);
 
   // ------------------------
-  // GUARDAR ANIMAL (MODAL)
+  // AGREGAR
   // ------------------------
   const guardarAnimal = () => {
     const nuevo = {
@@ -105,12 +107,41 @@ export default function Animals() {
   };
 
   // ------------------------
-  // ELIMINAR ANIMAL (MODAL)
+  // ELIMINAR
   // ------------------------
   const confirmarEliminar = () => {
     setAnimals(animals.filter((a) => a.id !== Number(animalToDelete)));
     setOpenDelete(false);
     setAnimalToDelete("");
+  };
+
+  // ------------------------
+  // ACTUALIZAR
+  // ------------------------
+  const cargarAnimalActualizar = (id) => {
+    const animal = animals.find((a) => a.id === Number(id));
+    if (animal) {
+      setForm({ ...animal });
+    }
+  };
+
+  const guardarActualizacion = () => {
+    setAnimals(
+      animals.map((a) =>
+        a.id === Number(animalToUpdate) ? { ...form, id: a.id } : a
+      )
+    );
+
+    setOpenUpdate(false);
+    setAnimalToUpdate("");
+
+    setForm({
+      name: "",
+      image: "",
+      description: "",
+      habitat: "",
+      danger: ""
+    });
   };
 
   const filtered = useMemo(() => {
@@ -187,9 +218,7 @@ export default function Animals() {
             background: "#3AB795",
             borderRadius: "12px",
             textTransform: "none",
-            fontWeight: 600,
-            boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
-            ":hover": { background: "#34a786" }
+            fontWeight: 600
           }}
         >
           Agregar
@@ -203,18 +232,28 @@ export default function Animals() {
             color: "#d9534f",
             borderRadius: "12px",
             textTransform: "none",
-            fontWeight: 600,
-            ":hover": {
-              borderColor: "#b43c39",
-              color: "#b43c39"
-            }
+            fontWeight: 600
           }}
         >
           Eliminar
         </Button>
+
+        <Button
+          onClick={() => setOpenUpdate(true)}
+          variant="outlined"
+          sx={{
+            borderColor: "#3A6FB7",
+            color: "#3A6FB7",
+            borderRadius: "12px",
+            textTransform: "none",
+            fontWeight: 600
+          }}
+        >
+          Actualizar
+        </Button>
       </Box>
 
-      {/* GRID */}
+      {/* GRID DE ANIMALES */}
       <Grid container spacing={4} justifyContent="center">
         {filtered.map((animal) => (
           <Grid item xs={12} sm={6} md={4} key={animal.id}>
@@ -224,48 +263,30 @@ export default function Animals() {
                 cursor: "pointer",
                 borderRadius: "14px",
                 boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
-                transition: "transform .18s ease, box-shadow .18s ease",
+                transition: "transform .18s ease",
                 "&:hover": {
-                  transform: "translateY(-6px)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
+                  transform: "translateY(-6px)"
                 },
-
                 height: "300px",
                 display: "flex",
-                flexDirection: "column",
-                overflow: "hidden"
+                flexDirection: "column"
               }}
             >
               <CardMedia
                 component="img"
                 image={animal.image}
-                alt={animal.name}
-                sx={{
-                  height: "160px",
-                  objectFit: "cover"
-                }}
+                sx={{ height: "160px", objectFit: "cover" }}
               />
-
-              <CardContent
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center"
-                }}
-              >
+              <CardContent sx={{ flex: 1, display: "flex", alignItems: "center" }}>
                 <Typography
                   variant="h6"
                   sx={{
-                    fontWeight: 600,
-                    color: "#212429",
                     textAlign: "center",
-                    lineHeight: "1.25",
+                    fontWeight: 600,
                     overflow: "hidden",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    wordBreak: "break-word"
+                    WebkitBoxOrient: "vertical"
                   }}
                 >
                   {animal.name}
@@ -274,19 +295,9 @@ export default function Animals() {
             </Card>
           </Grid>
         ))}
-
-        {filtered.length === 0 && (
-          <Grid item xs={12}>
-            <Box sx={{ textAlign: "center", mt: 2 }}>
-              <Typography sx={{ color: "#666" }}>
-                No se encontraron animales para tu búsqueda.
-              </Typography>
-            </Box>
-          </Grid>
-        )}
       </Grid>
 
-      {/* MODAL DETALLE */}
+      {/* -------- MODAL DETALLE -------- */}
       <Modal open={Boolean(selectedAnimal)} onClose={handleClose}>
         <Box
           sx={{
@@ -295,15 +306,14 @@ export default function Animals() {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: { xs: "92%", sm: "500px" },
-            bgcolor: "background.paper",
-            borderRadius: "16px",
-            boxShadow: 24,
-            p: 3
+            bgcolor: "white",
+            p: 3,
+            borderRadius: "16px"
           }}
         >
           <IconButton
             onClick={handleClose}
-            sx={{ position: "absolute", right: 8, top: 8, color: "#666" }}
+            sx={{ position: "absolute", right: 8, top: 8 }}
           >
             <CloseIcon />
           </IconButton>
@@ -313,30 +323,23 @@ export default function Animals() {
               <CardMedia
                 component="img"
                 image={selectedAnimal.image}
-                alt={selectedAnimal.name}
-                sx={{
-                  borderRadius: "12px",
-                  height: 220,
-                  objectFit: "cover",
-                  mb: 2
-                }}
+                sx={{ borderRadius: "12px", height: 220, mb: 2 }}
               />
-
-              <Typography variant="h5" sx={{ fontWeight: 700, color: "#3AB795", mb: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: "#3AB795" }}>
                 {selectedAnimal.name}
               </Typography>
 
-              <Typography sx={{ mb: 1, color: "#333" }}>
+              <Typography sx={{ mt: 1 }}>
                 <strong>Descripción:</strong> {selectedAnimal.description}
               </Typography>
 
-              <Typography sx={{ mb: 1, color: "#333" }}>
+              <Typography sx={{ mt: 1 }}>
                 <strong>Hábitat:</strong> {selectedAnimal.habitat}
               </Typography>
 
-              <Typography sx={{ color: "#333" }}>
-                <strong>Peligro de extinción:</strong>{" "}
-                <span style={{ color: "#d9534f", fontWeight: 700 }}>
+              <Typography sx={{ mt: 1 }}>
+                <strong>Peligro:</strong>{" "}
+                <span style={{ color: "#d9534f", fontWeight: "700" }}>
                   {selectedAnimal.danger}
                 </span>
               </Typography>
@@ -345,7 +348,7 @@ export default function Animals() {
         </Box>
       </Modal>
 
-      {/* MODAL AGREGAR */}
+      {/* -------- MODAL AGREGAR -------- */}
       <Modal open={openAdd} onClose={() => setOpenAdd(false)}>
         <Box
           sx={{
@@ -356,8 +359,7 @@ export default function Animals() {
             width: { xs: "92%", sm: "480px" },
             bgcolor: "white",
             p: 3,
-            borderRadius: "16px",
-            boxShadow: 24
+            borderRadius: "16px"
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
@@ -377,8 +379,6 @@ export default function Animals() {
             sx={{ mb: 2 }}
             value={form.image}
             onChange={(e) => setForm({ ...form, image: e.target.value })}
-            content="ttps://upload.wikimedia.org/wikipedia/commons/3/3f/Fronalpstock_big.jpg"
-
           />
           <TextField
             label="Descripción"
@@ -398,7 +398,7 @@ export default function Animals() {
           <TextField
             label="Peligro"
             fullWidth
-            sx={{ mb: 3 }}
+            sx={{ mb: 2 }}
             value={form.danger}
             onChange={(e) => setForm({ ...form, danger: e.target.value })}
           />
@@ -414,7 +414,7 @@ export default function Animals() {
         </Box>
       </Modal>
 
-      {/* MODAL ELIMINAR */}
+      {/* -------- MODAL ELIMINAR -------- */}
       <Modal open={openDelete} onClose={() => setOpenDelete(false)}>
         <Box
           sx={{
@@ -425,8 +425,7 @@ export default function Animals() {
             width: { xs: "92%", sm: "420px" },
             bgcolor: "white",
             p: 3,
-            borderRadius: "16px",
-            boxShadow: 24
+            borderRadius: "16px"
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
@@ -437,8 +436,8 @@ export default function Animals() {
             select
             label="Seleccionar animal"
             fullWidth
-            value={animalToDelete}
             sx={{ mb: 3 }}
+            value={animalToDelete}
             onChange={(e) => setAnimalToDelete(e.target.value)}
           >
             {animals.map((a) => (
@@ -456,6 +455,106 @@ export default function Animals() {
           >
             Eliminar
           </Button>
+        </Box>
+      </Modal>
+
+      {/* -------- MODAL ACTUALIZAR -------- */}
+      <Modal open={openUpdate} onClose={() => setOpenUpdate(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "92%", sm: "480px" },
+            bgcolor: "white",
+            p: 3,
+            borderRadius: "16px"
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
+            Actualizar Animal
+          </Typography>
+
+          <TextField
+            select
+            label="Seleccionar animal"
+            fullWidth
+            sx={{ mb: 3 }}
+            value={animalToUpdate}
+            onChange={(e) => {
+              setAnimalToUpdate(e.target.value);
+              cargarAnimalActualizar(e.target.value);
+            }}
+          >
+            {animals.map((a) => (
+              <MenuItem key={a.id} value={a.id}>
+                {a.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {animalToUpdate && (
+            <>
+              <TextField
+                label="Nombre"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+
+              <TextField
+                label="URL de Imagen"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={form.image}
+                onChange={(e) =>
+                  setForm({ ...form, image: e.target.value })
+                }
+              />
+
+              <TextField
+                label="Descripción"
+                fullWidth
+                multiline
+                sx={{ mb: 2 }}
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+              />
+
+              <TextField
+                label="Hábitat"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={form.habitat}
+                onChange={(e) =>
+                  setForm({ ...form, habitat: e.target.value })
+                }
+              />
+
+              <TextField
+                label="Peligro"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={form.danger}
+                onChange={(e) =>
+                  setForm({ ...form, danger: e.target.value })
+                }
+              />
+
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ background: "#3A6FB7" }}
+                onClick={guardarActualizacion}
+              >
+                Guardar Cambios
+              </Button>
+            </>
+          )}
         </Box>
       </Modal>
     </Box>

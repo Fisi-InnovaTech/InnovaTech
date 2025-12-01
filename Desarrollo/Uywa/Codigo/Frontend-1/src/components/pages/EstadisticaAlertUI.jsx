@@ -66,7 +66,7 @@ const Reportes = () => {
     const fetchAnimales = async () => {
       try {
         setLoadingAnimals(true);
-        const res = await fetch("http://localhost:3000/animal/list");
+        const res = await fetch("https://backend-uywa.onrender.com/animal/list");
         const json = await res.json();
         
         if (json.data && Array.isArray(json.data)) {
@@ -93,14 +93,14 @@ const Reportes = () => {
   // -------------------------------
   const fetchReports = async (animalId = null, departamentoId = null) => {
     try {
-      let url = "http://localhost:3000/reportes/";
+      let url = "https://backend-uywa.onrender.com/reportes/";
       
       // Construir URL con filtros si existen
       if (animalId || departamentoId) {
         const params = new URLSearchParams();
         if (animalId) params.append('animal_id', animalId);
         if (departamentoId) params.append('departamento_id', departamentoId);
-        url = `http://localhost:3000/reportes/search?${params.toString()}`;
+        url = `https://backend-uywa.onrender.com/reportes/search?${params.toString()}`;
       }
 
       const res = await fetch(url);

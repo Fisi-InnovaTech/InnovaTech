@@ -30,7 +30,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styles } from '../components/Promover/StylesPromover';
 
-const backendURL = "http://127.0.0.1:3000/usuarios";
+const backendURL = "https://backend-uywa.onrender.com";
 
 const Reportes = () => {
   const [users, setUsers] = useState([]);

@@ -31,7 +31,7 @@ const messages = {
   termsRequired: 'Debes aceptar los términos y condiciones'
 };
 
-const API_URL = "http://127.0.0.1:3000";
+const API_URL = "https://backend-uywa.onrender.com";
 
 const isNameInvalid = (name) => name.length > 0 && name.length < 2;
 

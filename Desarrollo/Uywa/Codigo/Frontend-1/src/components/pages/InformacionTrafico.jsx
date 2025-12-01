@@ -22,7 +22,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { useAuthStore } from "../auth/store/authStore";
 
-const backendURL = "http://localhost:3000/eventos";
+const backendURL = "https://backend-uywa.onrender.com/eventos";
 
 const categorias = [
   "conservacion",

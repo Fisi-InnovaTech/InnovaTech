@@ -24,7 +24,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { alertaContainer, mapBotonBuscar, mapSearchAlert, mapMark } from "../components/Mapa/MapConstStyle";
 import { departamentos } from "../utils/Departamentos";
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://backend-uywa.onrender.com';
 
 function VerAlertaGoogle() {
   // State management

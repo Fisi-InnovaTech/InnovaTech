@@ -39,7 +39,7 @@ import PetsIcon from '@mui/icons-material/Pets';
 import PersonIcon from '@mui/icons-material/Person';
 
 // URL base de la API
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://backend-uywa.onrender.com";
 const REPORTS_URL = `${API_BASE_URL}/reportes`;
 const USER_REPORTS_URL = `${API_BASE_URL}/reportes/usuario`;
 

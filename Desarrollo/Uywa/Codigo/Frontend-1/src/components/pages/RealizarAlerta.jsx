@@ -29,11 +29,11 @@ const MAX_FILE_SIZE_MB = 5;
 const MAX_DESCRIPTION_LENGTH = 1000;
 const MIN_DESCRIPTION_LENGTH = 30;
 const VALID_FILE_TYPES = ['image/jpeg', 'image/png'];
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://backend-uywa.onrender.com";
 
 // Usuario anónimo
 const ANONYMOUS_USER = {
-  id: 3,
+  id: 19,
   email: "anonimo@anonimo.com",
   nombres: "anonimo",
   apellidos: "anonimo",

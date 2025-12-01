@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         // Verificar el token con el servidor
-        const response = await fetch("http://localhost:3000/auth/verify", {
+        const response = await fetch("https://backend-uywa.onrender.com/auth/verify", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

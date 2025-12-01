@@ -30,7 +30,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
 import { styles } from '../components/Reportes/ReportesStyle';
 
-const backendURL = "http://localhost:3000/reportes";
+const backendURL = "https://backend-uywa.onrender.com";
 
 const Reportes = () => {
 

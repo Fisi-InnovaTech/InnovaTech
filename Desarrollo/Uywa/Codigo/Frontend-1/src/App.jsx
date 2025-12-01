@@ -1,7 +1,6 @@
 import './App.css';
 import React from "react";
 import ResponsiveAppBar from './components/Navigation/NavBar';
-import RealizarAlerta from "./pages/RealizarAlerta";
 import Blog from './pages/InformacionTrafico';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
@@ -18,6 +17,7 @@ import Animals from './pages/Animals';
 import ReportesUsuario from './pages/ReportesUsuario';
 import { Home } from '@mui/icons-material';
 import VerAlertaGoogle from './components/pages/VerAlertaGoogle';
+import AlertForm from './components/pages/RealizarAlerta';
 
 function App() {
   return (
@@ -49,7 +49,7 @@ function App() {
             }>
               {/* Rutas públicas CON navbar */}
               <Route path="/" element={<Home />} />
-              <Route path="/realizar-alerta" element={<RealizarAlerta />} />
+              <Route path="/realizar-alerta" element={<AlertForm />} />
               <Route path="/informacion-trafico-animales" element={<Blog/>}/>
               <Route path="/ver-alerta" element={<VerAlertaGoogle/>}/>
               <Route path="/ver-animales" element={<Animals />} />

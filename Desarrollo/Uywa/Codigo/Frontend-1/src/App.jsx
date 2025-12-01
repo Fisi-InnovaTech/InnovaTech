@@ -2,7 +2,6 @@ import './App.css';
 import React from "react";
 import ResponsiveAppBar from './components/Navigation/NavBar';
 import RealizarAlerta from "./pages/RealizarAlerta";
-import VerAlerta from "./pages/VerAlertaGoogle";
 import Blog from './pages/InformacionTrafico';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
@@ -18,6 +17,7 @@ import { RouteGuard } from './auth/guards/authGuard';
 import Animals from './pages/Animals';
 import ReportesUsuario from './pages/ReportesUsuario';
 import { Home } from '@mui/icons-material';
+import VerAlertaGoogle from './components/pages/VerAlertaGoogle';
 
 function App() {
   return (
@@ -51,7 +51,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/realizar-alerta" element={<RealizarAlerta />} />
               <Route path="/informacion-trafico-animales" element={<Blog/>}/>
-              <Route path="/ver-alerta" element={<VerAlerta/>}/>
+              <Route path="/ver-alerta" element={<VerAlertaGoogle/>}/>
               <Route path="/ver-animales" element={<Animals />} />
 
               {/* Rutas protegidas - requieren autenticación */}

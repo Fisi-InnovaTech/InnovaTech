@@ -7,7 +7,6 @@ import Footer from './components/Footer/Footer';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from './auth/providers/authProvider';
 import { RouteGuard } from './auth/guards/authGuard';
-import Animals from './pages/Animals';
 import ReportesUsuario from './pages/ReportesUsuario';
 import { Home } from '@mui/icons-material';
 import VerAlertaGoogle from './components/pages/VerAlertaGoogle';
@@ -18,6 +17,7 @@ import ModeradorPrincipal from './components/pages/Moderador';
 import Profile from './components/pages/Profile';
 import Estadistica from './components/pages/EstadisticaAlertUI';
 import PromoverUsuario from './components/pages/PromoverUsuario';
+import Animals from './components/pages/Animals';
 
 function App() {
   return (

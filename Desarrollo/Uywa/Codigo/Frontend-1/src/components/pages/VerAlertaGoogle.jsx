@@ -21,8 +21,8 @@ import {
 import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { alertaContainer, mapBotonBuscar, mapSearchAlert, mapMark } from "../components/Mapa/MapConstStyle";
-import { departamentos } from "../utils/Departamentos";
+import { alertaContainer, mapBotonBuscar, mapSearchAlert, mapMark } from "../Mapa/MapConstStyle";
+import { departamentos } from '../../utils/Departamentos.js'
 
 const API_BASE_URL = 'https://backend-uywa.onrender.com';
 

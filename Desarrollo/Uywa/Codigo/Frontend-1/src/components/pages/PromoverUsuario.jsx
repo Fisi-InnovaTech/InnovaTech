@@ -28,7 +28,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { styles } from '../../components/pages/PromoverUsuario';
+import { styles } from '../Promover/StylesPromover';
 
 const backendURL = "https://backend-uywa.onrender.com";
 

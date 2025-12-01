@@ -1,8 +1,8 @@
-import '../App.css';
+import '../../App.css';
 import Box from '@mui/material/Box';
-import Carrusel from "../components/Carrusel/Carousel";
-import ReportHelp from '../components/cards/Informacion';
-import CardsInformation from '../components/cards/CardInfo';
+import Carrusel from '../../components/Carrusel/Carousel';
+import ReportHelp from '../cards/Informacion';
+import CardsInformation from '../cards/CardInfo';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';

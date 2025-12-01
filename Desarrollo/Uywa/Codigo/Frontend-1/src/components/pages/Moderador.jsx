@@ -4,7 +4,7 @@ import Person from "@mui/icons-material/Person";
 import QueryStats from '@mui/icons-material/QueryStats';
 import '../../App.css';
 import { moderadorContainerImage, moderadorTitle, moderadorCharterBox } from "../../components/CharterModerador/CharterConstStyle";
-import Charter from '../CharterModerador/CharterConstStyle';
+import Charter from '../CharterModerador/Charter';
 
 function ModeradorPrincipal() {
     return (

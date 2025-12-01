@@ -1,3 +1,4 @@
+// src/eventos/eventos.controller.ts
 import {
   Controller,
   Get,
@@ -6,37 +7,63 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
+  Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { EventosService } from './eventos.service';
 import { CreateEventoDto } from './dto/create-evento.dto';
 import { UpdateEventoDto } from './dto/update-evento.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadMiddleware } from 'src/upload.middleware';
 
 @Controller('eventos')
 export class EventosController {
   constructor(private readonly eventosService: EventosService) {}
 
+  @UseInterceptors(
+    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()),
+  )
   @Post()
-  create(@Body() createEventoDto: CreateEventoDto) {
-    return this.eventosService.create(createEventoDto);
+  @HttpCode(HttpStatus.CREATED)
+  create(
+    @Body() createEventoDto: CreateEventoDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.eventosService.create(createEventoDto, file);
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('usuarioId') usuarioId?: string) {
+    if (usuarioId) {
+      return this.eventosService.findByUsuario(Number(usuarioId));
+    }
     return this.eventosService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventosService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.eventosService.findOne(id);
   }
 
+  @UseInterceptors(
+    FileInterceptor('imagen_url', UploadMiddleware.getMulterOptions()),
+  )
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventoDto: UpdateEventoDto) {
-    return this.eventosService.update(+id, updateEventoDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateEventoDto: UpdateEventoDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.eventosService.update(id, updateEventoDto, file);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventosService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.eventosService.remove(id);
   }
 }

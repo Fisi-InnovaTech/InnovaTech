@@ -28,7 +28,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
-import { styles } from '../components/Reportes/ReportesStyle';
+import { styles } from '../../components/Reportes/ReportesStyle';
 
 const backendURL = "https://backend-uywa.onrender.com";
 

@@ -15,64 +15,16 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {useAuthStore} from '../auth/store/authStore';
 import EditIcon from '@mui/icons-material/Edit';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ReportIcon from '@mui/icons-material/Report';
 import BadgeIcon from '@mui/icons-material/Badge';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import primerReporte from '../assets/Logros/PrimerReporte.png';
-import segundoReporte from '../assets/Logros/SegundoLogro.png';
-import tercerReporte from '../assets/Logros/TercerLogro.png';
-import primerLogro from '../assets/Logros/PrimerLogro.png';
-import DiezContribuciones from '../assets/Logros/DiezContribuciones.png';
+import { useAuthStore } from '../../auth/store/authStore';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-const ACHIEVEMENTS = [
-  { 
-    id: 'achievement-1', 
-    level: 1, 
-    name: 'Bienvenido a Uywa', 
-    image: primerReporte, 
-    rank: 'Aprendiz de Naturaleza',
-    required: 1
-  },
-  { 
-    id: 'achievement-2', 
-    level: 2, 
-    name: 'Primeros Pasos', 
-    image: DiezContribuciones, 
-    rank: 'Vigilante de la Vida Silvestre',
-    required: 5
-  },
-  { 
-    id: 'achievement-3', 
-    level: 3, 
-    name: 'Amante de los animales', 
-    image: primerLogro, 
-    rank: 'Guardián del Medio Ambiente',
-    required: 10
-  },
-  { 
-    id: 'achievement-4', 
-    level: 4, 
-    name: 'Guardián de la naturaleza', 
-    image: segundoReporte, 
-    rank: 'Defensor del Ecosistema',
-    required: 25
-  },
-  { 
-    id: 'achievement-5', 
-    level: 5, 
-    name: 'Protector de la biósfera', 
-    image: tercerReporte, 
-    rank: 'Héroe de la Tierra',
-    required: 50
-  },
-];
 
 const Profile = () => {
   const theme = useTheme();
@@ -84,18 +36,6 @@ const Profile = () => {
   const [alertCount, setAlertCount] = useState(0);
   const [userStats, setUserStats] = useState(null);
 
-  // Calcular rango actual basado en el número de alertas
-  const getCurrentRank = (count) => {
-    const achievement = [...ACHIEVEMENTS]
-      .reverse()
-      .find(a => count >= a.required);
-    return achievement || ACHIEVEMENTS[0];
-  };
-
-  // Obtener logros desbloqueados
-  const getUnlockedAchievements = (count) => {
-    return ACHIEVEMENTS.filter(a => count >= a.required);
-  };
 
   // Fetch user alerts count
   useEffect(() => {
@@ -138,13 +78,6 @@ const Profile = () => {
   if (!user) {
     return null;
   }
-
-  const currentRank = getCurrentRank(alertCount);
-  const unlockedAchievements = getUnlockedAchievements(alertCount);
-  const nextAchievement = ACHIEVEMENTS.find(a => alertCount < a.required);
-  const progress = nextAchievement 
-    ? (alertCount / nextAchievement.required) * 100 
-    : 100;
 
   // Generar iniciales para el avatar
   const getInitials = (nombres, apellidos) => {
@@ -271,18 +204,6 @@ const Profile = () => {
                 }}
               />
 
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center',
-                gap: 1,
-                mt: 1
-              }}>
-                <EmojiEventsIcon sx={{ color: '#FFD700' }} />
-                <Typography variant="h6" color="text.secondary">
-                  {currentRank.rank}
-                </Typography>
-              </Box>
             </Box>
 
             <Divider sx={{ my: 3 }} />

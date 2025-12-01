@@ -23,9 +23,9 @@ import { BarChart, LineChart } from '@mui/x-charts';
 import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { styles } from '../components/Estadistica/StatisticsStyle';
+import { styles } from '../../components/Estadistica/StatisticsStyle';
 import dayjs from 'dayjs';
-import { departamentos } from '../utils/Departamentos';
+import { departamentos } from '../../utils/Departamentos';
 
 // Importar departamentos
 

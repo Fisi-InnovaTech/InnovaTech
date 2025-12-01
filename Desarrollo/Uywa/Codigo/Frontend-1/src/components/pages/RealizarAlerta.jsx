@@ -21,8 +21,8 @@ import {
   Autocomplete
 } from '@mui/material';
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
-import Mapa from '../components/Mapa/MapaVisualizar';
-import { useAuthStore } from '../auth/store/authStore';
+import Mapa from '../Mapa/MapaVisualizar';
+import { useAuthStore } from '../../auth/store/authStore';
 
 // CONSTANTES
 const MAX_FILE_SIZE_MB = 5;

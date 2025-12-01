@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import Mapa from "../components/Mapa/MapaMarks";
+import Mapa from "../../components/Mapa/MapaMarks";
 import { 
   Box, 
   Container, 

@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAuthStore } from "../auth/store/authStore";
+import { useAuthStore } from "../../auth/store/authStore";
 
 const backendURL = "https://backend-uywa.onrender.com/eventos";
 
@@ -49,7 +49,7 @@ const getAuthenticatedUserId = async () => {
     if (!token) throw new Error('Token no disponible');
     
     // Verificar token para obtener el ID
-    const response = await fetch(`http://localhost:3000/auth/verify`, {
+    const response = await fetch(`https://backend-uywa.onrender.com/auth/verify`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

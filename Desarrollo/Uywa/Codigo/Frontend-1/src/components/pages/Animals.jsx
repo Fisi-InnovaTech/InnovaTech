@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAuthStore } from "../auth/store/authStore";
+import { useAuthStore } from "../../auth/store/authStore";
 
 const API_BASE_URL = "https://backend-uywa.onrender.com";
 const backendURL = `${API_BASE_URL}/animal`;

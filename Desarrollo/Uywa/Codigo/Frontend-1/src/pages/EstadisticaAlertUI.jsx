@@ -240,7 +240,7 @@ const Reportes = () => {
             />
           )}
           renderOption={(props, option) => (
-            <MenuItem {...props} key={option.id}>
+            <MenuItem {...props} key={option.id}> 
               {option.label}
             </MenuItem>
           )}

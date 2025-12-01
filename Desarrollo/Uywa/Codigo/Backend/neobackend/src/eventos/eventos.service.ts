@@ -69,7 +69,7 @@ export class EventosService {
       } else if (createEventoDto.imagen_url) {
         imagen_url = createEventoDto.imagen_url;
       }
-
+      console.log('Imagen URL:', imagen_url);
       // 6. Crear evento
       const evento = await this.prisma.evento.create({
         data: {
@@ -99,6 +99,8 @@ export class EventosService {
         data: evento,
       };
     } catch (error) {
+      console.error('Error al crear evento:', error);
+      console.log(error);
       if (error instanceof BadRequestException) {
         throw error;
       }
@@ -269,9 +271,7 @@ export class EventosService {
       });
 
       if (!usuarioExists) {
-        throw new BadRequestException(
-          `Usuario con ID ${usuarioId} no existe`,
-        );
+        throw new BadRequestException(`Usuario con ID ${usuarioId} no existe`);
       }
 
       data.user_id = usuarioId;

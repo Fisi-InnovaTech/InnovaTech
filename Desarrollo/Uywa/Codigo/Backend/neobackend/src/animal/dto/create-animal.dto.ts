@@ -1,17 +1,10 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-  MinLength,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAnimalDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
   nombre: string;
 
   @ApiProperty()
@@ -29,13 +22,9 @@ export class CreateAnimalDto {
   @IsNotEmpty()
   estado: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  imagen_url: string;
-
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  video_url?: string;
+  imagen_url?: string; // ✅ Igual que en reportes: para URLs manuales (opcional)  
+  // Nota: video_url será ignorado como solicitaste
 }

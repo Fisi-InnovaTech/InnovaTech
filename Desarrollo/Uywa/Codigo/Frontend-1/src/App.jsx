@@ -4,7 +4,6 @@ import ResponsiveAppBar from './components/Navigation/NavBar';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
-import ModeradorPrincipal from './pages/Moderador';
 import Profile from './pages/Profile';
 import Report from './pages/EstadisticaAlertUI';
 import Promover from './pages/PromoverUsuario';
@@ -18,6 +17,7 @@ import VerAlertaGoogle from './components/pages/VerAlertaGoogle';
 import AlertForm from './components/pages/RealizarAlerta';
 import Blog from './components/pages/InformacionTrafico';
 import Reportes from './components/pages/ReportesMod';
+import ModeradorPrincipal from './components/pages/Moderador';
 
 function App() {
   return (

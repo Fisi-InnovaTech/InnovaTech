@@ -1,6 +1,6 @@
 import './App.css';
 import React from "react";
-import ResponsiveAppBar from './components/Navigation/NavBar';¿
+import ResponsiveAppBar from './components/Navigation/NavBar';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';

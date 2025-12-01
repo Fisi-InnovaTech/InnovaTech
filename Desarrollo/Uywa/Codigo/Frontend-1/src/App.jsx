@@ -16,6 +16,7 @@ import Promover from './pages/PromoverUsuario';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from './auth/providers/authProvider';
 import { RouteGuard } from './auth/guards/authGuard';
+import Animals from './pages/Animals';
 
 function App() {
   return (
@@ -48,9 +49,10 @@ function App() {
               {/* Rutas públicas CON navbar */}
               <Route path="/" element={<Home />} />
               <Route path="/realizar-alerta" element={<RealizarAlerta />} />
-              <Route path="/informacion-trafico-animales" element={<Blog/>}/>
-              <Route path="/ver-alerta" element={<VerAlerta/>}/>
-              
+              <Route path="/informacion-trafico-animales" element={<Blog />} />
+              <Route path="/ver-alerta" element={<VerAlerta />} />
+              <Route path="/ver-animales" element={<Animals />} />
+
               {/* Rutas protegidas - requieren autenticación */}
               <Route path="/perfil" element={
                 <RouteGuard requireAuth={true} requiredRoles={["usuario", "moderador", "admin"]}>

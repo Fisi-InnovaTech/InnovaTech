@@ -34,7 +34,7 @@
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
+    "class-validator": "^0.14.3",
     "dotenv": "^16.4.5",
     "multer": "^2.0.2",
     "passport-jwt": "^4.0.1",

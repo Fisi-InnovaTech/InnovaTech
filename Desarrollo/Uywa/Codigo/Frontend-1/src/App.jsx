@@ -4,7 +4,6 @@ import ResponsiveAppBar from './components/Navigation/NavBar';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
-import Profile from './pages/Profile';
 import Report from './pages/EstadisticaAlertUI';
 import Promover from './pages/PromoverUsuario';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
@@ -18,6 +17,7 @@ import AlertForm from './components/pages/RealizarAlerta';
 import Blog from './components/pages/InformacionTrafico';
 import Reportes from './components/pages/ReportesMod';
 import ModeradorPrincipal from './components/pages/Moderador';
+import Profile from './components/pages/Profile';
 
 function App() {
   return (

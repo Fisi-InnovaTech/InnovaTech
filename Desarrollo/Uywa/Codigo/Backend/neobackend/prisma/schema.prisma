@@ -15,49 +15,82 @@ datasource db {
 }
 
 model Usuario {
-  id              Int       @id @default(autoincrement())
-  nombres         String
-  apellidos       String
-  email           String    @unique
-  password        String
-  dni             Int       @unique
-  fechaNacimiento DateTime
-  Alertas         Alertas[]
-  rolId           Int       @default(1)
-  rol             Roles     @relation(fields: [rolId], references: [id])
-
-  Reporte Reporte[]
+  id               Int       @id @default(autoincrement())
+  nombres          String
+  apellidos        String
+  email            String    @unique
+  password         String
+  dni              Int       @unique
+  fechaNacimiento  DateTime
+  cantidadReportes Int       @default(0)
+  rolId            Int       @default(1)
+  rol              Rol       @relation(fields: [rolId], references: [id])
+  Reporte          Reporte[]
+  Evento           Evento[]
 }
 
-model Roles {
+model Rol {
   id          Int       @id @default(autoincrement())
   nombre      String    @unique
   descripcion String?
   Usuario     Usuario[]
 }
 
-model Alertas {
-  id             Int      @id @default(autoincrement())
-  mensaje        String
-  nivel          String
-  fecha_creacion DateTime @default(now())
-  usuarioId      Int
-  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+model Departamento {
+  id        String      @id @default(cuid())
+  nombre    String      @unique
+  Evidencia Evidencia[]
+}
+
+model Animal {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  descripcion String
+  habitad     String
+  estado      String
+  imagen_url  String
+  video_url   String?
+  Reporte     Reporte[]
+}
+
+model Evidencia {
+  id              Int          @id @default(autoincrement())
+  descipcion      String
+  imagen_url      String
+  latitud         Float
+  longitud        Float
+  departamento_id String
+  departamento    Departamento @relation(fields: [departamento_id], references: [id])
+  Reporte         Reporte[]
 }
 
 model Reporte {
-  id               Int      @id @default(autoincrement())
-  usuarioId        Int      @map("user_id")
-  evidencia_imagen String?
-  animal_nombre    String
-  descripcion      String
-  latitud          Float
-  longitud         Float
-  nombre_reportante String? @map("nombre_reportante")
-  fecha_creacion   DateTime @default(now())
-  estado           String   @default("pendiente")
+  id             Int       @id @default(autoincrement())
+  fecha_creacion DateTime  @default(now())
+  estado         String    @default("pendiente")
+  animal_id      Int
+  evidencia_id   Int
+  usuario_id     Int       @map("user_id")
+  usuario        Usuario   @relation(fields: [usuario_id], references: [id])
+  animal         Animal    @relation(fields: [animal_id], references: [id])
+  evidencia      Evidencia @relation(fields: [evidencia_id], references: [id])
+}
 
-  usuario          Usuario  @relation(fields: [usuarioId], references: [id])
+model Evento {
+  id             Int      @id @default(autoincrement())
+  titulo         String
+  descripcion    String
+  fecha          DateTime
+  imagen_url     String?
+  user_id        Int
+  categoria      String?
+  lugar          String?
+  usuario        Usuario  @relation(fields: [user_id], references: [id])
+  fecha_creacion DateTime @default(now())
+}
 
-  @@map("reporte") // 👈 mapea al nombre real de la tabla
+model Evento_Categhporia {
+  id          Int    @id @default(autoincrement())
+  nombre      String @unique
+  descripcion String?
 }

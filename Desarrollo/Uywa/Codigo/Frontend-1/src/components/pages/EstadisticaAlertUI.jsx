@@ -40,7 +40,7 @@ export const CHARTERS = [
   { id: 'comparison', label: 'Comparación de Reportes' }
 ];
 
-const Reportes = () => {
+const Estadistica = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [chartX, setChartX] = useState(CHARTERS[0].id);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
@@ -461,4 +461,4 @@ const Reportes = () => {
   );
 };
 
-export default Reportes;
+export default Estadistica;

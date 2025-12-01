@@ -4,7 +4,6 @@ import ResponsiveAppBar from './components/Navigation/NavBar';
 import InicioSesion from './components/Login/InicioSesion';
 import Registrar from './components/Login/Registrar'
 import Footer from './components/Footer/Footer';
-import Promover from './pages/PromoverUsuario';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from './auth/providers/authProvider';
 import { RouteGuard } from './auth/guards/authGuard';
@@ -18,6 +17,7 @@ import Reportes from './components/pages/ReportesMod';
 import ModeradorPrincipal from './components/pages/Moderador';
 import Profile from './components/pages/Profile';
 import Estadistica from './components/pages/EstadisticaAlertUI';
+import PromoverUsuario from './components/pages/PromoverUsuario';
 
 function App() {
   return (
@@ -90,7 +90,7 @@ function App() {
               
               <Route path="/promover-usuario" element={
                 <RouteGuard requireAuth={true} requiredRoles={['moderador']}>
-                  <Promover/>
+                  <PromoverUsuario/>
                 </RouteGuard>
               }/>
             </Route>

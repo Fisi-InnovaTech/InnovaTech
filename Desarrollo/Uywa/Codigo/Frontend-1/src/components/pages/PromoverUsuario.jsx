@@ -32,7 +32,7 @@ import { styles } from '../components/Promover/StylesPromover';
 
 const backendURL = "https://backend-uywa.onrender.com";
 
-const Reportes = () => {
+const PromoverUsuario = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -378,4 +378,4 @@ const Reportes = () => {
   );
 };
 
-export default Reportes;
+export default PromoverUsuario;

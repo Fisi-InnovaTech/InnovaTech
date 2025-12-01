@@ -2,7 +2,7 @@ import {Box, Container, Typography, CardMedia, Card}  from '@mui/material';
 import Warning from '@mui/icons-material/Warning';
 import Person from "@mui/icons-material/Person";
 import QueryStats from '@mui/icons-material/QueryStats';
-import '../App.css';
+import '../../App.css';
 import { moderadorContainerImage, moderadorTitle, moderadorCharterBox } from "../components/CharterModerador/CharterConstStyle";
 import Charter from '../CharterModerador/Charter';
 

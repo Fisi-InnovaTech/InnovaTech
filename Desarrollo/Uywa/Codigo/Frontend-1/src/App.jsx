@@ -7,7 +7,6 @@ import Footer from './components/Footer/Footer';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from './auth/providers/authProvider';
 import { RouteGuard } from './auth/guards/authGuard';
-import ReportesUsuario from './pages/ReportesUsuario';
 import { Home } from '@mui/icons-material';
 import VerAlertaGoogle from './components/pages/VerAlertaGoogle';
 import AlertForm from './components/pages/RealizarAlerta';
@@ -18,6 +17,7 @@ import Profile from './components/pages/Profile';
 import Estadistica from './components/pages/EstadisticaAlertUI';
 import PromoverUsuario from './components/pages/PromoverUsuario';
 import Animals from './components/pages/Animals';
+import ReportesUsuario from './components/pages/ReportesUsuario';
 
 function App() {
   return (

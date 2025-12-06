@@ -189,12 +189,17 @@ export class ReportesService {
   ): Promise<string> {
     try {
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitud}&lon=${longitud}&format=json`,
-      );
+  `https://nominatim.openstreetmap.org/reverse?lat=${latitud}&lon=${longitud}&format=json`,
+  {
+    headers: {
+      'User-Agent': 'TuApp/1.0 (tu-email@ejemplo.com)', // OBLIGATORIO
+      'Accept-Language': 'es'
+    },
+    timeout: 10000 // 10 segundos de timeout
+  }
+);
 
-      const address = response.data.address;
-      const departamento = address.state || address.region || address.county;
-
+const departamento = response.data.address?.state || 'No disponible';
       if (!departamento) {
         throw new Error('No se pudo determinar el departamento');
       }

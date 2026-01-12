@@ -56,7 +56,7 @@
     "jest-transform-css": "^6.0.3",
     "jest-transform-stub": "^2.0.0",
     "matchmedia-polyfill": "^0.3.2",
-    "sonarqube-scanner": "^4.3.0"
+    "sonarqube-scanner": "^4.3.4"
   },
   "jest": {
     "coverageReporters": [
